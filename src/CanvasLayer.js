@@ -483,15 +483,12 @@ CanvasLayer.prototype.repositionCanvas_ = function() {
   // left as an offset from the center, which is an unwrapped LatLng.
   
   var top = map.getBounds().getNorthEast().lat();
-  var center = {lat: -34, lng: 151}//map.getCenter();
+  var center = map.getCenter();
   //var scale = Math.pow(2, map.getZoom());
   var scale = 16
-  //var left = center.lng() - (this.canvasCssWidth_ * 180) / (256 * scale);
-  //this.topLeft_ = new google.maps.LatLng(top, left);
+  var left = center.lng() - (this.canvasCssWidth_ * 180) / (256 * scale);
+  this.topLeft_ = new google.maps.LatLng(top, left);
 
-  var left = center.lng();
-
-  var top = 0;
 
 
 
