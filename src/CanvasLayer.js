@@ -383,6 +383,7 @@ CanvasLayer.prototype.onAdd = function() {
 
   this.resizeListener_ = google.maps.event.addListener(this.getMap(),
       'resize', this.resizeFunction_);
+  //do not change the center
   this.centerListener_ = google.maps.event.addListener(this.getMap(),
       'center_changed', this.repositionFunction_);
 
@@ -480,11 +481,20 @@ CanvasLayer.prototype.repositionCanvas_ = function() {
   // topLeft can't be calculated from map.getBounds(), because bounds are
   // clamped to -180 and 180 when completely zoomed out. Instead, calculate
   // left as an offset from the center, which is an unwrapped LatLng.
+  
   var top = map.getBounds().getNorthEast().lat();
-  var center = map.getCenter();
-  var scale = Math.pow(2, map.getZoom());
-  var left = center.lng() - (this.canvasCssWidth_ * 180) / (256 * scale);
-  this.topLeft_ = new google.maps.LatLng(top, left);
+  var center = {lat: -34, lng: 151}//map.getCenter();
+  //var scale = Math.pow(2, map.getZoom());
+  var scale = 16
+  //var left = center.lng() - (this.canvasCssWidth_ * 180) / (256 * scale);
+  //this.topLeft_ = new google.maps.LatLng(top, left);
+
+  var left = center.lng();
+
+  var top = 0;
+
+
+
 
   // Canvas position relative to draggable map's container depends on
   // overlayView's projection, not the map's. Have to use the center of the
@@ -493,8 +503,9 @@ CanvasLayer.prototype.repositionCanvas_ = function() {
   var divCenter = projection.fromLatLngToDivPixel(center);
   var offsetX = -Math.round(this.canvasCssWidth_ / 2 - divCenter.x);
   var offsetY = -Math.round(this.canvasCssHeight_ / 2 - divCenter.y);
+
   this.canvas.style[CanvasLayer.CSS_TRANSFORM_] = 'translate(' +
-      offsetX + 'px,' + offsetY + 'px)';
+    offsetX + 'px,' + offsetY + 'px)';
 
   this.scheduleUpdate();
 };
