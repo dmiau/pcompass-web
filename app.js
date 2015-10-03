@@ -8,7 +8,7 @@ http.createServer(function (request, response) {
 	if (filePath == './')
 		filePath = './index.html';
 	
-	path.exists(filePath, function(exists) {
+	fs.exists(filePath, function(exists) {
 	
 		if (exists) {
 			fs.readFile(filePath, function(error, content) {
@@ -28,5 +28,5 @@ http.createServer(function (request, response) {
 		}
 	});
 	
-}).listen(8125);
-console.log('Server running at http://127.0.0.1:8125/');
+}).listen(3000);
+console.log('Server running at http://127.0.0.1:3000/');
