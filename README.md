@@ -10,13 +10,14 @@ node app.js
 ```
 
 ## Application Structure
+```
 |-- README.md (This file)
 |-- app.js    (runs the server)
 |-- index.html/
 \
   |-- CanvasLayer.js
   |-- CanvasLayerOptions.js
-
+```
 
 
 ## Developers
