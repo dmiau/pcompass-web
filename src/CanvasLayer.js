@@ -540,6 +540,7 @@ CanvasLayer.prototype.update_ = function() {
  * @return {google.maps.LatLng} The top left coordinate.
  */
 CanvasLayer.prototype.getTopLeft = function() {
+  console.log("top left: " + this.topLeft_);
   return this.topLeft_;
 };
 
