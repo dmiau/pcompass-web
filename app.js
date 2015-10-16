@@ -2,15 +2,6 @@ var http = require('http');
 var path = require('path');
 var fs = require('fs');
 
-var map;
-function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -34.397, lng: 150.644},
-    zoom: 8
-  });
-}
-
-
 http.createServer(function (request, response) {
     console.log('request starting...');
 	
