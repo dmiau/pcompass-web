@@ -13,10 +13,13 @@ node app.js
 ```
 |-- README.md (This file)
 |-- app.js    (runs the server)
-|-- index.html/
+|-- googlemap.html/
+|-- node_modules
+|-- public
 \
-  |-- CanvasLayer.js
-  |-- CanvasLayerOptions.js
+  |-- css
+  \
+  	|--style.css
 ```
 
 
