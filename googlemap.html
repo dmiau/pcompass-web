@@ -6,6 +6,8 @@
     <title>Personalized Compass Map</title>
     <!-- <link rel="stylesheet" type="text/css" href="/static/css/style.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- javascript drawing library -->
+    <!--<script src="two.min.js"></script>-->
     <style>
       body,html, #map
       {
@@ -21,10 +23,10 @@
         position:absolute;
         /*url of the marker*/
         /*background:url(http://maps.gstatic.com/mapfiles/markers2/marker.png) no-repeat;*/
-        background:url(https://lh3.ggpht.com/5qlRqe6pX5FVnsVD7p3dPsIyrxMO9fetORWAnaecvLQPa-iZCKzdROubBiBRwJXLtdI=w170) no-repeat;
+        /*background:url(https://lh3.ggpht.com/5qlRqe6pX5FVnsVD7p3dPsIyrxMO9fetORWAnaecvLQPa-iZCKzdROubBiBRwJXLtdI=w170) no-repeat;
         /*center the marker*/
         top:50%;left:50%;
-        z-index:1;
+        z-index:3;
         /*fix offset when needed*/
         margin-left:-10px;
         margin-top:-34px;
@@ -35,19 +37,76 @@
         width:170px;
         cursor:pointer;
       }
-
       #overlay {
-  background-color: white;
-  opacity: 0.4;
-  height: 20%;
-  width: 100%;   
-}
+      opacity: 1.5;
+      position: absolute;
+      margin-left:30px;
+      margin-right: 400px;
+      height: 5;
+      width: 5;  
+      /*add z index*/
+      z-index: 2;
+      }
+
+      #myCanvas
+      {
+        opacity: 0.4;
+        height: 5;
+        width: 5;
+        z-index: 1;
+        /*margin-top:0 px;*/
+      }
     </style>
 
   </head>
   <body>
     <div id="map"></div>
-    <div id="overlay"></div>
+
+    <div id="overlay">
+    <!--add canvas to overlay-->
+       <canvas id="myCanvas" width="200" height="200" ></canvas> 
+       <script>
+           var canvas = document.getElementById("myCanvas");
+           var ctx = canvas.getContext("2d");
+           
+           //draw circles
+           ctx.beginPath();
+           ctx.arc(100,100,100,0,2*Math.PI);
+           
+           //color in circle
+           ctx.fillStyle = 'silver';
+           ctx.fill();
+           ctx.stroke()
+
+            //draw lines
+           ctx.beginPath();
+           ctx.moveTo(100, 100);
+           ctx.lineTo(100, 180);
+           ctx.lineWidth = 5;
+           ctx.strokeStyle = '#ff0000';
+           ctx.stroke();
+
+           ctx.beginPath();
+           ctx.moveTo(100, 100);
+           ctx.lineTo(160, 100);
+           ctx.lineWidth = 5;
+           ctx.strokeStyle = '#ff0000';
+           ctx.stroke();
+
+           // Put in labels
+           ctx.beginPath();
+           ctx.strokeStyle = '#000000';
+           ctx.lineWidth = 0.5;
+           ctx.fillStyle = 'black';
+           ctx.font = "30px Arial";
+           ctx.fillText("S",90,200);
+           ctx.fillText("N",90,30);
+           ctx.stroke();
+
+       </script>
+      
+
+    </div>
 
     <script>
 
@@ -59,7 +118,6 @@
       });
 
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
-
 
 
       $('<div/>').addClass('centerMarker').appendTo(map.getDiv())

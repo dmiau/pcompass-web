@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dmiau/pcompass-web",
   "dependencies": {
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "two.js": "^0.5.0"
   }
 }
