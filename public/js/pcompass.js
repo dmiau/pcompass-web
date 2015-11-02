@@ -1,4 +1,4 @@
-/*var PCompass= function (lat, lng, x , y, r) {
+var PCompass= function (lat, lng, x , y, r) {
               this.lat = lat;
               this.lng = lng;
               this.x = x;
@@ -29,7 +29,7 @@
             pcompass.setXY(5, 6)
             
            var canvas = document.getElementById("myCanvas");
-           var ctx = canvas.getContext("2d");*/
+           var ctx = canvas.getContext("2d");
            
            //draw circles
            ctx.beginPath();

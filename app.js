@@ -11,6 +11,8 @@ app.get('/',function(req,res){
   //__dirname : It will resolve to your project folder.
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 var server = app.listen(process.env.PORT || 3000, function () {
   var host = server.address().address;
   var port = server.address().port;
