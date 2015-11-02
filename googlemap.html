@@ -6,25 +6,19 @@
     <title>Personalized Compass Map</title>
     <!-- <link rel="stylesheet" type="text/css" href="/static/css/style.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- javascript drawing library -->
-    <!--<script src="two.min.js"></script>-->
+    <script src="../pcompass.js"></script>
+
     <style>
-      body,html, #map
+      body,html, #map, #overlay
       {
         height:100%;
         margin:0;
       }
-
       #map{
         height:100%;
       }
-
       .centerMarker{
         position:absolute;
-        /*url of the marker*/
-        /*background:url(http://maps.gstatic.com/mapfiles/markers2/marker.png) no-repeat;*/
-        /*background:url(https://lh3.ggpht.com/5qlRqe6pX5FVnsVD7p3dPsIyrxMO9fetORWAnaecvLQPa-iZCKzdROubBiBRwJXLtdI=w170) no-repeat;
-        /*center the marker*/
         top:50%;left:50%;
         z-index:3;
         /*fix offset when needed*/
@@ -37,13 +31,15 @@
         width:170px;
         cursor:pointer;
       }
+
       #overlay {
-      opacity: 1.5;
+      opacity: 1.6;
       position: absolute;
-      margin-left:30px;
-      margin-right: 400px;
-      height: 5;
-      width: 5;  
+      margin-top: 300px;
+      margin-left: 300px;
+      margin-right: 300px;
+      height: 50%;
+      width: 50% ;
       /*add z index*/
       z-index: 2;
       }
@@ -54,18 +50,47 @@
         height: 5;
         width: 5;
         z-index: 1;
-        /*margin-top:0 px;*/
       }
     </style>
 
   </head>
   <body>
     <div id="map"></div>
-
     <div id="overlay">
-    <!--add canvas to overlay-->
+        <!--add canvas to overlay-->
        <canvas id="myCanvas" width="200" height="200" ></canvas> 
        <script>
+       
+           /*var PCompass= function (lat, lng, x , y, r) {
+              this.lat = lat;
+              this.lng = lng;
+              this.x = x;
+              this.y = y;
+              this.r = r;
+              console.log('compass instantiated');
+            };
+
+            PCompass.prototype.setXY = function(x, y) {
+                this.x = x;
+                this.y = y;
+                console.log("x, y = " + this.x + " " + this.y);
+            };
+
+            PCompass.prototype.setLatLng = function(lat, lng) {
+                this.lat = lat;
+                this.lng = lng;
+                console.log("lat, long = " + this.lat + " " + this.lng);
+            };
+
+            PCompass.prototype.setR = function(r) {
+                this.r = r;
+                console.log("r" + this.r);
+            };
+
+
+            var pcompass= new PCompass(0, 0, 0, 0, 1000);
+            pcompass.setXY(5, 6)
+            
            var canvas = document.getElementById("myCanvas");
            var ctx = canvas.getContext("2d");
            
@@ -101,7 +126,7 @@
            ctx.font = "30px Arial";
            ctx.fillText("S",90,200);
            ctx.fillText("N",90,30);
-           ctx.stroke();
+           ctx.stroke();*/
 
        </script>
 
@@ -118,10 +143,7 @@
 
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
 
-
       $('<div/>').addClass('centerMarker').appendTo(map.getDiv())
-
-
                  //do something onclick
                 .click(function(){
                    var that=$(this);
