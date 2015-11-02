@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   </head>
-  
+
   <body>
     <div id="map"></div>
     <div id="overlay">
@@ -38,7 +38,21 @@
       //              }
       //              that.data('win').open(map);
       //           });
+
+      // Latitude and Longitude on click
+      // google.maps.event.addListener(map, 'click', function(event) {
+      //     console.log(event.latLng.lat());
+      //     console.log(event.latLng.lng());
+      //     // marker = new google.maps.Marker({position: event.latLng, map: map});
+      // });
+
+      // Latitude and Longitude on center
+      google.maps.event.addListener(map, 'center_changed', function () {
+            var location = map.getCenter();
+            console.log(location.lat(), location.lng());
+      });
     }
+
 
     // google.maps.event.addDomListener(window, 'load', initialize);
 
