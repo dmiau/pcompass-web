@@ -30,6 +30,8 @@ var PCompass= function (lat, lng, x , y, r , points) {
     {
          //draw circles
           ctx.strokeStyle = '#000000';
+          ctx.lineWidth = 0.3;
+
 
           ctx.beginPath();
           ctx.arc(this.r,this.r, this.r,0,2*Math.PI);
@@ -55,6 +57,11 @@ var PCompass= function (lat, lng, x , y, r , points) {
     {
         //draw lines
         distance = 100 * distance;
+        if(distance > 100)
+        {
+            distance = 100;
+        }
+
         angle = angle * Math.PI/180;
         ctx.beginPath();
         ctx.moveTo(100, 100);
