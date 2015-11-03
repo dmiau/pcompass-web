@@ -81,8 +81,4 @@ var PCompass= function (lat, lng, x , y, r , points) {
         }
 
     };
-    
-   
-
-
    

@@ -10,6 +10,7 @@
 
   <body>
     <div id="map"></div>
+    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     
   <div id="overlay">
         <!--add canvas to overlay-->
@@ -20,12 +21,63 @@
     <script>
 
     var map;
+
     var points = new Array();
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
         zoom: 13
       });
+
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // For each place, get the icon, name and location
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+      });
+
+      name = places[0].name
+      POI = places[0].geometry.location;
+      marker = new google.maps.Marker({position: POI, map: map});
+      var infowindow = new google.maps.InfoWindow({
+        content: name,
+        disableAutoPan: true
+      });
+      infowindow.open(map, marker);
+
+      var center = map.getCenter();
+      distance = getDistance(center, POI);
+      angle = getAngle(center, POI);
+      var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+      points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+      pcompass.drawNeedles();
+        
+      // map.fitBounds(bounds);
+    });
 
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
       
@@ -35,15 +87,15 @@
       google.maps.event.addListener(map, 'click', function(event) {
 
           POI = event.latLng;
+
           var name = 'Marker'
           marker = new google.maps.Marker({position: event.latLng, map: map});
-          var infowindow = new google.maps.InfoWindow({
+          infowindow = new google.maps.InfoWindow({
             content: name,
             disableAutoPan: true
           });
-          marker.addListener('click', function() {
-            infowindow.open(map, marker);
-          });
+
+          infowindow.open(map, marker);
           var center = map.getCenter();
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
@@ -54,10 +106,30 @@
           return POI;
       });
 
+      //trying to get markers to delete on click
+      google.maps.event.addListener(map, 'click', function(event) {
+          marker.addListener('click', function() {
+
+            console.log('hi');
+            points = points.filter(function(el){
+              console.log(el.latlng);
+              console.log(event.latLng);
+              return (el.latlng !== event.latLng);
+            });
+
+            console.log(points)
+          });
+      });
+
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
             var center = map.getCenter();
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            //check and draw FOV
+            bounds = map.getBounds();
+            // console.log(bounds);
+
             pcompass.drawCompass();
             for (var i in points){
               points[i].distance = getDistance(center, points[i].latlng);
@@ -86,7 +158,7 @@
       return d/1000; // returns the distance in KILOmeter
     };
 
-    //Calculate bearing
+    //Calculate angle
     var getAngle = function(p1, p2){
       brng = Math.atan2(p2.lat() - p1.lat(), p2.lng() - p1.lng());
       brng = brng * (180 / Math.PI);
@@ -103,8 +175,8 @@
     
     </script>
 
-    
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
+
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
         async defer></script>
   </body>
 </html>
