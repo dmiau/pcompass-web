@@ -48,11 +48,19 @@
 
           POI = event.latLng;
           console.log(POI.lat(), POI.lng());
+          var name = 'Marker'
           marker = new google.maps.Marker({position: event.latLng, map: map});
+          var infowindow = new google.maps.InfoWindow({
+            content: name,
+            disableAutoPan: true
+          });
+          marker.addListener('click', function() {
+            infowindow.open(map, marker);
+          });
           var center = map.getCenter();
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
-          points.push({'name': 'Marker', 'distance': distance, 'angle': angle});
+          points.push({'name': name, 'distance': distance, 'angle': angle});
           console.log(points);
           return POI;
       });
