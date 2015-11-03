@@ -67,13 +67,8 @@ var PCompass= function (lat, lng, x , y, r , points) {
 
     PCompass.prototype.drawNeedles = function()
     {
-        console.log('needles called')
-        console.log(points);
         for(var i in points)
         {
-          console.log(points[i].name);
-          console.log(points[i].distance);
-          console.log(points[i].angle);
           pcompass.drawNeedle(points[i].distance, points[i].angle)
 
         }
