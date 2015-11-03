@@ -10,16 +10,17 @@
 
   <body>
     <div id="map"></div>
-    <div id="overlay">
+    
+  <div id="overlay">
         <!--add canvas to overlay-->
        <canvas id="myCanvas" width="200" height="200" ></canvas> 
        <script src="/js/pcompass.js"></script>
 
     </div>
-
     <script>
 
     var map;
+    var points = new Array();
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
@@ -27,27 +28,13 @@
       });
 
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
-
-      // $('<div/>').addClass('centerMarker').appendTo(map.getDiv())
-      //            //do something onclick
-      //           .click(function(){
-      //              var that=$(this);
-      //              if(!that.data('win')){
-      //               that.data('win',new google.maps.InfoWindow({content:'this is the center'}));
-      //               that.data('win').bindTo('position',map,'center');
-      //              }
-      //              that.data('win').open(map);
-      //           });
-
       
       var POI = map.getCenter();
-      var points = new Array();
 
       //Create marker, get Latitude and Longitude on click
       google.maps.event.addListener(map, 'click', function(event) {
 
           POI = event.latLng;
-          console.log(POI.lat(), POI.lng());
           var name = 'Marker'
           marker = new google.maps.Marker({position: event.latLng, map: map});
           var infowindow = new google.maps.InfoWindow({
@@ -60,19 +47,25 @@
           var center = map.getCenter();
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
-          points.push({'name': name, 'distance': distance, 'angle': angle});
-          console.log(points);
+          var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+          points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+
+          pcompass.drawNeedles();
           return POI;
       });
 
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
-            var location = map.getCenter();
-            console.log(location.lat(), location.lng());
-            distance = getDistance(location, POI);
-            angle = getAngle(location, POI);
-            console.log(distance, angle);
-            return distance, angle;
+            var center = map.getCenter();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            pcompass.drawCompass();
+            for (var i in points){
+              points[i].distance = getDistance(center, points[i].latlng);
+              points[i].angle = getAngle(center, points[i].latlng);
+            }
+
+            pcompass.drawNeedles();
+
       });
     }
 
@@ -101,9 +94,16 @@
       return brng
     }
 
-    // google.maps.event.addDomListener(window, 'load', initialize);
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var pcompass= new PCompass(0, 0, 0, 0, 100, points); // lat, lng, x, y, r
 
+    pcompass.setXY(5, 6);
+    pcompass.drawCompass();
+    
     </script>
+
+    
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
         async defer></script>
   </body>
