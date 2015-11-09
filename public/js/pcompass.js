@@ -25,6 +25,8 @@ var PCompass= function (lat, lng, x , y, r , points) {
 
     PCompass.prototype.drawCompass = function()
     {
+          ctx.canvas.width  = window.innerWidth;
+          ctx.canvas.height = window.innerHeight;
          //draw circles
           ctx.strokeStyle = '#000000';
           ctx.lineWidth = 0.3;
@@ -33,7 +35,7 @@ var PCompass= function (lat, lng, x , y, r , points) {
           //color in circle
           ctx.fillStyle = 'silver';
           ctx.fill();
-          ctx.stroke()
+          ctx.stroke();
 
           ctx.beginPath();
           ctx.arc(100, 100, 5, 0, 2 * Math.PI, false);
