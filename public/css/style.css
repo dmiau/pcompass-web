@@ -31,11 +31,14 @@ body,html{
   bottom: 0px !important;
   /*add z index*/
   z-index: 2;
+  pointer-events: none;
+
 }
 
 #myCanvas{
   opacity: 0.4;
   z-index: 1;
+  pointer-events: none;
 }
 
 .controls {
