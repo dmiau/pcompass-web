@@ -1,11 +1,9 @@
-var PCompass= function (lat, lng, x , y, r , points) {
-//var PCompass= function (lat, lng, x , y, r ) {
+var PCompass= function (lat, lng, x , y, r) {
     this.lat = lat;
     this.lng = lng;
     this.x = x;
     this.y = y;
     this.r = r;
-    //this.points = points;
     console.log('compass instantiated');
 };
 
@@ -63,7 +61,6 @@ var PCompass= function (lat, lng, x , y, r , points) {
         {
             distance = 100;
         }
-
         angle = angle * Math.PI/180;
         ctx.beginPath();
         ctx.moveTo(100, 100);
@@ -87,14 +84,14 @@ var PCompass= function (lat, lng, x , y, r , points) {
 
     PCompass.prototype.drawFOV = function(dist)
     {
-
+          dist = dist/10;
           ctx.beginPath();
           ctx.lineWidth="2";
           ctx.strokeStyle="black";
-          ctx.rect(100 - 16 * dist , 
-          100 - 9 * dist,
-          2 * 16 * dist ,
-          2 * 9 * dist); // 16:9
+          ctx.rect(100 - 16 / dist , 
+          100 - 9 / dist,
+          2 * 16 / dist ,
+          2 * 9 / dist); // 16:9
           ctx.stroke(); 
     }
    
