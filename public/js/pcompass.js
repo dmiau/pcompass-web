@@ -25,15 +25,18 @@ var PCompass= function (lat, lng, x , y, r) {
     {
           ctx.canvas.width  = window.innerWidth;
           ctx.canvas.height = window.innerHeight;
+
          //draw circles
           ctx.strokeStyle = '#000000';
           ctx.lineWidth = 0.3;
           ctx.beginPath();
           ctx.arc(this.r,this.r, this.r,0,2*Math.PI);
           //color in circle
+          ctx.globalAlpha = 0.2;
           ctx.fillStyle = 'silver';
           ctx.fill();
           ctx.stroke();
+          ctx.globalAlpha = 1.0;
 
           ctx.beginPath();
           ctx.arc(100, 100, 5, 0, 2 * Math.PI, false);
@@ -84,6 +87,7 @@ var PCompass= function (lat, lng, x , y, r) {
 
     PCompass.prototype.drawFOV = function(dist)
     {
+          //change to innerWidth, innerHeight
           dist = dist/10;
           ctx.beginPath();
           ctx.lineWidth="2";

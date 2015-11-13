@@ -22,6 +22,10 @@
     var pointsDB = new Array();
     var points = new Array();
 
+    //populate points DB
+    
+
+
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
@@ -100,6 +104,7 @@
           var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
           //points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
           pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+          //add probability that user knows this location
           selectPOI(pointsDB, 3);
           pcompass.drawNeedles();
           return POI;
@@ -108,7 +113,6 @@
       //trying to get markers to delete on click
       google.maps.event.addListener(map, 'click', function(event) {
           marker.addListener('click', function() {
-
             // console.log('hi');
             points = points.filter(function(el){
               // console.log(el.latlng);
