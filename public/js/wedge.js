@@ -98,7 +98,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         ctxWedge.lineTo(point.x, point.y);
         ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
         ctxWedge.lineTo(leftX, leftY);
-        ctxWedge.lineWidth = 5;
+        ctxWedge.lineWidth = 3;
         ctxWedge.strokeStyle = '#ff0000';
         ctxWedge.stroke();
         

@@ -65,7 +65,7 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
         ctxCompass.fillText(name, this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30)
-        ctxCompass.lineWidth = 5;
+        ctxCompass.lineWidth = 3;
         ctxCompass.strokeStyle = color;
         ctxCompass.stroke();
 
