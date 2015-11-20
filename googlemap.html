@@ -8,25 +8,53 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   </head>
   <body>
+
     <div id="map"></div>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
     <div id="overlay">
         <!--add canvas to overlay-->
-       <canvas id="myCanvas"></canvas> 
+      
+
+      <div id="wedge">
+
+       <canvas id="canvasWedge"></canvas>
+      </div>
+      <div id="compass">
+       <canvas id="canvasCompass" height = '200px' width = '200px'></canvas>
+      </div>
+
        <script src="/js/pcompass.js"></script>
        <script src="/js/wedge.js"></script>
     </div>
     <script>
+   
+
     var map;
 
     var pointsDB = new Array();
     var points = new Array();
 
     //populate points DB
+     var canvasCompass = document.getElementById("canvasCompass");
+
+    var ctxCompass = canvasCompass.getContext("2d");
+
+
+    var canvasWedge = document.getElementById("canvasWedge");
+    canvasWedge.setAttribute('width', window.innerWidth);
+    canvasWedge.setAttribute('height', window.innerHeight);
+
+    var ctxWedge = canvasWedge.getContext("2d");
+
+    var pcompass= new PCompass(0, 0, 0, 0, 100);
+    var wedge = new Wedge();
     
 
 
     function initMap() {
+     
+
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
         zoom: 15
@@ -41,6 +69,7 @@
     map.addListener('bounds_changed', function() {
       searchBox.setBounds(map.getBounds());
     });
+
 
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
@@ -126,7 +155,8 @@
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
             var center = map.getCenter();
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
+            ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
 
             //check and draw FOV
             bounds = map.getBounds();
@@ -146,6 +176,7 @@
                   minDistance = points[i].distance;
             }
             pcompass.drawFOV(minDistance);
+            
 
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
@@ -208,10 +239,45 @@
       }
     }
 
-    var canvas = document.getElementById("myCanvas");
-    var ctx = canvas.getContext("2d");
-    var pcompass= new PCompass(0, 0, 0, 0, 100);
-    var wedge = new Wedge();
+    
+    var selected = null, // Object of the element to be moved
+    x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
+    x_elem = 0, y_elem = 0; // Stores top, left values (edge) of the element
+
+// Will be called when user starts dragging an element
+function _drag_init(elem) {
+    // Store the object of the element which needs to be moved
+    selected = elem;
+    x_elem = x_pos - selected.offsetLeft;
+    y_elem = y_pos - selected.offsetTop;
+}
+
+// Will be called when user dragging an element
+function _move_elem(e) {
+    x_pos = document.all ? window.event.clientX : e.pageX;
+    y_pos = document.all ? window.event.clientY : e.pageY;
+    if (selected !== null) {
+        selected.style.left = (x_pos - x_elem) + 'px';
+        selected.style.top = (y_pos - y_elem) + 'px';
+    }
+}
+
+// Destroy the object when we are done
+function _destroy() {
+    selected = null;
+}
+
+// Bind the functions...
+document.getElementById('compass').onmousedown = function () {
+    _drag_init(this);
+    return false;
+};
+
+document.onmousemove = _move_elem;
+document.onmouseup = _destroy;
+
+
+    
 
     pcompass.drawCompass();
     </script>

@@ -91,16 +91,17 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
 
         // console.log('right ' + rightX, rightY);
         // console.log('left ' + leftX, leftY);
-        ctx.beginPath();
-        ctx.moveTo(leftX, leftY); //Move cursor to center of screen
-        ctx.lineTo(point.x, point.y);
-        ctx.moveTo(rightX, rightY); //Move cursor to center of screen
-        ctx.lineTo(point.x, point.y);
-        ctx.moveTo(rightX, rightY); //Move cursor to center of screen
-        ctx.lineTo(leftX, leftY);
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = '#ff0000';
-        ctx.stroke();
+        console.log('hi')
+        ctxWedge.beginPath();
+        ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
+        ctxWedge.lineTo(point.x, point.y);
+        ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
+        ctxWedge.lineTo(point.x, point.y);
+        ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
+        ctxWedge.lineTo(leftX, leftY);
+        ctxWedge.lineWidth = 5;
+        ctxWedge.strokeStyle = '#ff0000';
+        ctxWedge.stroke();
         
 };
 

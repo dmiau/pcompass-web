@@ -23,37 +23,30 @@ var PCompass= function (lat, lng, x , y, r) {
 
     PCompass.prototype.drawCompass = function()
     {
-          ctx.canvas.width  = window.innerWidth;
-          ctx.canvas.height = window.innerHeight;
-
+          // ctxCompass.canvas.width  = window.innerWidth;
+          // ctxCompass.canvas.height = window.innerHeight;
          //draw circles
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 0.3;
-          ctx.beginPath();
-          ctx.arc(this.r,this.r, this.r,0,2*Math.PI);
+          ctxCompass.strokeStyle = '#000000';
+          ctxCompass.lineWidth = 0.3;
+          ctxCompass.beginPath();
+          ctxCompass.arc(this.r,this.r, this.r,0,2*Math.PI);
           //color in circle
-          ctx.globalAlpha = 0.2;
-          ctx.fillStyle = 'silver';
-          ctx.fill();
-          ctx.stroke();
-          ctx.globalAlpha = 1.0;
+          ctxCompass.globalAlpha = 0.2;
+          ctxCompass.fillStyle = 'silver';
+          ctxCompass.fill();
+          ctxCompass.stroke();
+          ctxCompass.globalAlpha = 1.0;
 
-          ctx.beginPath();
-          ctx.arc(100, 100, 5, 0, 2 * Math.PI, false);
-          ctx.fillStyle = '#ADD8E6';
-          ctx.fill();
-          ctx.lineWidth = 5;
-          ctx.strokeStyle = '#ADD8E6';
-          ctx.stroke();
+          
           // Put in labels
-          ctx.beginPath();
-          ctx.strokeStyle = '#000000';
-          ctx.lineWidth = 0.5;
-          ctx.fillStyle = 'black';
-          ctx.font = "30px Arial";
-          ctx.fillText("S",90,200);
-          ctx.fillText("N",90,30);
-          ctx.stroke();
+          ctxCompass.beginPath();
+          ctxCompass.strokeStyle = '#000000';
+          ctxCompass.lineWidth = 0.5;
+          ctxCompass.fillStyle = 'black';
+          ctxCompass.font = "30px Arial";
+          ctxCompass.fillText("S",90,200);
+          ctxCompass.fillText("N",90,30);
+          ctxCompass.stroke();
     };
 
     PCompass.prototype.drawNeedle = function(name, distance, angle)
@@ -65,15 +58,15 @@ var PCompass= function (lat, lng, x , y, r) {
             distance = 100;
         }
         angle = angle * Math.PI/180;
-        ctx.beginPath();
-        ctx.moveTo(100, 100);
-        ctx.lineTo(100 + distance * Math.cos(angle), 100 - distance * Math.sin(angle));
-        ctx.strokeStyle = '#000000';
-        ctx.font = "15px Arial";
-        ctx.fillText(name, 100 + distance * Math.cos(angle), 100 - distance * Math.sin(angle))
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = '#ff0000';
-        ctx.stroke();
+        ctxCompass.beginPath();
+        ctxCompass.moveTo(100, 100);
+        ctxCompass.lineTo(100 + distance * Math.cos(angle), 100 - distance * Math.sin(angle));
+        ctxCompass.strokeStyle = '#000000';
+        ctxCompass.font = "15px Arial";
+        ctxCompass.fillText(name, 100 + distance * Math.cos(angle), 100 - distance * Math.sin(angle))
+        ctxCompass.lineWidth = 5;
+        ctxCompass.strokeStyle = '#ff0000';
+        ctxCompass.stroke();
 
     };
 
@@ -83,6 +76,14 @@ var PCompass= function (lat, lng, x , y, r) {
         {
           pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle)
         }
+        //draw center dot
+        ctxCompass.beginPath();
+        ctxCompass.arc(100, 100, 5, 0, 2 * Math.PI, false);
+        ctxCompass.fillStyle = '#05EDFF';
+        ctxCompass.fill();
+        ctxCompass.lineWidth = 5;
+        ctxCompass.strokeStyle = '#05EDFF';
+        ctxCompass.stroke();
     };
     //Takes distance of closest point, outside of FOV
     PCompass.prototype.drawFOV = function(dist)
@@ -90,13 +91,14 @@ var PCompass= function (lat, lng, x , y, r) {
           //change to innerWidth, innerHeight
           k = 0.02;
           dist = dist/10;
-          ctx.beginPath();
-          ctx.lineWidth="2";
-          ctx.strokeStyle="black";
-          ctx.rect(100 - innerWidth* k / dist , 
-          100 - innerHeight * k / dist,
+          ctxCompass.beginPath();
+          ctxCompass.lineWidth="2";
+          ctxCompass.strokeStyle="black";
+          ctxCompass.rect(this.r - innerWidth* k / dist , 
+          this.r - innerHeight * k / dist,
           2 * innerWidth * k / dist ,
           2 * innerHeight * k / dist);
-          ctx.stroke(); 
+          ctxCompass.stroke(); 
     }
+
    
