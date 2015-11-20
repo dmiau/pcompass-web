@@ -36,19 +36,20 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.fill();
           ctxCompass.stroke();
           ctxCompass.globalAlpha = 1.0;
+          pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
 
           // Put in labels
-          ctxCompass.beginPath();
-          ctxCompass.strokeStyle = '#000000';
-          ctxCompass.lineWidth = 0.5;
-          ctxCompass.fillStyle = 'black';
-          ctxCompass.font = "30px Arial";
-          ctxCompass.fillText("S",90,2 * this.r);
-          ctxCompass.fillText("N",90, 30);
-          ctxCompass.stroke();
+          // ctxCompass.beginPath();
+          // ctxCompass.strokeStyle = '#000000';
+          // ctxCompass.lineWidth = 0.5;
+          // ctxCompass.fillStyle = 'black';
+          // ctxCompass.font = "30px Arial";
+          // ctxCompass.fillText("S",90,2 * this.r);
+          // ctxCompass.fillText("N",90, 30);
+          // ctxCompass.stroke();
     };
 
-    PCompass.prototype.drawNeedle = function(name, distance, angle)
+    PCompass.prototype.drawNeedle = function(name, distance, angle, color)
     {
         //draw lines
         distance = this.r * distance;
@@ -65,7 +66,7 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.font = "15px Arial";
         ctxCompass.fillText(name, this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30)
         ctxCompass.lineWidth = 5;
-        ctxCompass.strokeStyle = '#ff0000';
+        ctxCompass.strokeStyle = color;
         ctxCompass.stroke();
 
     };
@@ -74,7 +75,7 @@ var PCompass= function (lat, lng, x , y, r) {
     {
         for(var i in points)
         {
-          pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle)
+          pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle, '#ff0000')
         }
         //draw center dot
         ctxCompass.beginPath();

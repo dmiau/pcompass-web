@@ -38,7 +38,7 @@
 
     var ctxWedge = canvasWedge.getContext("2d");
 
-    var pcompass= new PCompass(0, 0, 0, 0, 100);
+    var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
     var wedge = new Wedge();
 
     function initMap() {
@@ -140,7 +140,16 @@
 
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
-            var center = map.getCenter();
+            reDraw();
+      });
+
+      google.maps.event.addListener(map, 'zoom_changed', function () {
+           reDraw();
+      });
+    }
+
+    var reDraw = function() {
+       var center = map.getCenter();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
 
@@ -161,8 +170,6 @@
             pcompass.drawFOV(minDistance);
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
-
-      });
     }
     //Haversine formula to calculate distance
     var rad = function(x) {
