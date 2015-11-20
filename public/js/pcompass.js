@@ -84,18 +84,19 @@ var PCompass= function (lat, lng, x , y, r) {
           pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle)
         }
     };
-
+    //Takes distance of closest point, outside of FOV
     PCompass.prototype.drawFOV = function(dist)
     {
           //change to innerWidth, innerHeight
+          k = 0.02;
           dist = dist/10;
           ctx.beginPath();
           ctx.lineWidth="2";
           ctx.strokeStyle="black";
-          ctx.rect(100 - 16 / dist , 
-          100 - 9 / dist,
-          2 * 16 / dist ,
-          2 * 9 / dist); // 16:9
+          ctx.rect(100 - innerWidth* k / dist , 
+          100 - innerHeight * k / dist,
+          2 * innerWidth * k / dist ,
+          2 * innerHeight * k / dist);
           ctx.stroke(); 
     }
    

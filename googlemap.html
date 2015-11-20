@@ -136,11 +136,15 @@
             for (var i in pointsDB){
               pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
               pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
-                if(pointsDB[i].distance < minDistance)
-                  minDistance = pointsDB[i].distance;
+                // if(pointsDB[i].distance < minDistance && !bounds.contains(pointsDB[i].latlng))
+                //   minDistance = pointsDB[i].distance;
             }
-            selectPOI(pointsDB, 3);
 
+            selectPOI(pointsDB, 3);
+            for (var i in points){
+                if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
+                  minDistance = points[i].distance;
+            }
             pcompass.drawFOV(minDistance);
 
             pcompass.drawNeedles(); 
