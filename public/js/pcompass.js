@@ -29,7 +29,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.strokeStyle = '#000000';
           ctxCompass.lineWidth = 0.3;
           ctxCompass.beginPath();
-          ctxCompass.arc(this.r,this.r, this.r,0,2*Math.PI);
+          ctxCompass.arc(this.r,this.r + 30, this.r,0,2*Math.PI);
           //color in circle
           ctxCompass.globalAlpha = 0.2;
           ctxCompass.fillStyle = 'silver';
@@ -37,33 +37,33 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.stroke();
           ctxCompass.globalAlpha = 1.0;
 
-          
           // Put in labels
           ctxCompass.beginPath();
           ctxCompass.strokeStyle = '#000000';
           ctxCompass.lineWidth = 0.5;
           ctxCompass.fillStyle = 'black';
           ctxCompass.font = "30px Arial";
-          ctxCompass.fillText("S",90,200);
-          ctxCompass.fillText("N",90,30);
+          ctxCompass.fillText("S",90,2 * this.r);
+          ctxCompass.fillText("N",90, 30);
           ctxCompass.stroke();
     };
 
     PCompass.prototype.drawNeedle = function(name, distance, angle)
     {
         //draw lines
-        distance = 100 * distance;
-        if(distance > 100)
+        distance = this.r * distance;
+        if(distance > this.r)
         {
-            distance = 100;
+            distance = this.r;
         }
         angle = angle * Math.PI/180;
         ctxCompass.beginPath();
-        ctxCompass.moveTo(100, 100);
-        ctxCompass.lineTo(100 + distance * Math.cos(angle), 100 - distance * Math.sin(angle));
+        ctxCompass.moveTo(this.r, this.r + 30);
+        ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30);
         ctxCompass.strokeStyle = '#000000';
+        ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
-        ctxCompass.fillText(name, 100 + distance * Math.cos(angle), 100 - distance * Math.sin(angle))
+        ctxCompass.fillText(name, this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30)
         ctxCompass.lineWidth = 5;
         ctxCompass.strokeStyle = '#ff0000';
         ctxCompass.stroke();
@@ -78,7 +78,7 @@ var PCompass= function (lat, lng, x , y, r) {
         }
         //draw center dot
         ctxCompass.beginPath();
-        ctxCompass.arc(100, 100, 5, 0, 2 * Math.PI, false);
+        ctxCompass.arc(this.r, this.r + 30, 5, 0, 2 * Math.PI , false);
         ctxCompass.fillStyle = '#05EDFF';
         ctxCompass.fill();
         ctxCompass.lineWidth = 5;
@@ -95,7 +95,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.lineWidth="2";
           ctxCompass.strokeStyle="black";
           ctxCompass.rect(this.r - innerWidth* k / dist , 
-          this.r - innerHeight * k / dist,
+          this.r - innerHeight * k / dist + 30,
           2 * innerWidth * k / dist ,
           2 * innerHeight * k / dist);
           ctxCompass.stroke(); 

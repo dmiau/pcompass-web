@@ -91,7 +91,6 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
 
         // console.log('right ' + rightX, rightY);
         // console.log('left ' + leftX, leftY);
-        console.log('hi')
         ctxWedge.beginPath();
         ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
         ctxWedge.lineTo(point.x, point.y);
@@ -122,19 +121,6 @@ function fromLatLngToPoint(lat, lng, map) {
                 pointTemp = new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
                 return pointTemp;
         }
-
-/*
-var getDistance = function(p1, p2) {
- var R = 6378137; // Earth’s mean radius in meter
- var dLat = rad(p2.lat() - p1.lat());
- var dLong = rad(p2.lng() - p1.lng());
- var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-   Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
-   Math.sin(dLong / 2) * Math.sin(dLong / 2);
- var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
- var d = R * c;
- return d; // returns the distance in meter
-}; */
 
 var toCenter =  function(cornerX, cornerY) {
     point_temp = new google.maps.Point(cornerX - centerX, -cornerY + centerY);

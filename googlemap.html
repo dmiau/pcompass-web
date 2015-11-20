@@ -13,17 +13,12 @@
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 
     <div id="overlay">
-        <!--add canvas to overlay-->
-      
-
       <div id="wedge">
-
        <canvas id="canvasWedge"></canvas>
       </div>
       <div id="compass">
-       <canvas id="canvasCompass" height = '200px' width = '200px'></canvas>
+       <canvas id="canvasCompass" height = '260px' width = '260px'></canvas>
       </div>
-
        <script src="/js/pcompass.js"></script>
        <script src="/js/wedge.js"></script>
     </div>
@@ -31,15 +26,11 @@
    
 
     var map;
+    var pointsDB = new Array(); //Database of all points
+    var points = new Array(); //Points that are shown
 
-    var pointsDB = new Array();
-    var points = new Array();
-
-    //populate points DB
-     var canvasCompass = document.getElementById("canvasCompass");
-
+    var canvasCompass = document.getElementById("canvasCompass");
     var ctxCompass = canvasCompass.getContext("2d");
-
 
     var canvasWedge = document.getElementById("canvasWedge");
     canvasWedge.setAttribute('width', window.innerWidth);
@@ -49,16 +40,13 @@
 
     var pcompass= new PCompass(0, 0, 0, 0, 100);
     var wedge = new Wedge();
-    
-
 
     function initMap() {
-     
-
       map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
         zoom: 15
       });
+      populateDB();
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -131,10 +119,9 @@
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
           var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-          //points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
           pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
-          //add probability that user knows this location
-          selectPOI(pointsDB, 3);
+          //Add probability that user knows this location
+          selectPOI(pointsDB, 3); 
           pcompass.drawNeedles();
           return POI;
       });
@@ -142,7 +129,6 @@
       //trying to get markers to delete on click
       google.maps.event.addListener(map, 'click', function(event) {
           marker.addListener('click', function() {
-            // console.log('hi');
             points = points.filter(function(el){
               // console.log(el.latlng);
               // console.log(event.latLng);
@@ -158,16 +144,13 @@
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
 
-            //check and draw FOV
             bounds = map.getBounds();
-            // console.log(bounds);
             minDistance = Infinity;
             pcompass.drawCompass();
             for (var i in pointsDB){
               pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
               pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
-                // if(pointsDB[i].distance < minDistance && !bounds.contains(pointsDB[i].latlng))
-                //   minDistance = pointsDB[i].distance;
+             
             }
 
             selectPOI(pointsDB, 3);
@@ -176,8 +159,6 @@
                   minDistance = points[i].distance;
             }
             pcompass.drawFOV(minDistance);
-            
-
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
 
@@ -228,18 +209,68 @@
       var angleInterval = 360 / k;
       var margin = 30;
       var currentAngle = angleInterval;
+      var pointsAdded = 1;
+
       while (currentAngle < 360) 
       {
           for (var i in allPoints){
                 if(Math.abs(allPoints[i].angle - currentAngle) < margin) {
                   points.push(allPoints[i]);
+                  pointsAdded++;
+                  if(pointsAdded >= k) {
+                    return;
+                  }
                 }
           }
           currentAngle += angleInterval;
       }
     }
 
-    
+    var createMarker = function(POI, name) {
+          var marker = new google.maps.Marker({
+            // The below line is equivalent to writing:
+            // position: new google.maps.LatLng(-34.397, 150.644)
+            position: POI,
+            map: map
+          });
+
+          infowindow = new google.maps.InfoWindow({
+            content: name,
+            disableAutoPan: true
+          });
+          infowindow.open(map, marker);
+          var center = map.getCenter();
+          distance = getDistance(center, POI);
+          angle = getAngle(center, POI);
+          var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+          pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+          //Add probability that user knows this location
+          selectPOI(pointsDB, 3); 
+          pcompass.drawNeedles();
+          return POI;
+    }
+
+    var populateDB = function() {
+     var newYork = new google.maps.LatLng(40.7127, -74.0079);  
+     var request = {
+       location: newYork,
+       radius: '50000',
+       types: ['store','airport','university'],
+       rankBy: google.maps.places.RankBy.PROMINENCE
+            };  // Create the PlaceService and send the request.
+     // Handle the callback with an anonymous function.
+     var service = new google.maps.places.PlacesService(map);
+     service.nearbySearch(request, function(results, status) {
+       if (status == google.maps.places.PlacesServiceStatus.OK) {
+         for (var i = 0; i < results.length/2; i++) {
+           var place = results[i];
+           var name = place.name;
+           createMarker(place.geometry.location, name);
+         }
+       }
+     });
+  }
+
     var selected = null, // Object of the element to be moved
     x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
     x_elem = 0, y_elem = 0; // Stores top, left values (edge) of the element
@@ -272,16 +303,10 @@ document.getElementById('compass').onmousedown = function () {
     _drag_init(this);
     return false;
 };
-
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
-
-
-    
-
     pcompass.drawCompass();
     </script>
-
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
         async defer></script>
