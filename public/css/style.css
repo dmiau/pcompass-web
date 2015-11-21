@@ -4,17 +4,31 @@ body,html{
   margin: 0px;
 }
 
+#floating-panel {
+  position: absolute;
+  top: 10px;
+  left: 25%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: 'Roboto','sans-serif';
+  line-height: 30px;
+  padding-left: 10px;
+}
+
 #map {
   height:100%;
 }
 
 #overlay {
-  position: relative;
+  position: absolute;
   width: 100%;
   height:100%;
   bottom: 0px !important;
   /*right: 1000px !important;*/
-  z-index: 2;
+  z-index: 1 !important;
   pointer-events: none;
 }
 
@@ -22,12 +36,13 @@ body,html{
   position: absolute;
   height: 200px; 
   width: 200px;
+  z-index: 2;
 
 }
 
 
 #canvasCompass{
-  z-index: 0;
+  z-index: 99;
   pointer-events: all;
   /*bottom: 800px;*/
 

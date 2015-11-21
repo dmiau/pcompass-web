@@ -8,22 +8,30 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   </head>
   <body>
-
-    <div id="map"></div>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-
-    <div id="overlay">
-      <div id="wedge">
-       <canvas id="canvasWedge"></canvas>
+    <!-- <div id= "wrapper"> -->
+      <div id="map"></div>
+      <div id="floating-panel">
+        <input type="button" value="Toggle Street View" onclick="toggleStreetView();"></input>
       </div>
-      <div id="compass">
-       <canvas id="canvasCompass" height = '260px' width = '260px'></canvas>
-      </div>
-       <script src="/js/pcompass.js"></script>
-       <script src="/js/wedge.js"></script>
+      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+
+      <div id="overlay">
+        <div id="wedge">
+         <canvas id="canvasWedge"></canvas>
+        </div>
+        <div id="compass">
+         <canvas id="canvasCompass" height = '260px' width = '260px'></canvas>
+        </div>
+         <script src="/js/pcompass.js"></script>
+         <script src="/js/wedge.js"></script>
+      <!-- </div> -->
+
+      
+
     </div>
+
     <script>
-   
+    var panorama;
 
     var map;
     var pointsDB = new Array(); //Database of all points
@@ -42,11 +50,32 @@
     var wedge = new Wedge();
 
     function initMap() {
+      var newYork = new google.maps.LatLng(40.7127, -74.0079);  
       map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 40.7127, lng: -74.0079}, // New York
+        center: newYork, // New York
         zoom: 15
       });
       populateDB();
+
+      var katz = new google.maps.LatLng(40.722216, -73.987501);
+      panorama = map.getStreetView();
+      panorama.setPosition(katz);
+      panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+        heading: 265,
+        pitch: 0
+      }));
+      
+      var cityCircle = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: katz,
+      radius: 1000
+    });
+
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -146,6 +175,15 @@
       google.maps.event.addListener(map, 'zoom_changed', function () {
            reDraw();
       });
+    }
+
+    function toggleStreetView() {
+      var toggle = panorama.getVisible();
+      if (toggle == false) {
+        panorama.setVisible(true);
+      } else {
+        panorama.setVisible(false);
+      }
     }
 
     var reDraw = function() {
@@ -258,7 +296,7 @@
     }
 
     var populateDB = function() {
-     var newYork = new google.maps.LatLng(40.7127, -74.0079);  
+    var newYork = new google.maps.LatLng(40.7127, -74.0079);  
      var request = {
        location: newYork,
        radius: '50000',
