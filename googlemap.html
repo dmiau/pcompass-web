@@ -47,6 +47,8 @@
         zoom: 15
       });
       populateDB();
+      selectPOI(pointsDB, 3); 
+
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -146,8 +148,8 @@
       google.maps.event.addListener(map, 'zoom_changed', function () {
            reDraw();
       });
-    }
 
+    }
     var reDraw = function() {
        var center = map.getCenter();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
@@ -171,6 +173,7 @@
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
     }
+
     //Haversine formula to calculate distance
     var rad = function(x) {
       return x * Math.PI / 180;
@@ -195,6 +198,7 @@
       brng = (brng + 360) % 360;
       return brng
     }
+
 
     var selectPOI = function(allPoints, k){
       // var selectedPoints = new Array();
@@ -288,6 +292,7 @@ function _drag_init(elem) {
     selected = elem;
     x_elem = x_pos - selected.offsetLeft;
     y_elem = y_pos - selected.offsetTop;
+
 }
 
 // Will be called when user dragging an element
@@ -297,7 +302,11 @@ function _move_elem(e) {
     if (selected !== null) {
         selected.style.left = (x_pos - x_elem) + 'px';
         selected.style.top = (y_pos - y_elem) + 'px';
+        pcompass.x = selected.style.left;
+        pcompass.y = selected.style.top;
+
     }
+
 }
 
 // Destroy the object when we are done
@@ -313,6 +322,9 @@ document.getElementById('compass').onmousedown = function () {
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
+
+    console.log(map);
+    
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
