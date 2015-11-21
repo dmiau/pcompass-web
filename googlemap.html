@@ -56,6 +56,8 @@
         zoom: 15
       });
       populateDB();
+      selectPOI(pointsDB, 3); 
+
 
       var katz = new google.maps.LatLng(40.722216, -73.987501);
       panorama = map.getStreetView();
@@ -65,16 +67,16 @@
         pitch: 0
       }));
       
-      var cityCircle = new google.maps.Circle({
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: map,
-      center: katz,
-      radius: 1000
-    });
+    //   var cityCircle = new google.maps.Circle({
+    //   strokeColor: '#FF0000',
+    //   strokeOpacity: 0.8,
+    //   strokeWeight: 2,
+    //   fillColor: '#FF0000',
+    //   fillOpacity: 0.35,
+    //   map: map,
+    //   center: katz,
+    //   radius: 1000
+    // });
 
 
     // Create the search box and link it to the UI element.
@@ -175,7 +177,6 @@
       google.maps.event.addListener(map, 'zoom_changed', function () {
            reDraw();
       });
-    }
 
     function toggleStreetView() {
       var toggle = panorama.getVisible();
@@ -186,6 +187,7 @@
       }
     }
 
+    }
     var reDraw = function() {
        var center = map.getCenter();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
@@ -200,15 +202,22 @@
              
             }
 
+
             selectPOI(pointsDB, 3);
             for (var i in points){
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
+                  // console.log(points[i])
+                  point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
+                  distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
             }
-            pcompass.drawFOV(minDistance);
+
+            // console.log(distanceToCompass)
+            pcompass.drawFOV(distanceToCompass);
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
     }
+
     //Haversine formula to calculate distance
     var rad = function(x) {
       return x * Math.PI / 180;
@@ -233,6 +242,7 @@
       brng = (brng + 360) % 360;
       return brng
     }
+
 
     var selectPOI = function(allPoints, k){
       // var selectedPoints = new Array();
@@ -316,6 +326,16 @@
      });
   }
 
+  function fromLatLngToPoint(lat, lng, map) {
+                latLng = new google.maps.LatLng(lat, lng);
+                var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
+                var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+                var scale = Math.pow(2, map.getZoom());
+                var worldPoint = map.getProjection().fromLatLngToPoint(latLng);
+                pointTemp = new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
+                return pointTemp;
+        }
+
     var selected = null, // Object of the element to be moved
     x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
     x_elem = 0, y_elem = 0; // Stores top, left values (edge) of the element
@@ -326,6 +346,7 @@ function _drag_init(elem) {
     selected = elem;
     x_elem = x_pos - selected.offsetLeft;
     y_elem = y_pos - selected.offsetTop;
+
 }
 
 // Will be called when user dragging an element
@@ -335,7 +356,11 @@ function _move_elem(e) {
     if (selected !== null) {
         selected.style.left = (x_pos - x_elem) + 'px';
         selected.style.top = (y_pos - y_elem) + 'px';
+        pcompass.x = selected.style.left;
+        pcompass.y = selected.style.top;
+
     }
+
 }
 
 // Destroy the object when we are done
@@ -351,6 +376,9 @@ document.getElementById('compass').onmousedown = function () {
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
+
+    console.log(map);
+    
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"

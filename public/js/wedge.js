@@ -98,7 +98,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         ctxWedge.lineTo(point.x, point.y);
         ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
         ctxWedge.lineTo(leftX, leftY);
-        ctxWedge.lineWidth = 5;
+        ctxWedge.lineWidth = 3;
         ctxWedge.strokeStyle = '#ff0000';
         ctxWedge.stroke();
         
@@ -112,15 +112,15 @@ Wedge.prototype.drawWedges = function() {
         }
 };
 
-function fromLatLngToPoint(lat, lng, map) {
-                latLng = new google.maps.LatLng(lat, lng);
-                var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
-                var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
-                var scale = Math.pow(2, map.getZoom());
-                var worldPoint = map.getProjection().fromLatLngToPoint(latLng);
-                pointTemp = new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
-                return pointTemp;
-        }
+// function fromLatLngToPoint(lat, lng, map) {
+//                 latLng = new google.maps.LatLng(lat, lng);
+//                 var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
+//                 var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+//                 var scale = Math.pow(2, map.getZoom());
+//                 var worldPoint = map.getProjection().fromLatLngToPoint(latLng);
+//                 pointTemp = new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
+//                 return pointTemp;
+//         }
 
 var toCenter =  function(cornerX, cornerY) {
     point_temp = new google.maps.Point(cornerX - centerX, -cornerY + centerY);
