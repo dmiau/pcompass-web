@@ -28,6 +28,17 @@ body,html{
 #map {
   height:100%;
 }
+#questionMap {
+  position: relative;
+  height:50%;
+/*  width: 50%;
+*/}
+
+#answerMap {
+  position: relative;
+  height:50%;
+/*  width: 50%;*/
+}
 
 #wrapper{
   position:relative;

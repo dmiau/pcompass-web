@@ -11,6 +11,11 @@ app.get('/',function(req,res){
   //__dirname : It will resolve to your project folder.
 });
 
+app.get('/game',function(req,res){
+  res.sendFile(path.join(__dirname+'/game.html'));
+  //__dirname : It will resolve to your project folder.
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 var server = app.listen(process.env.PORT || 3000, function () {
