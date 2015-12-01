@@ -129,6 +129,16 @@
       k = 3;
       selectPOI(pointsDB); 
 
+
+      //var katz = new google.maps.LatLng(40.722216, -73.987501);
+      panorama = map.getStreetView();
+      //panorama.setPosition(katz);
+      panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+        heading: 265,
+        pitch: 0
+      }));
+      
+
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
