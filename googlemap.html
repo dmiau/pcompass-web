@@ -17,10 +17,14 @@
 
       <div id="overlay">
         <div id="wedge">
-         <canvas id="canvasWedge"></canvas>
+            <canvas id="canvasWedge"></canvas>
         </div>
+        
         <div id="compass">
-         <canvas id="canvasCompass" height = '260px' width = '260px'></canvas>
+            <canvas id="canvasCompass" height = '300px' width = '300px'></canvas>
+        </div>
+        <div id="FOV">
+            <canvas id="canvasFOV"></canvas>
         </div>
          <script src="/js/pcompass.js"></script>
          <script src="/js/wedge.js"></script>
@@ -29,6 +33,16 @@
       
 
     </div>
+    <script>
+    function toggleStreetView() {
+      var toggle = panorama.getVisible();
+      if (toggle == false) {
+        panorama.setVisible(true);
+      } else {
+        panorama.setVisible(false);
+      }
+    }
+    </script>
 
     <script>
     var panorama;
@@ -40,10 +54,14 @@
     var canvasCompass = document.getElementById("canvasCompass");
     var ctxCompass = canvasCompass.getContext("2d");
 
+    var canvasFOV = document.getElementById("canvasFOV");
+    canvasFOV.setAttribute('width', window.innerWidth);
+    canvasFOV.setAttribute('height', window.innerHeight);
+    var ctxFOV = canvasFOV.getContext("2d");
+
     var canvasWedge = document.getElementById("canvasWedge");
     canvasWedge.setAttribute('width', window.innerWidth);
     canvasWedge.setAttribute('height', window.innerHeight);
-
     var ctxWedge = canvasWedge.getContext("2d");
 
     var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
@@ -178,20 +196,14 @@
            reDraw();
       });
 
-    function toggleStreetView() {
-      var toggle = panorama.getVisible();
-      if (toggle == false) {
-        panorama.setVisible(true);
-      } else {
-        panorama.setVisible(false);
-      }
-    }
+    
 
     }
     var reDraw = function() {
        var center = map.getCenter();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
+            ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
 
             bounds = map.getBounds();
             minDistance = Infinity;
@@ -255,25 +267,33 @@
               allPoints[i].distance = getDistance(center, allPoints[i].latlng);
               allPoints[i].angle = getAngle(center, allPoints[i].latlng);
             
-            if(allPoints[i].distance < minDist) {
+            if(allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng))){
                 minIndex = i;
                 minDist = allPoints[i].distance;
             }
           }
+
       points.push(allPoints[minIndex]);
       var angleInterval = 360 / k;
       var margin = 30;
       var currentAngle = angleInterval;
       var pointsAdded = 1;
 
+
       while (currentAngle < 360) 
       {
           for (var i in allPoints){
                 if(Math.abs(allPoints[i].angle - currentAngle) < margin) {
-                  points.push(allPoints[i]);
-                  pointsAdded++;
-                  if(pointsAdded >= k) {
-                    return;
+                  console.log(map.getBounds(), allPoints[i])
+                  if (map.getBounds().contains(allPoints[i].latlng)){
+                    continue;
+                  }
+                  else{
+                    points.push(allPoints[i]);
+                    pointsAdded++;
+                    if(pointsAdded >= k) {
+                      return;
+                    }
                   }
                 }
           }
@@ -371,6 +391,7 @@ function _destroy() {
 // Bind the functions...
 document.getElementById('compass').onmousedown = function () {
     _drag_init(this);
+    ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
     return false;
 };
 document.onmousemove = _move_elem;

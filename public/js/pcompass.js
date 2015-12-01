@@ -30,7 +30,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.strokeStyle = '#000000';
           ctxCompass.lineWidth = 0.3;
           ctxCompass.beginPath();
-          ctxCompass.arc(this.r,this.r + 30, this.r,0,2*Math.PI);
+          ctxCompass.arc(this.r + 50,this.r + 30, this.r,0,2*Math.PI);
           //color in circle
           ctxCompass.globalAlpha = 0.2;
           ctxCompass.fillStyle = 'silver';
@@ -50,12 +50,12 @@ var PCompass= function (lat, lng, x , y, r) {
         }
         angle = angle * Math.PI/180;
         ctxCompass.beginPath();
-        ctxCompass.moveTo(this.r, this.r + 30);
-        ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30);
+        ctxCompass.moveTo(this.r + 50, this.r + 30);
+        ctxCompass.lineTo(this.r + distance * Math.cos(angle) + 50, this.r - distance * Math.sin(angle) + 30);
         ctxCompass.strokeStyle = '#000000';
         ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
-        ctxCompass.fillText(name, this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30)
+        ctxCompass.fillText(name, this.r + distance * Math.cos(angle) + 50, this.r - distance * Math.sin(angle) + 30)
         ctxCompass.lineWidth = 3;
         ctxCompass.strokeStyle = color;
         ctxCompass.stroke();
@@ -73,7 +73,7 @@ var PCompass= function (lat, lng, x , y, r) {
         r = parseInt(this.r);
         y = parseInt(this.y);
         ctxCompass.beginPath();
-        ctxCompass.arc(this.r, this.r +30, 5, 0, 2 * Math.PI , false);
+        ctxCompass.arc(this.r + 50, this.r +30, 5, 0, 2 * Math.PI , false);
         ctxCompass.fillStyle = '#05EDFF';
         ctxCompass.fill();
         ctxCompass.lineWidth = 5;
@@ -85,7 +85,7 @@ var PCompass= function (lat, lng, x , y, r) {
     {
 
           //Compass x and y
-          console.log(dist)
+          // console.log(dist)
           r = parseInt(this.r)
           c = 0.03;
           var compassX = r + parseInt(this.x) - innerWidth/2;
@@ -96,22 +96,29 @@ var PCompass= function (lat, lng, x , y, r) {
           var l = compassY / innerHeight;
           offsetX = k * r
           offsetY = l * r 
-          console.log(offsetX, offsetY);
+          // console.log(offsetX, offsetY);
 
           
           dist = dist/2000;
-          ctxCompass.beginPath();
-          ctxCompass.lineWidth="2";
-          ctxCompass.strokeStyle="black";
+          console.log(dist)
+          if (dist < 0.25)
+            dist = dist*3
 
-          var dx = 90 - innerWidth* c / dist - offsetX
-          var dy = 120 - innerHeight * c / dist - offsetY
+          if (dist > 0.75)
+            dist = dist/3
+
+          ctxFOV.beginPath();
+          ctxFOV.lineWidth="2";
+          ctxFOV.strokeStyle="black";
+
+          var dx = 90 - innerWidth* c / dist - offsetX + parseInt(this.x)
+          var dy = 120 - innerHeight * c / dist - offsetY + parseInt(this.y)
 
 
-          ctxCompass.rect(dx, dy,
+          ctxFOV.rect(dx + 50, dy,
           2 * innerWidth * c / dist ,
           2 * innerHeight * c / dist);
-          ctxCompass.stroke(); 
+          ctxFOV.stroke(); 
 
 
           
