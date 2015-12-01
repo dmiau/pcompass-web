@@ -32,8 +32,8 @@
    
     var numQuestion = 0;
     var locations = [{lat: 40.7127, lng: -74.0079},
-    {lat: 40.7137, lng: -74.0089}, {lat: 40.7147, lng: -74.0079}, {lat: 40.7157, lng: -74.0039}
-  ]
+    {lat: 40.7137, lng: -74.0089}, 
+    {lat: 40.7147, lng: -74.0079}, {lat: 40.7157, lng: -74.0039}] //Prompts to answer
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
@@ -63,12 +63,10 @@
         maxZoom: 17
 
       });
-
       answerMap = new google.maps.Map(document.getElementById('answerMap'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
         zoom: 9
       });
-
       populateDB();
       selectPOI(pointsDB, 3); 
 
