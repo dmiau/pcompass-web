@@ -4,7 +4,6 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <title>Personalized Compass Map</title>
-    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -24,7 +23,6 @@
       </button>
       <a class="navbar-brand" href="#">PCompass</a>
     </div>
-
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
@@ -41,7 +39,6 @@
         </label>
       </div>
       </li>
-
       <li class="nav-item">
       <div class="btn-group"> 
     <i class="dropdown-arrow dropdown-arrow-inverse"></i>
@@ -61,26 +58,14 @@
         </li>
     </ul>
 </div>
-
       </li>
-        
-      </ul>
-      
+      </ul>     
     </div><!-- /.navbar-collapse -->
-
   </div><!-- /.container-fluid -->
 </nav>
 
-
-
-
     <div id= "wrapper">
-
-
       <div id="map"></div>
-     
-
-      
       <div id="overlay">
         <div id="wedge">
             <canvas id="canvasWedge"></canvas>
@@ -101,11 +86,8 @@
       </div> -->
       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     </div>
-
-      
-
     </div>
-    <script>
+    <!--<script>
     function toggleStreetView() {
       var toggle = panorama.getVisible();
       if (toggle == false) {
@@ -114,20 +96,13 @@
         panorama.setVisible(false);
       }
     }
-
-   // var isCompassChecked = document.getElementById('compassCheck').checked;
-   // console.log(isCompassChecked);
-
-
-    </script>
+    </script>-->
 
     <script>
-    var panorama;
-
+    var panorama; //Streetview
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
-
     var canvasCompass = document.getElementById("canvasCompass");
     var ctxCompass = canvasCompass.getContext("2d");
 
@@ -154,17 +129,6 @@
       k = 3;
       selectPOI(pointsDB); 
 
-
-
-      var katz = new google.maps.LatLng(40.722216, -73.987501);
-      panorama = map.getStreetView();
-      panorama.setPosition(katz);
-      panorama.setPov(/** @type {google.maps.StreetViewPov} */({
-        heading: 265,
-        pitch: 0
-      }));
-      
-
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
@@ -185,7 +149,6 @@
     // more details for that place.
     searchBox.addListener('places_changed', function() {
       var places = searchBox.getPlaces();
-
       if (places.length == 0) {
         return;
       }
@@ -222,14 +185,11 @@
     });
 
       // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
-      
       var POI = map.getCenter();
 
       //Create marker, get Latitude and Longitude on click
       google.maps.event.addListener(map, 'click', function(event) {
-
           POI = event.latLng;
-
           var name = 'Marker'
           marker = new google.maps.Marker({position: event.latLng, map: map});
           infowindow = new google.maps.InfoWindow({
@@ -268,26 +228,18 @@
       google.maps.event.addListener(map, 'zoom_changed', function () {
            reDraw();
       });
-
-    
-
     }
     var reDraw = function() {
        var center = map.getCenter();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
             ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
-
             bounds = map.getBounds();
             minDistance = Infinity;
-            
             for (var i in pointsDB){
               pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
               pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
-             
             }
-
-
             selectPOI(pointsDB);
             for (var i in points){
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
@@ -317,6 +269,7 @@
       return x * Math.PI / 180;
     };
 
+    //Distance between to latlng objects
     var getDistance = function(p1, p2) {
       var R = 6378137; // Earth’s mean radius in meter
       var dLat = rad(p2.lat() - p1.lat());
@@ -465,9 +418,7 @@ function _move_elem(e) {
         selected.style.top = (y_pos - y_elem) + 'px';
         pcompass.x = selected.style.left;
         pcompass.y = selected.style.top;
-
     }
-
 }
 
 // Destroy the object when we are done
@@ -484,9 +435,6 @@ document.getElementById('compass').onmousedown = function () {
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
-
-    // console.log(map);
-    
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
