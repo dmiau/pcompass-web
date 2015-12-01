@@ -8,13 +8,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   </head>
   <body>
-    <!-- <div id= "wrapper"> -->
+    <div id= "wrapper">
       <div id="map"></div>
-      <div id="floating-panel">
-        <input type="button" value="Toggle Street View" onclick="toggleStreetView();"></input>
-      </div>
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+     
 
+
+      
       <div id="overlay">
         <div id="wedge">
             <canvas id="canvasWedge"></canvas>
@@ -28,7 +27,13 @@
         </div>
          <script src="/js/pcompass.js"></script>
          <script src="/js/wedge.js"></script>
-      <!-- </div> -->
+      </div>
+
+       <div id="floating-panel">
+        <input type="button" value="Toggle Street View" onclick="toggleStreetView();"></input>
+      </div>
+      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    </div>
 
       
 
@@ -77,6 +82,7 @@
       selectPOI(pointsDB, 3); 
 
 
+
       var katz = new google.maps.LatLng(40.722216, -73.987501);
       panorama = map.getStreetView();
       panorama.setPosition(katz);
@@ -106,6 +112,11 @@
     map.addListener('bounds_changed', function() {
       searchBox.setBounds(map.getBounds());
     });
+
+    google.maps.event.addListener(panorama, "position_changed", function() {
+      console.log(panorama.getPosition());
+      map.setCenter(panorama.getPosition());
+});
 
 
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -148,7 +159,7 @@
       // map.fitBounds(bounds);
     });
 
-      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
+      // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
       
       var POI = map.getCenter();
 
