@@ -4,6 +4,13 @@ body,html{
   margin: 0px;
 }
 
+.navbar{
+  margin-bottom:0;
+}
+.nav-item{
+  margin:5px;
+}
+
 #floating-panel {
   position: absolute;
   top: 10px;
