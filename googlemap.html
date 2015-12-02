@@ -315,14 +315,16 @@
               if(isCentroidChecked)
               {
                 pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
+                pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
                 // console.log('centroid checked ' + pointsDB[i].distance)
               }
               else
               {
                 pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
+                pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
                 // console.log('centroid not checked ' + pointsDB[i].distance)
               }
-              pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
+              
             }
             // console.log(center.lat(), center.lng(), compass_center.lat(), compass_center.lng());
             if(isCentroidChecked){

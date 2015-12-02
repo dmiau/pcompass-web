@@ -113,11 +113,13 @@ var PCompass= function (lat, lng, x , y, r) {
           offsetY = l * r 
           // console.log(offsetX, offsetY);
 
-          dist = dist/2000;
-          // console.log(dist)
-          // if (dist < 0.25)
-          //   dist = dist*3
-
+          // dist = dist/2000;
+          dist = dist/1000;
+          console.log(dist)
+          // if (dist < 0.33)
+            // dist = dist*3
+               // dist = 0.33
+ 
           // if (dist > 0.75)
           //   dist = dist/3
 
@@ -181,7 +183,7 @@ var PCompass= function (lat, lng, x , y, r) {
 PCompass.prototype.drawFOVCentered = function(dist)
 {
           //Compass x and y
-          console.log(dist)
+          // console.log(dist)
           r = parseInt(this.r)
           c = 0.02;
           var compassX = r + parseInt(this.x) - innerWidth/2;
