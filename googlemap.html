@@ -332,7 +332,7 @@
               selectPOI(pointsDB, compass_center);
             }
             for (var i in points){
-                if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
+                if(points[i].distance < minDistance /*&& !bounds.contains(points[i].latlng)*/)
                   minDistance = points[i].distance;
                   // console.log(points[i])
                   point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
@@ -418,7 +418,7 @@
               allPoints[i].distance = getDistance(center, allPoints[i].latlng);
               allPoints[i].angle = getAngle(center, allPoints[i].latlng);
             
-            if(allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng))){
+            if(allPoints[i].distance < minDist /*&& (!map.getBounds().contains(allPoints[i].latlng))*/){
                 minIndex = i;
                 minDist = allPoints[i].distance;
             }
