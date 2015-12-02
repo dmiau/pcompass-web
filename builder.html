@@ -145,11 +145,17 @@
       name = places[0].name
       POI = places[0].geometry.location;
       marker = new google.maps.Marker({position: POI, map: map});
+      marker2 = new google.maps.Marker({position: POI, map: map2});
       var infowindow = new google.maps.InfoWindow({
         content: name,
         disableAutoPan: true
       });
+      var infowindow2 = new google.maps.InfoWindow({
+        content: name,
+        disableAutoPan: true
+      });
       infowindow.open(map, marker);
+      infowindow2.open(map2, marker2);
 
       var center = map.getCenter();
       distance = getDistance(center, POI);
@@ -230,11 +236,12 @@
           checkbox.onclick = function() {
               var currentRow = this.parentNode.parentNode;
               var secondColumn = currentRow.getElementsByTagName("td")[0];
-              alert(secondColumn.textContent + i);
-              if (checkbox.checked)
+              // if (checkbox.checked) 
+              if (secondColumn == undefined)
+                return
+              if (document.getElementById(secondColumn.textContent).checked)
               {
-                console.log("checked")
-
+                // console.log("checked")
                 var inPoints = false;
                 for (var j in points)
                 {
@@ -249,28 +256,23 @@
                   if (secondColumn.textContent == pointsDB[k].name && !inPoints)
                   {
                     points.push(pointsDB[k]);
-                     
+                  
                   }
                 }
               }
               else{
-                console.log('not checked')
+                // console.log('not checked')
                 for (var j in points)
                 {
                   if (secondColumn.textContent == points[j].name)
                   {
                     points.splice(j, 1);
-                    // i=0;
-                    // delete points[i];
                     
                   }
                 }
               }
-              console.log(pointsDB);
-              console.log(points);
               reDraw();
           };
-          console.log(i);
       } 
     }
 
