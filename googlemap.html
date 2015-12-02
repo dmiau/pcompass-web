@@ -33,12 +33,21 @@
         </label>
       </div>
       </li>
+
       <li class="nav-item">
       <div class="checkbox">
         <label><input type="checkbox" name="wedge" id="wedgeCheck" value="ON" checked>Wedge
         </label>
       </div>
       </li>
+
+      <li class="nav-item">  
+      <div class="checkbox">
+        <label><input type="checkbox" name="centroid" id="centroidCheck" value="ON">Centered Centroid
+        </label>
+      </div>
+      </li>
+
       <li class="nav-item">
       <div class="btn-group"> 
     <i class="dropdown-arrow dropdown-arrow-inverse"></i>
@@ -127,7 +136,7 @@
       });
       populateDB();
       k = 3;
-      selectPOI(pointsDB); 
+      // selectPOI(pointsDB); 
 
 
       //var katz = new google.maps.LatLng(40.722216, -73.987501);
@@ -150,7 +159,6 @@
     });
 
     google.maps.event.addListener(panorama, "position_changed", function() {
-      console.log(panorama.getPosition());
       map.setCenter(panorama.getPosition());
 });
 
@@ -213,7 +221,17 @@
           var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
           pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
           //Add probability that user knows this location
-          selectPOI(pointsDB); 
+          x_coord = parseInt(pcompass.x)
+          y_coord = parseInt(pcompass.y)
+          compass_center = fromPointToLatLng(x_coord, y_coord, map);
+          var isCentroidChecked = document.getElementById('centroidCheck').checked;
+          if(isCentroidChecked)
+          {
+            selectPOI(pointsDB, center); 
+          }
+          else{
+            selectPOI(pointsDB, compass_center); 
+          }
           pcompass.drawNeedles();
           return POI;
       });
@@ -246,17 +264,41 @@
             ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
             bounds = map.getBounds();
             minDistance = Infinity;
+
+            x_coord = parseInt(pcompass.x)
+            y_coord = parseInt(pcompass.y)
+            compass_center = fromPointToLatLng(x_coord, y_coord, map);
+            var isCentroidChecked = document.getElementById('centroidCheck').checked;
+
             for (var i in pointsDB){
-              pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
+              
+              if(isCentroidChecked)
+              {
+                pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
+                // console.log('centroid checked ' + pointsDB[i].distance)
+              }
+              else
+              {
+                pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
+                // console.log('centroid not checked ' + pointsDB[i].distance)
+              }
               pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
             }
-            selectPOI(pointsDB);
+            // console.log(center.lat(), center.lng(), compass_center.lat(), compass_center.lng());
+            if(isCentroidChecked){
+              selectPOI(pointsDB, center);
+            }
+            else{
+              selectPOI(pointsDB, compass_center);
+            }
             for (var i in points){
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
                   // console.log(points[i])
                   point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
+                  centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
                   distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
+                  distanceToCenter = Math.sqrt((Math.pow(centerpt.x - point.x, 2)) + (Math.pow(centerpt.y - point.y, 2))) 
             }
 
             // console.log(distanceToCompass)
@@ -265,7 +307,12 @@
             if(isCompassChecked)
             {
               pcompass.drawCompass();
-              pcompass.drawFOV(distanceToCompass);
+              if(isCentroidChecked){
+                pcompass.drawFOVCentered(distanceToCenter);
+              }
+              else{
+                pcompass.drawFOV(distanceToCompass);
+              }
               pcompass.drawNeedles(); 
             }
             if (isWedgeChecked)
@@ -301,7 +348,7 @@
     }
 
 
-    var selectPOI = function(allPoints){
+    var selectPOI = function(allPoints, center){
       // var selectedPoints = new Array();
       //Select the closest POI
       $('.dropdown-inverse li > a').click(function(e){
@@ -310,9 +357,10 @@
       }); 
 
       points = [];
-      var center = map.getCenter();
+
       minDist = Infinity;
       minIndex = Infinity;
+
       for (var i in allPoints){
               allPoints[i].distance = getDistance(center, allPoints[i].latlng);
               allPoints[i].angle = getAngle(center, allPoints[i].latlng);
@@ -370,7 +418,17 @@
           var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
           pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
           //Add probability that user knows this location
-          selectPOI(pointsDB); 
+          x_coord = parseInt(pcompass.x)
+          y_coord = parseInt(pcompass.y)
+          compass_center = fromPointToLatLng(x_coord, y_coord, map);
+          var isCentroidChecked = document.getElementById('centroidCheck').checked;
+          if(isCentroidChecked)
+          {
+            selectPOI(pointsDB, center); 
+          }
+          else{
+            selectPOI(pointsDB, compass_center); 
+          }
           pcompass.drawNeedles();
           return POI;
     }
@@ -405,6 +463,14 @@
                 pointTemp = new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
                 return pointTemp;
         }
+
+  function fromPointToLatLng(x, y, map) {
+    var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
+    var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+    var scale = Math.pow(2, map.getZoom());
+    var worldPoint = new google.maps.Point(x / scale + bottomLeft.x, y / scale + topRight.y);
+    return map.getProjection().fromPointToLatLng(worldPoint);
+  }
 
     var selected = null, // Object of the element to be moved
     x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
