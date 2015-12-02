@@ -180,15 +180,11 @@
     var streetViewReDraw = function () {
       clearAllCtx();
       for (var i in points){
-              console.log('angle' + points[i].angle)
               points[i].angle = points[i].angle + panorama.getPov().heading;
             }
-
-
         pcompass.drawCompass();
         pcompass.drawNeedles()
         for (var i in points){
-              console.log('angle' + points[i].angle)
               points[i].angle = points[i].angle - panorama.getPov().heading;
             }
 

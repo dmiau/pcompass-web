@@ -45,7 +45,6 @@ var PCompass= function (lat, lng, x , y, r) {
     PCompass.prototype.drawNeedle = function(name, distance, angle, color)
     {
         //draw lines
-        console.log('angle' + angle);
         distance = this.r * distance;
         if(distance > this.r)
         {
