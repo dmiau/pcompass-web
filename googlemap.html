@@ -168,16 +168,23 @@
 
     google.maps.event.addListener(panorama, "position_changed", function() {
       map.setCenter(panorama.getPosition());
+      streetViewReDraw();
     });
 
     google.maps.event.addListener(panorama, "pov_changed", function() {
-      console.log('heading' + panorama.getPov().heading);
-      clearAllCtx();
+      //console.log('heading' + panorama.getPov().heading);
+      streetViewReDraw()
+      
+    });
 
+    var streetViewReDraw = function () {
+      clearAllCtx();
       for (var i in points){
               console.log('angle' + points[i].angle)
               points[i].angle = points[i].angle + panorama.getPov().heading;
             }
+
+
         pcompass.drawCompass();
         pcompass.drawNeedles()
         for (var i in points){
@@ -185,8 +192,9 @@
               points[i].angle = points[i].angle - panorama.getPov().heading;
             }
 
-        //map.setCenter(panorama.getPosition());
-    });
+        pcompass.drawNeedle("", Infinity, 90 + panorama.getPov().heading, '#A8A8A8');
+
+    }
 
 
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -260,6 +268,8 @@
             selectPOI(pointsDB, compass_center); 
           }
           pcompass.drawNeedles();
+
+         
           return POI;
       });
 
@@ -355,6 +365,10 @@
                 wedge.drawWedges();  
               }
             }
+            if(!panorama.getVisible())
+              {
+                 pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
+              }
           }
 
 

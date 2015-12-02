@@ -36,7 +36,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.fill();
           ctxCompass.stroke();
           ctxCompass.globalAlpha = 1.0;
-          pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
+          
     };
 
     PCompass.prototype.drawNeedle = function(name, distance, angle, color)
@@ -91,6 +91,8 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.lineWidth = 5;
         ctxCompass.strokeStyle = '#05EDFF';
         ctxCompass.stroke();
+        
+        // pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
     };
     //Takes distance of closest point, outside of FOV
     PCompass.prototype.drawFOV = function(dist)
@@ -126,7 +128,7 @@ var PCompass= function (lat, lng, x , y, r) {
           var dx = 90 - innerWidth* c / dist - offsetX + parseInt(this.x)
           var dy = 120 - innerHeight * c / dist - offsetY + parseInt(this.y)
 
-
+          
           ctxFOV.rect(dx, dy,
           2 * innerWidth * c / dist ,
           2 * innerHeight * c / dist);
