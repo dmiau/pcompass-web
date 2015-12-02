@@ -143,7 +143,7 @@
       panorama = map.getStreetView();
       //panorama.setPosition(katz);
       panorama.setPov(/** @type {google.maps.StreetViewPov} */({
-        heading: 265,
+        heading: 0,
         pitch: 0
       }));
       
@@ -160,7 +160,25 @@
 
     google.maps.event.addListener(panorama, "position_changed", function() {
       map.setCenter(panorama.getPosition());
-});
+    });
+
+    google.maps.event.addListener(panorama, "pov_changed", function() {
+      console.log('heading' + panorama.getPov().heading);
+      clearAllCtx();
+
+      for (var i in points){
+              console.log('angle' + points[i].angle)
+              points[i].angle = points[i].angle + panorama.getPov().heading;
+            }
+        pcompass.drawCompass();
+        pcompass.drawNeedles()
+        for (var i in points){
+              console.log('angle' + points[i].angle)
+              points[i].angle = points[i].angle - panorama.getPov().heading;
+            }
+
+        //map.setCenter(panorama.getPosition());
+    });
 
 
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -227,6 +245,7 @@
           var isCentroidChecked = document.getElementById('centroidCheck').checked;
           if(isCentroidChecked)
           {
+            reDraw();
             selectPOI(pointsDB, center); 
           }
           else{
@@ -256,12 +275,15 @@
       google.maps.event.addListener(map, 'zoom_changed', function () {
            reDraw();
       });
-    }
+    };
+
+
     var reDraw = function() {
        var center = map.getCenter();
-            ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
-            ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
-            ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
+            // ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
+            // ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
+            // ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
+            clearAllCtx();
             bounds = map.getBounds();
             minDistance = Infinity;
 
@@ -307,19 +329,28 @@
             if(isCompassChecked)
             {
               pcompass.drawCompass();
+              pcompass.drawNeedles(); 
               if(isCentroidChecked){
                 pcompass.drawFOVCentered(distanceToCenter);
               }
               else{
+              if(!panorama.getVisible())
+              {
                 pcompass.drawFOV(distanceToCompass);
               }
-              pcompass.drawNeedles(); 
+              
             }
             if (isWedgeChecked)
             {
-              wedge.drawWedges();  
+              if(!panorama.getVisible())
+              {
+                wedge.drawWedges();  
+              }
             }
-    }
+          }
+
+
+    };
 
     //Haversine formula to calculate distance
     var rad = function(x) {
@@ -345,7 +376,7 @@
       brng = brng * (180 / Math.PI);
       brng = (brng + 360) % 360;
       return brng
-    }
+    };
 
 
     var selectPOI = function(allPoints, center){
@@ -397,7 +428,7 @@
           }
           currentAngle += angleInterval;
       }
-    }
+    };
 
     var createMarker = function(POI, name) {
           var marker = new google.maps.Marker({
@@ -431,7 +462,7 @@
           }
           pcompass.drawNeedles();
           return POI;
-    }
+    };
 
     var populateDB = function() {
     var newYork = new google.maps.LatLng(40.7127, -74.0079);  
@@ -452,7 +483,7 @@
          }
        }
      });
-  }
+  };
 
   function fromLatLngToPoint(lat, lng, map) {
                 latLng = new google.maps.LatLng(lat, lng);
@@ -505,12 +536,25 @@ function _destroy() {
 // Bind the functions...
 document.getElementById('compass').onmousedown = function () {
     _drag_init(this);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
+    //clearAllCtx();
+    return false;
+};
+document.getElementById('compass').onmouseup = function () {
+    reDraw();
     return false;
 };
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
+
+  function clearAllCtx() {
+    ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
+  }
+
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"

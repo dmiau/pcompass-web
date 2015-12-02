@@ -4,7 +4,6 @@ var PCompass= function (lat, lng, x , y, r) {
     this.x = x;
     this.y = y;
     this.r = r;
-    console.log('compass instantiated');
 };
 
     PCompass.prototype.setXY = function(x, y) {
@@ -55,7 +54,20 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.strokeStyle = '#000000';
         ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
-        ctxCompass.fillText(name, this.r + distance * Math.cos(angle) + 50, this.r - distance * Math.sin(angle) + 30)
+       
+        //Draw the labels
+        ctxWedge.font="15px Arial";
+        if(angle < Math.PI/2 || angle > 3*Math.PI/2) {
+        ctxWedge.fillText(name, 
+          this.r + distance * Math.cos(angle) + 50 + parseInt(this.x),//compassX, 
+          this.r - distance * Math.sin(angle) + 30 + parseInt(this.y)) //compassY
+        }
+        else {
+          ctxWedge.fillText(name, 
+          this.r + distance * Math.cos(angle) - name.length * 6.75 + 50 + parseInt(this.x), 
+          this.r - distance * Math.sin(angle) + 30  + parseInt(this.y))
+
+        }
         ctxCompass.lineWidth = 3;
         ctxCompass.strokeStyle = color;
         ctxCompass.stroke();
@@ -99,7 +111,6 @@ var PCompass= function (lat, lng, x , y, r) {
           offsetY = l * r 
           // console.log(offsetX, offsetY);
 
-          
           dist = dist/2000;
           // console.log(dist)
           // if (dist < 0.25)
@@ -116,15 +127,11 @@ var PCompass= function (lat, lng, x , y, r) {
           var dy = 120 - innerHeight * c / dist - offsetY + parseInt(this.y)
 
 
-          ctxFOV.rect(dx + 50, dy,
+          ctxFOV.rect(dx, dy,
           2 * innerWidth * c / dist ,
           2 * innerHeight * c / dist);
           ctxFOV.stroke(); 
-
-
-          
-          
-          
+  
 
           // c = 0.02; 
 
@@ -145,8 +152,6 @@ var PCompass= function (lat, lng, x , y, r) {
 
 
 
-
-
           //change to innerWidth, innerHeight
           /*x = parseInt(this.x);
           y = parseInt(this.y);
@@ -161,8 +166,8 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.lineWidth="2";
           ctxCompass.strokeStyle="black";
           console.log(map.zoom)
-          rectX = (r - innerWidth* k / dist *map.zoom/50) - (x - innerWidth/2)*m
-          rectY = (r - innerHeight * k / dist * map.zoom/50 + 30) - (y - innerWidth/2)*n
+          rectX = (r - innerWidth* k / dist *map.zo) - (x - innerWidth/2)*m
+          rectY = (r - innerHeight * k / dist * map.zo + 30) - (y - innerWidth/2)*n
           rectLength = 2 * innerWidth * k /dist*map.zoom /30
           rectWidth = 2 * innerHeight * k / dist*map.zoom /30
           ctxCompass.rect(rectX, rectY, rectLength, rectWidth);
