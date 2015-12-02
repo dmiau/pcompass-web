@@ -396,10 +396,10 @@
 
     //Calculate angle
     var getAngle = function(p1, p2){
-      brng = Math.atan2(p2.lat() - p1.lat(), p2.lng() - p1.lng());
-      brng = brng * (180 / Math.PI);
-      brng = (brng + 360) % 360;
-      return brng
+      var heading = google.maps.geometry.spherical.computeHeading(p2,p1);
+      heading = (heading + 360 + 90) % 360;
+      heading = 360 - heading;
+      return heading;
     };
 
 
@@ -585,7 +585,8 @@ document.onmouseup = _destroy;
 
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
         async defer></script>
+        
   </body>
 </html>
