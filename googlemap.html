@@ -265,12 +265,18 @@
             if(isCompassChecked)
             {
               pcompass.drawCompass();
-              pcompass.drawFOV(distanceToCompass);
+              if(!panorama.getVisible())
+              {
+                pcompass.drawFOV(distanceToCompass);
+              }
               pcompass.drawNeedles(); 
             }
             if (isWedgeChecked)
             {
-              wedge.drawWedges();  
+              if(!panorama.getVisible())
+              {
+                wedge.drawWedges();  
+              }
             }
     }
 

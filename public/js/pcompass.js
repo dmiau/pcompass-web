@@ -4,7 +4,6 @@ var PCompass= function (lat, lng, x , y, r) {
     this.x = x;
     this.y = y;
     this.r = r;
-    console.log('compass instantiated');
 };
 
     PCompass.prototype.setXY = function(x, y) {
@@ -55,9 +54,6 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.strokeStyle = '#000000';
         ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
-        console.log('name length' + name.length);
-        console.log('angle' + angle);
-
        
         //Draw the labels
         ctxWedge.font="15px Arial";
