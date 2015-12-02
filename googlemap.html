@@ -439,7 +439,12 @@ function _destroy() {
 // Bind the functions...
 document.getElementById('compass').onmousedown = function () {
     _drag_init(this);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
+    return false;
+};
+document.getElementById('compass').onmouseup = function () {
+    reDraw();
     return false;
 };
 document.onmousemove = _move_elem;
