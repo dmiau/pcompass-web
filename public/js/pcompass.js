@@ -1,6 +1,3 @@
-var Y_OFFSET = 0;
-
-
 var PCompass= function (lat, lng, x , y, r) {
     this.lat = lat;
     this.lng = lng;
@@ -32,7 +29,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.strokeStyle = '#000000';
           ctxCompass.lineWidth = 0.3;
           ctxCompass.beginPath();
-          ctxCompass.arc(this.r,this.r + Y_OFFSET, this.r,0,2*Math.PI);
+          ctxCompass.arc(this.r,this.r + 30, this.r,0,2*Math.PI);
           //color in circle
           ctxCompass.globalAlpha = 0.2;
           ctxCompass.fillStyle = 'silver';
@@ -52,8 +49,8 @@ var PCompass= function (lat, lng, x , y, r) {
         }
         angle = angle * Math.PI/180;
         ctxCompass.beginPath();
-        ctxCompass.moveTo(this.r, this.r + Y_OFFSET);
-        ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + Y_OFFSET);
+        ctxCompass.moveTo(this.r, this.r + 30);
+        ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30);
         ctxCompass.strokeStyle = '#000000';
         ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
@@ -63,12 +60,12 @@ var PCompass= function (lat, lng, x , y, r) {
         if(angle < Math.PI/2 || angle > 3*Math.PI/2) {
         ctxLabels.fillText(name, 
           this.r + distance * Math.cos(angle) + parseInt(this.x),//compassX, 
-          this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)) //compassY
+          this.r - distance * Math.sin(angle) + 30 + parseInt(this.y)) //compassY
         }
         else {
           ctxLabels.fillText(name, 
           this.r + distance * Math.cos(angle) - name.length * 6.75 + parseInt(this.x), 
-          this.r - distance * Math.sin(angle) + Y_OFFSET  + parseInt(this.y))
+          this.r - distance * Math.sin(angle) + 30  + parseInt(this.y))
 
         }
         ctxCompass.lineWidth = 3;
@@ -88,13 +85,13 @@ var PCompass= function (lat, lng, x , y, r) {
         r = parseInt(this.r);
         y = parseInt(this.y);
         ctxCompass.beginPath();
-        ctxCompass.arc(this.r, this.r + Y_OFFSET, 5, 0, 2 * Math.PI , false);
+        ctxCompass.arc(this.r, this.r +30, 5, 0, 2 * Math.PI , false);
         ctxCompass.fillStyle = '#05EDFF';
         ctxCompass.fill();
         ctxCompass.lineWidth = 5;
         ctxCompass.strokeStyle = '#05EDFF';
         ctxCompass.stroke();
-
+        
         // pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
     };
     //Takes distance of closest point, outside of FOV
@@ -116,13 +113,11 @@ var PCompass= function (lat, lng, x , y, r) {
           offsetY = l * r 
           // console.log(offsetX, offsetY);
 
-          // dist = dist/2000;
-          dist = dist/1000;
+          dist = dist/2000;
           console.log(dist)
           // if (dist < 0.33)
-            // dist = dist*3
-               // dist = 0.33
- 
+          //   dist = dist*3
+
           // if (dist > 0.75)
           //   dist = dist/3
 
@@ -133,7 +128,7 @@ var PCompass= function (lat, lng, x , y, r) {
           var dx = 90 - innerWidth* c / dist - offsetX + parseInt(this.x)
           var dy = 120 - innerHeight * c / dist - offsetY + parseInt(this.y)
 
-
+          
           ctxFOV.rect(dx, dy,
           2 * innerWidth * c / dist ,
           2 * innerHeight * c / dist);
