@@ -11,105 +11,49 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-default">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#">PCompass</a>
-    </div>
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-
-      <li class="nav-item">  
-      <div class="checkbox">
-        <label><input type="checkbox" name="compass" id="compassCheck" value="ON" checked>PCompass
-        </label>
-      </div>
-      </li>
-
-      <li class="nav-item">
-      <div class="checkbox">
-        <label><input type="checkbox" name="wedge" id="wedgeCheck" value="ON" checked>Wedge
-        </label>
-      </div>
-      </li>
-
-      <li class="nav-item">  
-      <div class="checkbox">
-        <label><input type="checkbox" name="centroid" id="centroidCheck" value="ON">Centered Centroid
-        </label>
-      </div>
-      </li>
-
-      <li class="nav-item">
-      <div class="btn-group"> 
-    <i class="dropdown-arrow dropdown-arrow-inverse"></i>
-    <button class="btn btn-primary status">Number of POIs</button>
-    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> 
-    </button>
-    <ul class="dropdown-menu dropdown-inverse">
-        <li><a href="#">1</a>
-        </li>
-        <li><a href="#">2</a>
-        </li>
-        <li><a href="#">3</a>
-        </li>
-        <li><a href="#">4</a>
-        </li>
-        <li><a href="#">5</a>
-        </li>
-    </ul>
-</div>
-      </li>
-      </ul>     
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
-
-    <div id= "wrapper">
-      <div id="map"></div>
+    <div id= "wrapper1">
+      <div id="mapCompass"></div>
       <div id="overlay">
-        <div id="wedge">
-            <canvas id="canvasWedge"></canvas>
-        </div>
-
         <div id="labels">
             <canvas id="canvasLabels"></canvas>
         </div>
-        
         <div id="compass">
             <canvas id="canvasCompass" height = '300px' width = '300px'></canvas>
         </div>
         <div id="FOV">
             <canvas id="canvasFOV"></canvas>
         </div>
-         <script src="/js/pcompass.js"></script>
-         <script src="/js/wedge.js"></script>
       </div>
+      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    </div>
 
+    <div id = "wrapper2">
+      <div id="mapWedge"></div>
+      <div id="overlay2">
+        <div id="wedge">
+            <canvas id="canvasWedge"></canvas>
+        </div>
+      </div>
+        <script src="/js/pcompass.js"></script>
+        <script src="/js/wedge.js"></script>
+    </div>
        <!-- <div id="floating-panel">
         <input type="button" value="Toggle Street View" onclick="toggleStreetView();"></input>
       </div> -->
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-    </div>
-    <!--<script>
-    function toggleStreetView() {
-      var toggle = panorama.getVisible();
-      if (toggle == false) {
-        panorama.setVisible(true);
-      } else {
-        panorama.setVisible(false);
-      }
-    }
-    </script>-->
+    <div id = "wrapper3">
+      <table id='POItable' class="table">
+      <thead>
+        <tr>
+          <th>POI Name</th>
+          <th>Show</th>
+        </tr>
 
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  </div>
     <script>
     var panorama; //Streetview
     var map;
@@ -138,23 +82,27 @@
 
     function initMap() {
       var newYork = new google.maps.LatLng(40.7127, -74.0079);  
-      map = new google.maps.Map(document.getElementById('map'), {
+      map = new google.maps.Map(document.getElementById('mapCompass'), {
         center: newYork, // New York
         zoom: 15
       });
-      populateDB();
-      k = 3;
-      // selectPOI(pointsDB); 
 
+      map2 = new google.maps.Map(document.getElementById('mapWedge'), {
+        center: newYork, // New York
+        zoom: 15
+      });
 
-      //var katz = new google.maps.LatLng(40.722216, -73.987501);
-      panorama = map.getStreetView();
-      //panorama.setPosition(katz);
-      panorama.setPov(/** @type {google.maps.StreetViewPov} */({
-        heading: 0,
-        pitch: 0
+      google.maps.event.addListener(map, 'bounds_changed', (function () {
+          map2.setCenter(map.getCenter());
+          map2.setZoom(map.getZoom());
       }));
-      
+
+      google.maps.event.addListener(map2, 'bounds_changed', (function () {
+          map.setCenter(map2.getCenter());
+          map.setZoom(map2.getZoom());
+      }));
+
+
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -165,28 +113,13 @@
     map.addListener('bounds_changed', function() {
       searchBox.setBounds(map.getBounds());
     });
+      check();
 
-    google.maps.event.addListener(panorama, "position_changed", function() {
-      map.setCenter(panorama.getPosition());
-    });
 
-    google.maps.event.addListener(panorama, "pov_changed", function() {
-      console.log('heading' + panorama.getPov().heading);
-      clearAllCtx();
+    
 
-      for (var i in points){
-              console.log('angle' + points[i].angle)
-              points[i].angle = points[i].angle + panorama.getPov().heading;
-            }
-        pcompass.drawCompass();
-        pcompass.drawNeedles()
-        for (var i in points){
-              console.log('angle' + points[i].angle)
-              points[i].angle = points[i].angle - panorama.getPov().heading;
-            }
 
-        //map.setCenter(panorama.getPosition());
-    });
+    
 
 
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -222,12 +155,24 @@
       distance = getDistance(center, POI);
       angle = getAngle(center, POI);
       var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+      pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+      console.log('pointsDB: ' + pointsDB);
+      console.log('points: ' + points);
       pcompass.drawNeedles();
+
+      var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+      var row = table.insertRow(table.rows.length);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      cell1.innerHTML = name;
+      cell2.innerHTML = '<input type="checkbox" id="'+name+'">'
+      check();
 
       // map.fitBounds(bounds);
     });
+  
 
+  
       // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
       var POI = map.getCenter();
 
@@ -250,15 +195,6 @@
           x_coord = parseInt(pcompass.x)
           y_coord = parseInt(pcompass.y)
           compass_center = fromPointToLatLng(x_coord, y_coord, map);
-          var isCentroidChecked = document.getElementById('centroidCheck').checked;
-          if(isCentroidChecked)
-          {
-            reDraw();
-            selectPOI(pointsDB, center); 
-          }
-          else{
-            selectPOI(pointsDB, compass_center); 
-          }
           pcompass.drawNeedles();
           return POI;
       });
@@ -277,7 +213,7 @@
 
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
-            reDraw();
+          reDraw();
       });
 
       google.maps.event.addListener(map, 'zoom_changed', function () {
@@ -285,6 +221,58 @@
       });
     };
 
+    var check = function() {
+      checkboxes = document.getElementsByTagName("input"); 
+      console.log(checkboxes);
+
+      for (var i = 0; i < checkboxes.length; i++) {
+          var checkbox = checkboxes[i];
+          checkbox.onclick = function() {
+              var currentRow = this.parentNode.parentNode;
+              var secondColumn = currentRow.getElementsByTagName("td")[0];
+              alert(secondColumn.textContent + i);
+              if (checkbox.checked)
+              {
+                console.log("checked")
+
+                var inPoints = false;
+                for (var j in points)
+                {
+                  if (secondColumn.textContent == points[j].name)
+                  {
+                    inPoints = true;
+                  }
+                }
+
+                for (var k in pointsDB)
+                {
+                  if (secondColumn.textContent == pointsDB[k].name && !inPoints)
+                  {
+                    points.push(pointsDB[k]);
+                     
+                  }
+                }
+              }
+              else{
+                console.log('not checked')
+                for (var j in points)
+                {
+                  if (secondColumn.textContent == points[j].name)
+                  {
+                    points.splice(j, 1);
+                    // i=0;
+                    // delete points[i];
+                    
+                  }
+                }
+              }
+              console.log(pointsDB);
+              console.log(points);
+              reDraw();
+          };
+          console.log(i);
+      } 
+    }
 
     var reDraw = function() {
        var center = map.getCenter();
@@ -298,29 +286,15 @@
             x_coord = parseInt(pcompass.x)
             y_coord = parseInt(pcompass.y)
             compass_center = fromPointToLatLng(x_coord, y_coord, map);
-            var isCentroidChecked = document.getElementById('centroidCheck').checked;
 
             for (var i in pointsDB){
-              
-              if(isCentroidChecked)
-              {
-                pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
-                // console.log('centroid checked ' + pointsDB[i].distance)
-              }
-              else
-              {
-                pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
-                // console.log('centroid not checked ' + pointsDB[i].distance)
-              }
+         
+              pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
               pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
             }
             // console.log(center.lat(), center.lng(), compass_center.lat(), compass_center.lng());
-            if(isCentroidChecked){
-              selectPOI(pointsDB, center);
-            }
-            else{
-              selectPOI(pointsDB, compass_center);
-            }
+           
+            distanceToCompass=0;
             for (var i in points){
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
@@ -332,32 +306,11 @@
             }
 
             // console.log(distanceToCompass)
-            var isCompassChecked = document.getElementById('compassCheck').checked;
-            var isWedgeChecked = document.getElementById('wedgeCheck').checked;
-            if(isCompassChecked)
-            {
+            
               pcompass.drawCompass();
-              pcompass.drawNeedles(); 
-              if(isCentroidChecked){
-                pcompass.drawFOVCentered(distanceToCenter);
-              }
-              else{
-              if(!panorama.getVisible())
-              {
-                pcompass.drawFOV(distanceToCompass);
-              }
-              
-            }
-            if (isWedgeChecked)
-            {
-              if(!panorama.getVisible())
-              {
-                wedge.drawWedges();  
-              }
-            }
-          }
-
-
+              pcompass.drawNeedles();
+              pcompass.drawFOV(distanceToCompass);
+              wedge.drawWedges();  
     };
 
     //Haversine formula to calculate distance
@@ -387,57 +340,6 @@
     };
 
 
-    var selectPOI = function(allPoints, center){
-      // var selectedPoints = new Array();
-      //Select the closest POI
-      $('.dropdown-inverse li > a').click(function(e){
-        $('.status').text(this.innerHTML);
-        k = this.innerHTML;
-      }); 
-
-      points = [];
-
-      minDist = Infinity;
-      minIndex = Infinity;
-
-      for (var i in allPoints){
-              allPoints[i].distance = getDistance(center, allPoints[i].latlng);
-              allPoints[i].angle = getAngle(center, allPoints[i].latlng);
-            
-            if(allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng))){
-                minIndex = i;
-                minDist = allPoints[i].distance;
-            }
-          }
-
-      points.push(allPoints[minIndex]);
-      var angleInterval = 360 / k;
-      var margin = 30;
-      var currentAngle = angleInterval;
-      var pointsAdded = 1;
-
-
-      while (currentAngle < 360) 
-      {
-          for (var i in allPoints){
-                if(Math.abs(allPoints[i].angle - currentAngle) < margin) {
-                  // console.log(map.getBounds(), allPoints[i])
-                  if (map.getBounds().contains(allPoints[i].latlng)){
-                    continue;
-                  }
-                  else{
-                    points.push(allPoints[i]);
-                    pointsAdded++;
-                    if(pointsAdded >= k) {
-                      return;
-                    }
-                  }
-                }
-          }
-          currentAngle += angleInterval;
-      }
-    };
-
     var createMarker = function(POI, name) {
           var marker = new google.maps.Marker({
             // The below line is equivalent to writing:
@@ -460,14 +362,8 @@
           x_coord = parseInt(pcompass.x)
           y_coord = parseInt(pcompass.y)
           compass_center = fromPointToLatLng(x_coord, y_coord, map);
-          var isCentroidChecked = document.getElementById('centroidCheck').checked;
-          if(isCentroidChecked)
-          {
-            selectPOI(pointsDB, center); 
-          }
-          else{
-            selectPOI(pointsDB, compass_center); 
-          }
+          
+          
           pcompass.drawNeedles();
           return POI;
     };
@@ -547,7 +443,6 @@ document.getElementById('compass').onmousedown = function () {
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
-
     //clearAllCtx();
     return false;
 };
@@ -564,7 +459,6 @@ document.onmouseup = _destroy;
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
-
   }
 
     </script>

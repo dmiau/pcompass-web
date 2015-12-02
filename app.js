@@ -13,7 +13,10 @@ app.get('/',function(req,res){
 
 app.get('/game',function(req,res){
   res.sendFile(path.join(__dirname+'/game.html'));
-  //__dirname : It will resolve to your project folder.
+});
+
+app.get('/builder',function(req,res){
+  res.sendFile(path.join(__dirname+'/builder.html'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

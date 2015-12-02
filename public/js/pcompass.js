@@ -29,7 +29,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxCompass.strokeStyle = '#000000';
           ctxCompass.lineWidth = 0.3;
           ctxCompass.beginPath();
-          ctxCompass.arc(this.r + 50,this.r + 30, this.r,0,2*Math.PI);
+          ctxCompass.arc(this.r,this.r + 30, this.r,0,2*Math.PI);
           //color in circle
           ctxCompass.globalAlpha = 0.2;
           ctxCompass.fillStyle = 'silver';
@@ -49,22 +49,22 @@ var PCompass= function (lat, lng, x , y, r) {
         }
         angle = angle * Math.PI/180;
         ctxCompass.beginPath();
-        ctxCompass.moveTo(this.r + 50, this.r + 30);
-        ctxCompass.lineTo(this.r + distance * Math.cos(angle) + 50, this.r - distance * Math.sin(angle) + 30);
+        ctxCompass.moveTo(this.r, this.r + 30);
+        ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + 30);
         ctxCompass.strokeStyle = '#000000';
         ctxCompass.fillStyle = '#000000';
         ctxCompass.font = "15px Arial";
        
         //Draw the labels
-        ctxWedge.font="15px Arial";
+        ctxLabels.font="15px Arial";
         if(angle < Math.PI/2 || angle > 3*Math.PI/2) {
-        ctxWedge.fillText(name, 
-          this.r + distance * Math.cos(angle) + 50 + parseInt(this.x),//compassX, 
+        ctxLabels.fillText(name, 
+          this.r + distance * Math.cos(angle) + parseInt(this.x),//compassX, 
           this.r - distance * Math.sin(angle) + 30 + parseInt(this.y)) //compassY
         }
         else {
-          ctxWedge.fillText(name, 
-          this.r + distance * Math.cos(angle) - name.length * 6.75 + 50 + parseInt(this.x), 
+          ctxLabels.fillText(name, 
+          this.r + distance * Math.cos(angle) - name.length * 6.75 + parseInt(this.x), 
           this.r - distance * Math.sin(angle) + 30  + parseInt(this.y))
 
         }
@@ -85,7 +85,7 @@ var PCompass= function (lat, lng, x , y, r) {
         r = parseInt(this.r);
         y = parseInt(this.y);
         ctxCompass.beginPath();
-        ctxCompass.arc(this.r + 50, this.r +30, 5, 0, 2 * Math.PI , false);
+        ctxCompass.arc(this.r, this.r +30, 5, 0, 2 * Math.PI , false);
         ctxCompass.fillStyle = '#05EDFF';
         ctxCompass.fill();
         ctxCompass.lineWidth = 5;
@@ -203,7 +203,7 @@ PCompass.prototype.drawFOVCentered = function(dist)
           var dy = 120 - innerHeight * c / dist+ parseInt(this.y)
 
 
-          ctxFOV.rect(dx + 50, dy,
+          ctxFOV.rect(dx, dy,
           2 * innerWidth * c / dist ,
           2 * innerHeight * c / dist);
           ctxFOV.stroke(); 
