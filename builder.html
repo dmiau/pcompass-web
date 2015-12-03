@@ -24,7 +24,7 @@
             <canvas id="canvasFOV"></canvas>
         </div>
       </div>
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+      
     </div>
 
     <div id = "wrapper2">
@@ -36,11 +36,13 @@
       </div>
         <script src="/js/pcompass.js"></script>
         <script src="/js/wedge.js"></script>
+
     </div>
        <!-- <div id="floating-panel">
         <input type="button" value="Toggle Street View" onclick="toggleStreetView();"></input>
       </div> -->
     <div id = "wrapper3">
+      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
       <table id='POItable' class="table">
       <thead>
         <tr>
@@ -54,7 +56,9 @@
       </tbody>
     </table>
   </div>
+  
     <script>
+
     var panorama; //Streetview
     var map;
     var pointsDB = new Array(); //Database of all points
@@ -107,7 +111,7 @@
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
     var searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
     // Bias the SearchBox results towards current map's viewport.
     map.addListener('bounds_changed', function() {
