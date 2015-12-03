@@ -128,8 +128,8 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxFOV.lineWidth="2";
           ctxFOV.strokeStyle="black";
 
-          var dx = 90 - innerWidth* c / dist - offsetX + parseInt(this.x)
-          var dy = 90 - innerHeight * c / dist - offsetY + parseInt(this.y)
+          var dx = r - innerWidth* c / dist - offsetX + parseInt(this.x)
+          var dy = r - innerHeight * c / dist - offsetY + parseInt(this.y)
 
 
           ctxFOV.rect(dx, dy,
@@ -199,8 +199,8 @@ PCompass.prototype.drawFOVCentered = function(dist)
           ctxFOV.lineWidth="2";
           ctxFOV.strokeStyle="black";
 
-          var dx = 90 - innerWidth* c / dist+ parseInt(this.x)
-          var dy = 90 - innerHeight * c / dist+ parseInt(this.y)
+          var dx = r - innerWidth* c / dist+ parseInt(this.x)
+          var dy = r - innerHeight * c / dist+ parseInt(this.y)
 
 
           ctxFOV.rect(dx, dy,
