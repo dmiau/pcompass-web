@@ -581,7 +581,7 @@ document.onmouseup = _destroy;
 
 
 
-document.getElementById('compass').touchstart = function () {
+document.getElementById('compass').addEventListener('touchstart', function () {
     _drag_init(this);
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
@@ -589,13 +589,13 @@ document.getElementById('compass').touchstart = function () {
 
     //clearAllCtx();
     return false;
-};
-document.getElementById('compass').touchend = function () {
+});
+document.getElementById('compass').addEventListener('touchend', function () {
     reDraw();
     return false;
-};
-document.touchmove = _move_elem;
-document.touchend = _destroy;
+});
+document.addEventListener('touchmove',_move_elem);
+document.addEventListener('touchend',_destroy);
 
 
 
