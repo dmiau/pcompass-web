@@ -425,14 +425,17 @@
       points.push(allPoints[minIndex]);
       var angleInterval = 360 / k;
       var margin = 15;
+      var spacing = 30
       var currentAngle = angleInterval;
       var pointsAdded = 1;
-
+      var pointInInterval;
 
       while (currentAngle < 360) 
       {
+          pointInInterval = false;
           for (var i in allPoints){
-                if(Math.abs(allPoints[i].angle - currentAngle) < margin) {
+              if (Math.abs(allPoints[minIndex].angle - allPoints[i].angle) >= spacing){
+                 if(Math.abs(allPoints[i].angle - currentAngle) < margin && pointInInterval == false) {
                   // console.log(map.getBounds(), allPoints[i])
                   if (map.getBounds().contains(allPoints[i].latlng)){
                     continue;
@@ -440,11 +443,13 @@
                   else{
                     points.push(allPoints[i]);
                     pointsAdded++;
+                    pointInInterval = true;
                     if(pointsAdded >= k) {
                       return;
                     }
                   }
                 }
+              }
           }
           currentAngle += angleInterval;
       }
@@ -480,7 +485,7 @@
           else{
             selectPOI(pointsDB, compass_center); 
           }
-          pcompass.drawNeedles();
+          
           return POI;
     };
 
@@ -500,9 +505,12 @@
            var place = results[i];
            var name = place.name;
            createMarker(place.geometry.location, name);
+
          }
+         pcompass.drawNeedles();
        }
      });
+
   };
 
   function fromLatLngToPoint(lat, lng, map) {
@@ -570,6 +578,26 @@ document.getElementById('compass').onmouseup = function () {
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
+
+
+
+document.getElementById('compass').touchstart = function () {
+    _drag_init(this);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
+
+    //clearAllCtx();
+    return false;
+};
+document.getElementById('compass').touchend = function () {
+    reDraw();
+    return false;
+};
+document.touchmove = _move_elem;
+document.touchend = _destroy;
+
+
 
   function clearAllCtx() {
     ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);

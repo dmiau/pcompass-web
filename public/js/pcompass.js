@@ -1,4 +1,4 @@
-var Y_OFFSET = 30;
+var Y_OFFSET = 0;
 
 
 var PCompass= function (lat, lng, x , y, r) {
@@ -105,7 +105,7 @@ var PCompass= function (lat, lng, x , y, r) {
           //Compass x and y
           // console.log(dist)
           r = parseInt(this.r)
-          c = 0.02;
+          c = 40;
           var compassX = r + parseInt(this.x) - innerWidth/2;
           var compassY = r + parseInt(this.y) - innerHeight/2;
 
@@ -116,7 +116,7 @@ var PCompass= function (lat, lng, x , y, r) {
           offsetY = l * r 
           // console.log(offsetX, offsetY);
 
-          dist = dist/2000;
+          // dist = dist/2000;
           // console.log(dist)
           // if (dist < 0.25)
           //   dist = dist*3
@@ -129,7 +129,7 @@ var PCompass= function (lat, lng, x , y, r) {
           ctxFOV.strokeStyle="black";
 
           var dx = 90 - innerWidth* c / dist - offsetX + parseInt(this.x)
-          var dy = 120 - innerHeight * c / dist - offsetY + parseInt(this.y)
+          var dy = 90 - innerHeight * c / dist - offsetY + parseInt(this.y)
 
 
           ctxFOV.rect(dx, dy,
@@ -186,13 +186,8 @@ PCompass.prototype.drawFOVCentered = function(dist)
           //Compass x and y
           //console.log(dist)
           r = parseInt(this.r)
-          c = 0.02;
-          var compassX = r + parseInt(this.x) - innerWidth/2;
-          var compassY = r + parseInt(this.y) - innerHeight/2;
-
+          c = 40;
           
-          
-          dist = dist/2000;
           // console.log(dist)
           // if (dist < 0.25)
           //   dist = dist*3
@@ -205,7 +200,7 @@ PCompass.prototype.drawFOVCentered = function(dist)
           ctxFOV.strokeStyle="black";
 
           var dx = 90 - innerWidth* c / dist+ parseInt(this.x)
-          var dy = 120 - innerHeight * c / dist+ parseInt(this.y)
+          var dy = 90 - innerHeight * c / dist+ parseInt(this.y)
 
 
           ctxFOV.rect(dx, dy,
