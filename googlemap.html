@@ -85,7 +85,7 @@
         </div>
         
         <div id="compass">
-            <canvas id="canvasCompass" height = '300px' width = '300px'></canvas>
+            <canvas id="canvasCompass"></canvas>
         </div>
         <div id="FOV">
             <canvas id="canvasFOV"></canvas>
@@ -99,6 +99,21 @@
       </div> -->
       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     </div>
+
+     <div id = "wrapper3">
+      <table id='POItable' class="table">
+      <thead>
+        <tr>
+          <th>POI Name</th>
+        </tr>
+
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+  </div>
+
     <!--<script>
     function toggleStreetView() {
       var toggle = panorama.getVisible();
@@ -136,6 +151,9 @@
 
     var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
     var wedge = new Wedge();
+    var canvasCompass = document.getElementById('canvasCompass');
+    canvasCompass.width = 2 * pcompass.r;
+    canvasCompass.height = 2 * pcompass.r;
 
     function initMap() {
 
@@ -466,6 +484,21 @@
           }
           currentAngle += angleInterval;
       }
+      console.log(points);
+      var table = document.getElementById("POItable");
+      for (var i = 1, row; row = table.rows[i]; i++) {
+         //iterate through rows
+         //rows would be accessed using the "row" variable assigned in the for loop
+         row.className = 'normal';
+         for (var j in points){
+            if (points[j].name == row.cells[0].innerHTML){
+              console.log(points[j].name);
+              row.className = 'highlight';
+            }
+        }
+
+      }
+
     };
 
     var createMarker = function(POI, name) {
@@ -512,11 +545,17 @@
             };  // Create the PlaceService and send the request.
      // Handle the callback with an anonymous function.
      var service = new google.maps.places.PlacesService(map);
+
+     var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+
      service.nearbySearch(request, function(results, status) {
        if (status == google.maps.places.PlacesServiceStatus.OK) {
          for (var i = 0; i < results.length/2; i++) {
            var place = results[i];
            var name = place.name;
+           var row = table.insertRow(table.rows.length);
+           var cell1 = row.insertCell(0);
+           cell1.innerHTML = name;
            createMarker(place.geometry.location, name);
 
          }
