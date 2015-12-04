@@ -85,7 +85,7 @@
         </div>
         
         <div id="compass">
-            <canvas id="canvasCompass" height = '300px' width = '300px'></canvas>
+            <canvas id="canvasCompass"></canvas>
         </div>
         <div id="FOV">
             <canvas id="canvasFOV"></canvas>
@@ -135,6 +135,9 @@
 
     var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
     var wedge = new Wedge();
+    var canvasCompass = document.getElementById('canvasCompass');
+    canvasCompass.width = 2 * pcompass.r;
+    canvasCompass.height = 2 * pcompass.r;
 
     function initMap() {
       var newYork = new google.maps.LatLng(40.7127, -74.0079);  
