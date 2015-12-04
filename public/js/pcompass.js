@@ -100,85 +100,34 @@ var PCompass= function (lat, lng, x , y, r) {
     //Takes distance of closest point, outside of FOV
     PCompass.prototype.drawFOV = function(dist)
     {
-
-
-          //Compass x and y
-          // console.log(dist)
           r = parseInt(this.r)
-          c = 40;
-          var compassX = r + parseInt(this.x) - innerWidth/2;
-          var compassY = r + parseInt(this.y) - innerHeight/2;
 
-          // console.log(compassX, compassY);
-          var k = compassX / innerWidth;
-          var l = compassY / innerHeight;
-          offsetX = k * r
-          offsetY = l * r 
-          // console.log(offsetX, offsetY);
+          var x_pc = r + parseInt(this.x)
+          var y_pc = r + parseInt(this.y)
+          var x_map = innerWidth/2;
+          var y_map = innerHeight/2;
 
-          // dist = dist/2000;
-          // console.log(dist)
-          // if (dist < 0.25)
-          //   dist = dist*3
 
-          // if (dist > 0.75)
-          //   dist = dist/3
+          var compassX = x_pc - x_map;
+          var compassY = y_pc - y_map;
+          
+          var offset_ratio_x = compassX / innerWidth;
+          var offset_ratio_y = compassY / innerHeight;
+
+          var w_fov = innerWidth * r / dist;
+          var h_fov = innerHeight * r / dist;
+
+          offsetX = w_fov * offset_ratio_x;
+          offsetY = h_fov * offset_ratio_y;
+          
 
           ctxFOV.beginPath();
           ctxFOV.lineWidth="2";
           ctxFOV.strokeStyle="black";
 
-          var dx = r - innerWidth* c / dist - offsetX + parseInt(this.x)
-          var dy = r - innerHeight * c / dist - offsetY + parseInt(this.y)
+          ctxFOV.rect(x_pc - w_fov/2 - offsetX, y_pc - h_fov/2 - offsetY, w_fov, h_fov);
 
-
-          ctxFOV.rect(dx, dy,
-          2 * innerWidth * c / dist ,
-          2 * innerHeight * c / dist);
           ctxFOV.stroke(); 
-  
-
-          // c = 0.02; 
-
-          // rectX = 2 * innerWidth * c /dist * map.zoom 
-          // rectY = 2 * innerHeight * c / dist * map.zoom
-
-          // var dx = k * rectX;
-          // var dy = l * rectY;
-          // console.log(dx, dy);
-
-          // ctxCompass.beginPath();
-          // ctxCompass.lineWidth="2";
-          // ctxCompass.strokeStyle="black";
-          
-          // ctxCompass.rect(- dx, - dy, rectX, rectY);
-
-          // ctxCompass.stroke();
-
-
-
-          //change to innerWidth, innerHeight
-          /*x = parseInt(this.x);
-          y = parseInt(this.y);
-          r = parseInt(this.r);
-
-          console.log(x, y, r)
-          k = 0.02;
-          m = 0.1;
-          n = 0.1;
-          dist = dist/10;
-          ctxCompass.beginPath();
-          ctxCompass.lineWidth="2";
-          ctxCompass.strokeStyle="black";
-          console.log(map.zoom)
-          rectX = (r - innerWidth* k / dist *map.zo) - (x - innerWidth/2)*m
-          rectY = (r - innerHeight * k / dist * map.zo + 30) - (y - innerWidth/2)*n
-          rectLength = 2 * innerWidth * k /dist*map.zoom /30
-          rectWidth = 2 * innerHeight * k / dist*map.zoom /30
-          ctxCompass.rect(rectX, rectY, rectLength, rectWidth);
-          // ctxCompass.translate((x - innerWidth/2)*m, (y - innerWidth/2)*m);
-          ctxCompass.stroke(); */
-          // ctxCompass.translate(-(x - innerWidth/2)*m, -(y - innerWidth/2)*m);
     };
 
 PCompass.prototype.drawFOVCentered = function(dist)
@@ -186,26 +135,18 @@ PCompass.prototype.drawFOVCentered = function(dist)
           //Compass x and y
           //console.log(dist)
           r = parseInt(this.r)
-          c = 40;
-          
-          // console.log(dist)
-          // if (dist < 0.25)
-          //   dist = dist*3
 
-          // if (dist > 0.75)
-          //   dist = dist/3
+          var x_pc = r + parseInt(this.x)
+          var y_pc = r + parseInt(this.y)
+
+          var w_fov = innerWidth * r / dist;
+          var h_fov = innerHeight * r / dist;
 
           ctxFOV.beginPath();
           ctxFOV.lineWidth="2";
           ctxFOV.strokeStyle="black";
 
-          var dx = r - innerWidth* c / dist+ parseInt(this.x)
-          var dy = r - innerHeight * c / dist+ parseInt(this.y)
-
-
-          ctxFOV.rect(dx, dy,
-          2 * innerWidth * c / dist ,
-          2 * innerHeight * c / dist);
+          ctxFOV.rect(x_pc - w_fov/2, y_pc - h_fov/2, w_fov, h_fov);
           ctxFOV.stroke(); 
 
 
