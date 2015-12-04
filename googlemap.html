@@ -109,6 +109,7 @@
       }
     }
     </script>-->
+      <!--<script src="/socket.io/socket.io.js"></script>-->
 
     <script>
     var panorama; //Streetview
@@ -137,6 +138,18 @@
     var wedge = new Wedge();
 
     function initMap() {
+
+  // var socket = io.connect('http://localhost');
+  // socket.on('news', function (data) {
+  //   console.log(data);
+  //   socket.emit('my other event', { my: 'data' });
+  // });
+
+
+
+
+
+
       var newYork = new google.maps.LatLng(40.7127, -74.0079);  
       map = new google.maps.Map(document.getElementById('map'), {
         center: newYork, // New York

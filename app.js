@@ -1,7 +1,27 @@
-var express = require('express');
+var express = require('express').createServer(); // 
 var app = express();
 var path = require("path");
 var fs = require("fs");
+
+
+//var app = require('express').createServer();
+var io = require('socket.io')(express);
+
+express.listen(80);
+
+express.get('/', function (req, res) {
+  res.sendfile(__dirname + '/index.html');
+});
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
+});
+
+
+
 
 app.get('/helloworld', function (req, res) {
   res.send('Hello World!');

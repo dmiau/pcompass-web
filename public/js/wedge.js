@@ -101,6 +101,12 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         ctxWedge.lineWidth = 3;
         ctxWedge.strokeStyle = '#ff0000';
         ctxWedge.stroke();
+
+
+        ctxWedge.font="15px Arial";
+        ctxWedge.fillText(name, (leftX + rightX) / 2, (leftY + rightY) / 2);
+
+
         
 };
 
