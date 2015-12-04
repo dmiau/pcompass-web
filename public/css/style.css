@@ -4,6 +4,14 @@ body,html{
   margin: 0px;
 }
 
+tr.highlight td {
+background-color: #8888ff;
+}
+
+tr.normal td {
+background-color: #ffffff;
+}
+
 .navbar{
   margin-bottom:0;
 }
@@ -55,7 +63,7 @@ body,html{
   float:left;
   position:relative;
   height:100%;
-  width:100%;
+  width:80%;
   overflow:hidden;
 }
 
