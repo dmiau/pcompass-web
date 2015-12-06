@@ -81,12 +81,23 @@
     <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> 
     </button>
     <ul class="dropdown-menu dropdown-inverse">
+        <li><a href="/">Home</a>
+        </li>
         <li><a href="game">Game</a>
         </li>
         <li><a href="builder">Builder</a>
         </li>
     </ul>
 </div>
+      </li>
+
+      <li class = "nav-item">
+        <button type='button' id="exportButton" class="btn btn-default">Export POIs</button>
+      </li>
+
+
+      <li class = "nav-item">
+        <input type="file" id="file-input" />
       </li>
 
       </ul>     
@@ -148,7 +159,11 @@
     </script>-->
       <!--<script src="/socket.io/socket.io.js"></script>-->
 
-    <script>
+      <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+<script>
+  
+  
+
     var panorama; //Streetview
     var map;
     var pointsDB = new Array(); //Database of all points
@@ -411,17 +426,20 @@
             compass_center = fromPointToLatLng(x_coord, y_coord, map);
             var isCentroidChecked = document.getElementById('centroidCheck').checked;
 
+            console.log(pointsDB);
             for (var i in pointsDB){
               
               if(isCentroidChecked)
               {
                 //should this be tablePoints instead?
+
                 pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
                 pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
                 // console.log('centroid checked ' + pointsDB[i].distance)
               }
               else
               {
+                // console.log(pointsDB[i].latlng.lat());
                 pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
                 pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
                 // console.log('centroid not checked ' + pointsDB[i].distance)
@@ -574,6 +592,74 @@
 
     };
 
+      var socket = io.connect('http://localhost:3000');
+      socket.on('news', function (data) {
+        console.log(data);
+      })
+
+      $('#exportButton').click(function() {
+        socket.emit('POIs', points);
+      })
+
+      function readSingleFile(e) {
+        var file = e.target.files[0];
+        if (!file) {
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var contents = e.target.result;
+          points = [];
+          contents = JSON.parse(contents);
+          console.log(contents);
+          for (i in contents) {
+            if (contains(contents[i]) == false){
+              contents[i].latlng = new google.maps.LatLng(contents[i].latlng.lat, contents[i].latlng.lng) ;
+              tablePoints.push(contents[i]);
+              pointsDB.push(contents[i]);
+
+
+
+           var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+    
+
+           var row = table.insertRow(table.rows.length);
+           var cell1 = row.insertCell(0);
+           var cell2 = row.insertCell(1);
+           var cell3 = row.insertCell(2);
+           cell1.innerHTML = contents[i].name;
+           cell2.innerHTML = '<input type="checkbox" id="'+contents[i].name+'">'
+           cell3.innerHTML = '<button type="button" id ="'+contents[i].name+'Btn'+'"   >Delete</button> '
+           check();
+           
+            document.getElementById(contents[i].name+'Btn').onclick = function() {deletePOI(this)};
+
+
+            }
+          }
+          // console.log(tablePoints);
+          reDraw();
+        };
+        reader.readAsText(file);
+      }
+
+      document.getElementById('file-input')
+        .addEventListener('change', readSingleFile, false);
+
+
+
+    var contains = function(point){
+      for (var i in tablePoints){
+        if (point.name == tablePoints[i].name)
+          return true;
+      }
+      for (var i in pointsDB){
+        if (point.name == pointsDB[i].name)
+          return true;
+      }
+      return false;
+    }
+
     var createMarker = function(POI, name) {
           var marker = new google.maps.Marker({
             // The below line is equivalent to writing:
@@ -621,7 +707,6 @@
      var service = new google.maps.places.PlacesService(map);
 
      var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-     
      tablePoints = [];
      service.nearbySearch(request, function(results, status) {
        if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -639,16 +724,28 @@
            cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
            check();
            
-
             document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
 
-            function deletePOI(t)
+         }
+         
+         pcompass.drawNeedles();
+       }
+
+     });
+  };
+
+
+
+  function createTable (){
+  }
+
+  function deletePOI(t)
             {
                 var currentRow = t.parentNode.parentNode;
                 var secondColumn = currentRow.getElementsByTagName("td")[0];
-                for (var j in points)
+                for (var j in pointsDB)
                 {
-                  if (secondColumn.textContent == points[j].name)
+                  if (secondColumn.textContent == pointsDB[j].name)
                   {
                     pointsDB.splice(j, 1);
                     
@@ -667,16 +764,6 @@
                 document.getElementById("POItable").deleteRow(row.rowIndex);
                 reDraw();
             };
-
-         }
-         
-         pcompass.drawNeedles();
-       }
-
-     });
-  
-
-  };
 
   function fromLatLngToPoint(lat, lng, map) {
                 latLng = new google.maps.LatLng(lat, lng);
