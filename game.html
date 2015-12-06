@@ -4,13 +4,58 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <title>Personalized Compass Map</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </head>
   <body>
 
-<button onclick="startGame()">Start Game</button>
-    <button onclick="nextQuestion()">Next Question</button>
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">PCompass</a>
+    </div>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+
+      <li class="nav-item">
+      <div class="btn-group"> 
+    <i class="dropdown-arrow dropdown-arrow-inverse"></i>
+    <button class="btn btn-primary status">Mode</button>
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> <span class="caret"></span> 
+    </button>
+    <ul class="dropdown-menu dropdown-inverse">
+        <li><a href="/">Home</a>
+        </li>
+        <li><a href="game">Game</a>
+        </li>
+        <li><a href="builder">Builder</a>
+        </li>
+    </ul>
+</div>
+      </li>
+
+      <li class="nav-item">
+      <button type='button' class="btn btn-default" onclick="startGame()">Start Game</button>
+      <button type='button' class="btn btn-default" onclick="nextQuestion()">Next Question</button>
+    </li>
+
+  </ul>     
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+
+
     <div id="questionMap"></div>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
 
@@ -18,6 +63,9 @@
       <div id="wedge">
        <canvas id="canvasWedge"></canvas>
       </div>
+      <div id="labels">
+            <canvas id="canvasLabels"></canvas>
+        </div>
       <div id="compass">
        <canvas id="canvasCompass" height = '260px' width = '260px'></canvas>
       </div>
@@ -45,6 +93,11 @@
     canvasWedge.setAttribute('width', window.innerWidth);
     canvasWedge.setAttribute('height', window.innerHeight);
 
+    var canvasLabels = document.getElementById("canvasLabels");
+    canvasLabels.setAttribute('width', window.innerWidth);
+    canvasLabels.setAttribute('height', window.innerHeight);
+    var ctxLabels = canvasLabels.getContext("2d");
+
     var ctxWedge = canvasWedge.getContext("2d");
 
     var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
@@ -68,7 +121,8 @@
         zoom: 9
       });
       populateDB();
-      selectPOI(pointsDB, 3); 
+      // selectPOI(pointsDB, 3); 
+
 
 
     // Create the search box and link it to the UI element.
@@ -116,6 +170,7 @@
       angle = getAngle(center, POI);
       var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
       points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+
       pcompass.drawNeedles();
 
       // map.fitBounds(bounds);
@@ -186,7 +241,9 @@
 
     }
     var reDraw = function() {
+      
        var center = map.getCenter();
+       clearAllCtx();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
 
@@ -201,8 +258,8 @@
 
             selectPOI(pointsDB, 3);
             for (var i in points){
-                console.log('i' + i);
-                console.log(points);
+                // console.log('i' + i);
+                // console.log(points);
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
             }
@@ -272,6 +329,7 @@
           }
           currentAngle += angleInterval;
       }
+      console.log(points);
     }
 
     var createMarker = function(POI, name) {
@@ -294,6 +352,8 @@
           pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
           //Add probability that user knows this location
           selectPOI(pointsDB, 3); 
+          clearAllCtx();
+          pcompass.drawCompass();
           pcompass.drawNeedles();
           return POI;
     }
@@ -355,9 +415,16 @@ function _destroy() {
 
 // Bind the functions...
 document.getElementById('compass').onmousedown = function () {
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
     _drag_init(this);
     return false;
 };
+
+document.getElementById('compass').onmouseup = function () {
+    reDraw();
+    return false;
+};
+
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
@@ -413,7 +480,13 @@ function nextQuestion() {
                 return pointTemp;
         }
 
-    
+    function clearAllCtx() {
+    ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
+
+  }
+
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
