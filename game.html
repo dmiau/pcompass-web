@@ -74,10 +74,19 @@
     </div>
     
 
+   <dialog id="myDialog">
+    You were only off by:
+    <div id='distance'></div>
+    <button id="hide">Close</button>
+</dialog>
+
     <div id="answerMap"></div>
 
     <script>
    
+    
+
+
     var numQuestion = 0;
     var locations = [{lat: 40.7127, lng: -74.0079},
     {lat: 40.7137, lng: -74.0089}, 
@@ -123,7 +132,7 @@
       populateDB();
       // selectPOI(pointsDB, 3); 
 
-
+    answerMap.setOptions({ draggableCursor : "url(http://rogcommunity.com/forums/images/awards/waldo.png) 10 50, auto" })
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -207,14 +216,19 @@
            placeMarker(event.latLng);
            dist = getDistance (map.getCenter(), event.latLng)
            console.log(dist)
+           document.getElementById("myDialog").childNodes[1].innerHTML = dist.toFixed(3) + ' km';
+           document.getElementById("myDialog").showModal();
            console.log(map.getCenter(), event.latLng);
 
         });
 
+        document.getElementById('hide').onclick = function() {  document.getElementById('myDialog').close();      };
+
         function placeMarker(location) {
             var marker = new google.maps.Marker({
                 position: location, 
-                map: answerMap
+                map: answerMap,
+                icon: 'http://rogcommunity.com/forums/images/awards/waldo.png'
             });
         }
 
@@ -486,6 +500,8 @@ function nextQuestion() {
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
 
   }
+
+
 
     </script>
 

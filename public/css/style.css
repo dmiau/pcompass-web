@@ -56,6 +56,7 @@ background-color: #ffffff;
 #answerMap {
   position: relative;
   height:50%;
+  /*cursor: url(http://rogcommunity.com/forums/images/awards/waldo.png) 25 15, auto;*/
 /*  width: 50%;*/
 }
 

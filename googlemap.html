@@ -150,6 +150,7 @@
 
     <script>
     function toggleStreetView() {
+      panorama.setPosition(map.getCenter());
       var toggle = panorama.getVisible();
       if (toggle == false) {
         panorama.setVisible(true);
@@ -229,7 +230,7 @@
 
       // var katz = new google.maps.LatLng(40.722216, -73.987501);
       panorama = map.getStreetView();
-      panorama.setPosition(newYork);
+      console.log(map.getCenter());
       panorama.setPov(/** @type {google.maps.StreetViewPov} */({
         heading: 0,
         pitch: 0
@@ -428,7 +429,6 @@
             compass_center = fromPointToLatLng(x_coord, y_coord, map);
             var isCentroidChecked = document.getElementById('centroidCheck').checked;
 
-            console.log(pointsDB);
             for (var i in pointsDB){
               
               if(isCentroidChecked)
