@@ -800,9 +800,11 @@ function _drag_init(elem) {
 
 // Will be called when user dragging an element
 function _move_elem(e) {
+    console.log('moving');
     x_pos = document.all ? window.event.clientX : e.pageX;
     y_pos = document.all ? window.event.clientY : e.pageY;
     if (selected !== null) {
+        console.log('hi');
         selected.style.left = (x_pos - x_elem) + 'px';
         selected.style.top = (y_pos - y_elem) + 'px';
         pcompass.x = selected.style.left;
@@ -837,6 +839,7 @@ document.onmouseup = _destroy;
 
 document.getElementById('compass').addEventListener('touchstart', function () {
     _drag_init(this);
+    console.log('touch start');
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
@@ -846,10 +849,24 @@ document.getElementById('compass').addEventListener('touchstart', function () {
 });
 document.getElementById('compass').addEventListener('touchend', function () {
     reDraw();
+    console.log('touch end')
     return false;
 });
-document.addEventListener('touchmove',_move_elem);
+
+// document.addEventListener('touchmove',_move_elem);
 document.addEventListener('touchend',_destroy);
+
+document.getElementById('compass').addEventListener('touchmove', function(event) {
+  // If there's exactly one finger inside this element
+  if (event.targetTouches.length == 1) {
+    var touch = event.targetTouches[0];
+    // Place element where the finger is
+    selected.style.left = (touch.pageX-25) + 'px';
+    selected.style.top = (touch.pageY-80) + 'px';
+  }
+}, false);
+
+
 
   function clearAllCtx() {
     ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
