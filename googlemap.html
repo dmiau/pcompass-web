@@ -70,8 +70,11 @@
       </li>
 
       <li class = "nav-item">
-        <button type='button' class="btn btn-default" onclick="hideElem()">Hide POI Table</button>
-        <button type='button' class="btn btn-default" onclick="showElem()">Show POI Table</button>
+        <button type='button' class="btn btn-default" onclick="toggleTable()">Toggle POI Table</button>
+      </li>
+
+      <li class = "nav-item">
+        <button type="button" class="btn btn-default" value="Toggle Street View" onclick="toggleStreetView();">Toggle Street View</input>
       </li>
       
       <li class="nav-item">
@@ -126,9 +129,7 @@
          <script src="/js/wedge.js"></script>
       </div>
 
-       <!-- <div id="floating-panel">
-        <input type="button" value="Toggle Street View" onclick="toggleStreetView();"></input>
-      </div> -->
+       
       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     </div>
 
@@ -147,7 +148,7 @@
     </table>
   </div>
 
-    <!--<script>
+    <script>
     function toggleStreetView() {
       var toggle = panorama.getVisible();
       if (toggle == false) {
@@ -156,7 +157,7 @@
         panorama.setVisible(false);
       }
     }
-    </script>-->
+    </script>
       <!--<script src="/socket.io/socket.io.js"></script>-->
 
       <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
@@ -186,14 +187,15 @@
     canvasLabels.setAttribute('height', window.innerHeight);
     var ctxLabels = canvasLabels.getContext("2d");
 
-    function hideElem() {
-      document.getElementById("wrapper3").style.display = "none";
-      document.getElementById("wrapper").style.width = "100%";
-    }
-
-    function showElem() {
-      document.getElementById("wrapper3").style.display = "initial"; 
-      document.getElementById("wrapper").style.width = "80%";
+    function toggleTable() {
+      if (document.getElementById("wrapper3").style.display == "initial"){
+        document.getElementById("wrapper3").style.display = "none";
+        document.getElementById("wrapper").style.width = "100%";
+      }
+      else{
+        document.getElementById("wrapper3").style.display = "initial"; 
+        document.getElementById("wrapper").style.width = "80%";
+      }
     }
 
     var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
@@ -225,14 +227,14 @@
       // selectPOI(pointsDB); 
 
 
-      //var katz = new google.maps.LatLng(40.722216, -73.987501);
+      // var katz = new google.maps.LatLng(40.722216, -73.987501);
       panorama = map.getStreetView();
-      //panorama.setPosition(katz);
+      panorama.setPosition(newYork);
       panorama.setPov(/** @type {google.maps.StreetViewPov} */({
         heading: 0,
         pitch: 0
       }));
-      
+
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
