@@ -22,6 +22,10 @@ app.get('/builder',function(req,res){
   res.sendFile(path.join(__dirname+'/builder.html'));
 });
 
+app.get('/demo',function(req,res){
+  res.sendFile(path.join(__dirname+'/demo.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', function (socket) {

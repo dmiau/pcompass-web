@@ -90,7 +90,7 @@
         </li>
         <li><a href="builder">Builder</a>
         </li>
-        <li><a href="demo">Demo</a>
+        <li><a href="demo" >Demo</a>
         </li>
     </ul>
 </div>
@@ -214,6 +214,7 @@
   //   console.log(data);
   //   socket.emit('my other event', { my: 'data' });
   // });
+  
 
 
 
@@ -375,6 +376,8 @@
       google.maps.event.addListener(map, 'zoom_changed', function () {
            reDraw();
       });
+      selectPOI(pointsDB, map.getCenter());
+      pcompass.drawNeedles();
     };
 
     // var tablePoints = pointsDB;
@@ -482,7 +485,7 @@
               {
                 pcompass.drawFOV(distanceToCompass);
               }
-              
+              }
             }
             if (isWedgeChecked)
             {
@@ -491,11 +494,12 @@
                 wedge.drawWedges();  
               }
             }
+          
             if(!panorama.getVisible())
               {
                  pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
               }
-          }
+          
 
 
     };
@@ -530,6 +534,20 @@
     var selectPOI = function(allPoints, center){
       // var selectedPoints = new Array();
       //Select the closest POI
+
+      points = [];
+
+      var latlng = new google.maps.LatLng(40.806876, -73.963987);
+      points.push({'name': 'Columbia', 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+
+      var latlng = new google.maps.LatLng(40.745469, -73.947108);
+      points.push({'name': 'MOMA PS1', 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+
+      var latlng = new google.maps.LatLng(40.689450, -74.016792);
+      points.push({'name': "Governer's Island", 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+      return;
+
+
       $('.dropdown-inverse li > a').click(function(e){
         $('.status').text(this.innerHTML);
         k = this.innerHTML;
@@ -700,10 +718,12 @@
     };
 
     var populateDB = function() {
+
+
     var newYork = new google.maps.LatLng(40.7127, -74.0079);  
      var request = {
        location: newYork,
-       radius: '50000',
+       radius: '0',
        types: ['store','airport','university'],
        rankBy: google.maps.places.RankBy.PROMINENCE
             };  // Create the PlaceService and send the request.
@@ -712,6 +732,8 @@
 
      var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
      tablePoints = [];
+
+
      service.nearbySearch(request, function(results, status) {
        if (status == google.maps.places.PlacesServiceStatus.OK) {
          for (var i = 0; i < results.length/2; i++) {
@@ -735,7 +757,9 @@
          pcompass.drawNeedles();
        }
 
+
      });
+
   };
 
 
@@ -860,7 +884,6 @@ document.addEventListener('touchend',_destroy);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
 
   }
-
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
