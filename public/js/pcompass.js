@@ -88,7 +88,7 @@ var PCompass= function (lat, lng, x , y, r) {
         r = parseInt(this.r);
         y = parseInt(this.y);
         ctxCompass.beginPath();
-        ctxCompass.arc(this.r, this.r + Y_OFFSET, 5, 0, 2 * Math.PI , false);
+        ctxCompass.arc(this.r, this.r + Y_OFFSET, this.r/40, 0, 2 * Math.PI , false);
         ctxCompass.fillStyle = '#05EDFF';
         ctxCompass.fill();
         ctxCompass.lineWidth = 5;
