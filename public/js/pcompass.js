@@ -45,7 +45,6 @@ var PCompass= function (lat, lng, x , y, r) {
     PCompass.prototype.drawNeedle = function(name, distance, angle, color)
     {
         //draw lines
-        console.log('color' + color);
         distance = this.r * distance;
         if(distance > this.r)
         {
@@ -82,9 +81,7 @@ var PCompass= function (lat, lng, x , y, r) {
     PCompass.prototype.drawNeedles = function() {
         for(var i in points)
         {
-          console.log(points[i].rating);
           normalized_rating = ((points[i].rating - 3.0) / 2.0 );
-          console.log(normalized_rating);
           red = 255;
           green = parseInt(255 * (1 - normalized_rating));
           blue = 0;
@@ -92,10 +89,9 @@ var PCompass= function (lat, lng, x , y, r) {
           if (points[i].rating < 3.0) {
             rating_color = 'rgb(200, 200, 0)';
           }
-          console.log(rating_color)
           pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle, rating_color);
         }
-        //Draw ceter dot
+        //Draw center dot
         x = parseInt(this.x);
         r = parseInt(this.r);
         y = parseInt(this.y);
@@ -143,12 +139,9 @@ var PCompass= function (lat, lng, x , y, r) {
 PCompass.prototype.drawFOVCentered = function(dist)
 {
           //Compass x and y
-          //console.log(dist)
           r = parseInt(this.r)
-
           var x_pc = r + parseInt(this.x)
           var y_pc = r + parseInt(this.y)
-
           var w_fov = innerWidth * r / dist;
           var h_fov = innerHeight * r / dist;
 
