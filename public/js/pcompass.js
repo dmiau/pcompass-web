@@ -45,6 +45,7 @@ var PCompass= function (lat, lng, x , y, r) {
     PCompass.prototype.drawNeedle = function(name, distance, angle, color)
     {
         //draw lines
+        console.log('color' + color);
         distance = this.r * distance;
         if(distance > this.r)
         {
@@ -54,9 +55,9 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.beginPath();
         ctxCompass.moveTo(this.r, this.r + Y_OFFSET);
         ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + Y_OFFSET);
-        ctxCompass.strokeStyle = '#000000';
-        ctxCompass.fillStyle = '#000000';
-        ctxCompass.font = "15px Arial";
+        ctxCompass.strokeStyle = color;//'#000000';
+        ctxCompass.fillStyle = color;//'#000000';
+        ctxCompass.font = color;//"15px Arial";
        
         //Draw the labels
         ctxLabels.font="15px Arial";
@@ -77,13 +78,24 @@ var PCompass= function (lat, lng, x , y, r) {
 
     };
 
-    PCompass.prototype.drawNeedles = function()
-    {
+    //Add a needle for each POI
+    PCompass.prototype.drawNeedles = function() {
         for(var i in points)
         {
-          pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle, '#ff0000')
+          console.log(points[i].rating);
+          normalized_rating = ((points[i].rating - 3.0) / 2.0 );
+          console.log(normalized_rating);
+          red = 255;
+          green = parseInt(255 * (1 - normalized_rating));
+          blue = 0;
+          rating_color = "rgb(" + red + ", " + green + ", " + blue + ")";
+          if (points[i].rating < 3.0) {
+            rating_color = 'rgb(200, 200, 0)';
+          }
+          console.log(rating_color)
+          pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle, rating_color);
         }
-        //draw center dot
+        //Draw ceter dot
         x = parseInt(this.x);
         r = parseInt(this.r);
         y = parseInt(this.y);
@@ -94,8 +106,6 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.lineWidth = 5;
         ctxCompass.strokeStyle = '#05EDFF';
         ctxCompass.stroke();
-
-        // pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
     };
     //Takes distance of closest point, outside of FOV
     PCompass.prototype.drawFOV = function(dist)

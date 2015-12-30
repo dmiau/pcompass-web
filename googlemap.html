@@ -33,7 +33,6 @@
         </label>
       </div>
       </li>
-
       <li class="nav-item">
       <div class="checkbox">
         <label><input type="checkbox" name="wedge" id="wedgeCheck" value="ON" checked>Wedge
@@ -142,10 +141,8 @@
           <th>POI Name</th>
           <th>Hide</th>
         </tr>
-
       </thead>
-      <tbody>
-        
+      <tbody>  
       </tbody>
     </table>
   </div>
@@ -161,12 +158,10 @@
       }
     }
     </script>
-      <!--<script src="/socket.io/socket.io.js"></script>-->
-
       <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
 <script>
   
-  
+
     var markers = [];
     var panorama; //Streetview
     var map;
@@ -375,6 +370,7 @@
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
             reDraw();
+            console.log(points);
       });
 
       google.maps.event.addListener(map, 'zoom_changed', function () {
@@ -462,7 +458,7 @@
             else{
               selectPOI(tablePoints, compass_center);
             }
-            console.log(pointsDB.length);
+            console.log('pointsdb length' + pointsDB.length);
             if (pointsDB.length == 0)
                 return;
             for (var i in points){
@@ -495,7 +491,6 @@
             }
             if (isWedgeChecked)
             {
-              console.log('hi');
               if(!panorama.getVisible())
               {
                 wedge.drawWedges();  
@@ -673,7 +668,7 @@
       return false;
     }
 
-    var createMarker = function(POI, name) {
+    var createMarker = function(POI, name, rating) {
           var marker = new google.maps.Marker({
             // The below line is equivalent to writing:
             // position: new google.maps.LatLng(-34.397, 150.644)
@@ -691,21 +686,21 @@
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
           var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-          pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng, 'show': true});
-          tablePoints.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng, 'show': true})
+          pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 
+            'latlng': latlng, 'show': true, 'rating': rating});
+          tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
+            'latlng': latlng, 'show': true, 'rating': rating})
           //Add probability that user knows this location
           x_coord = parseInt(pcompass.x) + pcompass.r;
           y_coord = parseInt(pcompass.y) + pcompass.r;
           compass_center = fromPointToLatLng(x_coord, y_coord, map);
           var isCentroidChecked = document.getElementById('centroidCheck').checked;
-          if(isCentroidChecked)
-          {
+          if(isCentroidChecked) {
             selectPOI(pointsDB, center); 
           }
-          else{
+          else {
             selectPOI(pointsDB, compass_center); 
           }
-          
           markers.push(marker);
           return POI;
     };
@@ -728,7 +723,11 @@
          for (var i = 0; i < results.length/2; i++) {
            var place = results[i];
            var name = place.name;
-           createMarker(place.geometry.location, name);
+           var rating = place.rating;
+           //hexString = (10000*rating).toString(16);
+           //console.log('hexstring' + hexString);
+
+           createMarker(place.geometry.location, name, rating);
 
            var row = table.insertRow(table.rows.length);
            var cell1 = row.insertCell(0);
@@ -857,15 +856,12 @@ document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
 
-
-
 document.getElementById('compass').addEventListener('touchstart', function () {
     _drag_init(this);
     // console.log('touch start');
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
-
     //clearAllCtx();
     return false;
 });
@@ -888,14 +884,11 @@ document.getElementById('compass').addEventListener('touchmove', function(event)
   }
 }, false);
 
-
-
   function clearAllCtx() {
     ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
-
   }
 
     </script>
