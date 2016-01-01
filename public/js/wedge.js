@@ -10,7 +10,7 @@ Math.degrees = function(radians) {
 var Wedge = function () {  
 };
 
-Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
+Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, color)
 {
         centerX = window.innerWidth/2;
         centerY = window.innerHeight/2;
@@ -33,8 +33,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         slope = (newPoint.y - newCenter.y) / (newPoint.x - newCenter.x)
         abs_slope = Math.abs(slope);
 
-        if(abs_slope > mapSlope && newPoint.y > newCenter.y)
-        {
+        if(abs_slope > mapSlope && newPoint.y > newCenter.y) {
             // console.log('point is in quadrant 2')
             screenEdgePointY = newNePoint.y;
             screenEdgePointX = newNePoint.y / slope;
@@ -42,24 +41,21 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         }
 
         //point is below map
-        else if(abs_slope > mapSlope && newPoint.y < newCenter.y)
-        {
+        else if(abs_slope > mapSlope && newPoint.y < newCenter.y) {
             // console.log('point is in quadrant 4')
             screenEdgePointY = newSwPoint.y;
             screenEdgePointX = newSwPoint.y / slope;
         }
 
         //point is right of map
-        else if(abs_slope < mapSlope && newPoint.x > newCenter.x)
-        {
+        else if(abs_slope < mapSlope && newPoint.x > newCenter.x) {
             // console.log('point is in quadrant 1')
             screenEdgePointY = newNePoint.x * slope;
             screenEdgePointX = newNePoint.x;
         }
 
         //point is left of map
-        else if(abs_slope < mapSlope && newPoint.x < newCenter.x)
-        {
+        else if(abs_slope < mapSlope && newPoint.x < newCenter.x) {
             // console.log('point is in quadrant 3')
             screenEdgePointY = newSwPoint.x * slope;
             screenEdgePointX = newSwPoint.x;
@@ -79,9 +75,6 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         newRightX = newPoint.x - Math.sin(phiRight) * leg;
         newRightY = newPoint.y - Math.cos(phiRight) * leg;
 
-        // console.log('right ' + rightX, rightY);
-        // console.log('left ' + leftX, leftY);
-        // console.log('angle' + angle)
         var leftPoint = toCorner(newLeftX, newLeftY);
         var rightPoint = toCorner(newRightX, newRightY);
         leftX = leftPoint.x;
@@ -89,8 +82,6 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         rightX = rightPoint.x;
         rightY = rightPoint.y;
 
-        // console.log('right ' + rightX, rightY);
-        // console.log('left ' + leftX, leftY);
         ctxWedge.beginPath();
         ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
         ctxWedge.lineTo(point.x, point.y);
@@ -99,10 +90,8 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
         ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
         ctxWedge.lineTo(leftX, leftY);
         ctxWedge.lineWidth = 3;
-        ctxWedge.strokeStyle = '#ff0000';
+        ctxWedge.strokeStyle = color;
         ctxWedge.stroke();
-
-
         ctxWedge.font="15px Arial";
         ctxWedge.fillText(name, (leftX + rightX) / 2, (leftY + rightY) / 2);
 
@@ -113,8 +102,16 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng)
 Wedge.prototype.drawWedges = function() {
     for(var i in points)
         {
+          normalized_rating = ((points[i].rating - 3.0) / 2.0 );
+          red = 255;
+          green = parseInt(255 * (1 - normalized_rating));
+          blue = 0;
+          rating_color = "rgb(" + red + ", " + green + ", " + blue + ")";
+          if (points[i].rating < 3.0) {
+            rating_color = 'rgb(200, 200, 0)';
+          }
           wedge.drawWedge(points[i].name, points[i].distance, points[i].angle, 
-            points[i].latlng.lat(), points[i].latlng.lng());
+            points[i].latlng.lat(), points[i].latlng.lng(), rating_color);
         }
 };
 
