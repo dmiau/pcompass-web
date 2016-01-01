@@ -269,8 +269,6 @@
           markers[i].setMap(null);
         }
       markers = [];
-      console.log('markers: ' + markers)
-
       places.forEach(function(place) {
         var icon = {
           url: place.icon,
@@ -279,12 +277,9 @@
           anchor: new google.maps.Point(17, 34),
           scaledSize: new google.maps.Size(25, 25)
         };
-        //console.log(place);
       name = place.name
       rating = place.rating;
-      POI = place.geometry.location;
-      // marker = new google.maps.Marker({position: POI, map: map});
-      
+      POI = place.geometry.location;      
       marker = createMarker(place);
       var center = map.getCenter();
       distance = getDistance(center, POI);
@@ -308,7 +303,6 @@
       cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
       check();  
       document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
-      console.log(tablePoints);
       var isCentroidChecked = document.getElementById('centroidCheck').checked;
           if(isCentroidChecked)
           {
@@ -320,6 +314,9 @@
           }
       pcompass.drawNeedles();
      });
+      points = [];
+      tablepoints = [];
+      pointsDB = [];
     // map.fitBounds(bounds);
     });
 
@@ -445,7 +442,6 @@
             else {
               selectPOI(tablePoints, compass_center);
             }
-            console.log('pointsdb length' + pointsDB.length);
             if (pointsDB.length == 0)
                 return;
             for (var i in points){
@@ -618,7 +614,6 @@
             document.getElementById(contents[i].name+'Btn').onclick = function() {deletePOI(this)};
             }
           }
-          // console.log(tablePoints);
           reDraw();
         };
         reader.readAsText(file);
@@ -645,24 +640,32 @@
       var name = place.name;
       var rating = place.rating;
       var POI = place.geometry.location;
-      var contentString = '';
-      console.log(place);
+      var contentString;
 
       var infowindow = new google.maps.InfoWindow();
       var service = new google.maps.places.PlacesService(map);
-      console.log(place.place_id);
 
       service.getDetails({
         placeId: place.place_id
       }, function(place, status) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
-          contentString = '<div>'+
+          contentString= '<div>'+
           '<h4 id="firstHeading" class="firstHeading">'+ name +'</h4>'+
           '<p>' + place.formatted_address + '</p>' +
           '<p>' + place.formatted_phone_number + '</p>' +
           '<a href='+ place.website + '>+' +place.website + '</a>' +
-          '</div>';
+          '<div>' + '<img src="' + place.photos[0].getUrl({
+            'maxWidth': 150,
+            'maxHeight': 150
+        }) + ' alt="some_text" >'+
 
+          '<img src="' + place.photos[1].getUrl({
+            'maxWidth': 150,
+            'maxHeight': 150
+        }) + ' alt="some_text" >'  +
+          '</div>' +
+          '</div>';
+          
         var marker = new google.maps.Marker({
         position: POI,
         map: map,
@@ -676,13 +679,14 @@
          disableAutoPan: true
        });
       infowindow.open(map, marker);
-          console.log(marker.snippet);
           infowindowDetail = new google.maps.InfoWindow({
             content: marker.snippet,
-            disableAutoPan: true
+            maxWidth: 350,
+            disableAutoPan: true,
           });
           marker.addListener('click', function() {
             infowindowDetail.setContent( this.snippet )
+            infowindowDetail.setZIndex(10);
             infowindowDetail.open(map, this);
           });
           var center = map.getCenter();
@@ -737,7 +741,6 @@
                var name = place.name;
                var rating = place.rating;
                createMarker(place);
-               console.log(markers);
                var row = table.insertRow(table.rows.length);
                var cell1 = row.insertCell(0);
                var cell2 = row.insertCell(1);
@@ -751,11 +754,8 @@
              
              pcompass.drawNeedles();
            }
-
          });
    }
-
-
 
   function createTable (){
   }
@@ -770,7 +770,6 @@
                   if (secondColumn.textContent == pointsDB[j].name)
                   {
                     pointsDB.splice(j, 1);
-                    
                   }
                 }
 
@@ -783,10 +782,8 @@
                   }
                 }
 
-                for (var l in markers)
-                {
-                  if (secondColumn.textContent == markers[l].title)
-                  {
+                for (var l in markers) {
+                  if (secondColumn.textContent == markers[l].title) {
                     markers[l].setMap(null);
                     markers.splice(l, 1);
                   }
