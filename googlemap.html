@@ -269,6 +269,8 @@
           markers[i].setMap(null);
         }
       markers = [];
+      console.log('markers: ' + markers)
+
       places.forEach(function(place) {
         var icon = {
           url: place.icon,
@@ -281,14 +283,9 @@
       name = place.name
       rating = place.rating;
       POI = place.geometry.location;
-      marker = new google.maps.Marker({position: POI, map: map});
-      var infowindow = new google.maps.InfoWindow({
-        content: name,
-        disableAutoPan: true
-      });
-
-      markers.push(marker);
-      infowindow.open(map, marker);
+      // marker = new google.maps.Marker({position: POI, map: map});
+      
+      marker = createMarker(place);
       var center = map.getCenter();
       distance = getDistance(center, POI);
       angle = getAngle(center, POI);
@@ -363,13 +360,13 @@
       });
 
       //trying to get markers to delete on click
-      google.maps.event.addListener(map, 'click', function(event) {
-          marker.addListener('click', function() {
-            points = points.filter(function(el){
-              return (el.latlng !== event.latLng);
-            });
-          });
-      });
+      // google.maps.event.addListener(map, 'click', function(event) {
+      //     marker.addListener('click', function() {
+      //       points = points.filter(function(el){
+      //         return (el.latlng !== event.latLng);
+      //       });
+      //     });
+      // });
 
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
@@ -644,20 +641,50 @@
       return false;
     }
 
-    var createMarker = function(POI, name, rating) {
-          var marker = new google.maps.Marker({
-            // The below line is equivalent to writing:
-            // position: new google.maps.LatLng(-34.397, 150.644)
-            position: POI,
-            map: map,
-            title: name
-          });
+    var createMarker = function(place) {
+      var name = place.name;
+      var rating = place.rating;
+      var POI = place.geometry.location;
+      var contentString = '';
+      console.log(place);
 
-          infowindow = new google.maps.InfoWindow({
-            content: name,
+      var infowindow = new google.maps.InfoWindow();
+      var service = new google.maps.places.PlacesService(map);
+      console.log(place.place_id);
+
+      service.getDetails({
+        placeId: place.place_id
+      }, function(place, status) {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          contentString = '<div>'+
+          '<h4 id="firstHeading" class="firstHeading">'+ name +'</h4>'+
+          '<p>' + place.formatted_address + '</p>' +
+          '<p>' + place.formatted_phone_number + '</p>' +
+          '<a href='+ place.website + '>+' +place.website + '</a>' +
+          '</div>';
+
+        var marker = new google.maps.Marker({
+        position: POI,
+        map: map,
+        title: name,
+        snippet: contentString
+
+      });
+
+    var infowindow = new google.maps.InfoWindow({
+        content: place.name,
+         disableAutoPan: true
+       });
+      infowindow.open(map, marker);
+          console.log(marker.snippet);
+          infowindowDetail = new google.maps.InfoWindow({
+            content: marker.snippet,
             disableAutoPan: true
           });
-          infowindow.open(map, marker);
+          marker.addListener('click', function() {
+            infowindowDetail.setContent( this.snippet )
+            infowindowDetail.open(map, this);
+          });
           var center = map.getCenter();
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
@@ -678,7 +705,9 @@
             selectPOI(pointsDB, compass_center); 
           }
           markers.push(marker);
-          return POI;
+          return marker;
+        }
+      });
     };
 
     var populateDB = function() 
@@ -707,7 +736,8 @@
                var place = results[i];
                var name = place.name;
                var rating = place.rating;
-               createMarker(place.geometry.location, name, rating);
+               createMarker(place);
+               console.log(markers);
                var row = table.insertRow(table.rows.length);
                var cell1 = row.insertCell(0);
                var cell2 = row.insertCell(1);
