@@ -57,7 +57,6 @@ function submit() {
       elem = document.getElementById(id);
        point.push(elem.value)
       }
-
       question.push(point);
       console.log(point)
       console.log(question);
