@@ -18,6 +18,10 @@ app.get('/game',function(req,res){
   res.sendFile(path.join(__dirname+'/game.html'));
 });
 
+app.get('/gameauthor',function(req,res){
+  res.sendFile(path.join(__dirname+'/gameauthor.html'));
+});
+
 app.get('/builder',function(req,res){
   res.sendFile(path.join(__dirname+'/builder.html'));
 });
