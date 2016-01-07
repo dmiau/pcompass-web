@@ -11,34 +11,25 @@
   </head>
   <body>
 
+
+
     <form>
   <fieldset class="form-group">
-    <label for="exampleInputEmail1">Center</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+    <label for="center">Center</label>
+    <input type="center" class="form-control" id="center" placeholder="Ex: New York, Columbia University">
   </fieldset>
-  
-  
-
 </form>
 
-<div class="container">
-  <div class="row">
-    <input type="hidden" name="count" value="1" />
-        <div class="control-group" id="fields">
-            <div class="controls" id="profs"> 
-                <form class="input-append">
-                    <div id="field"><input autocomplete="off" class="input" id="field1" name="prof1" type="text" placeholder="Type something" data-items="8"/><button id="b1" class="btn add-more" type="button">+</button></div>
-                </form>
-            <br>
-            <small>Press + to add another form field :)</small>
-            </div>
-        </div>
-  </div>
-  </div>
+<label for="POIs">Points of Interest</label>
+<div class="input_fields_wrap">
+    <button class="add_field_button">Add More Fields</button>
+    <div><input type="text" name="mytext[]" placeholder="Distance from center"><input type="text" name="mytext[]" placeholder="Angle from north"></div>
+</div>
 
+<button type="submit" onclick="submit()" class="btn btn-info" value="Submit Button">Submit</button>
 
     <div id= "wrapper">
-      <!--<div id="map"></div>-->
+      <div id="map"></div>
       <div id="overlay">
         <div id="wedge">
             <canvas id="canvasWedge"></canvas>
