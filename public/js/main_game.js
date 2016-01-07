@@ -6,34 +6,33 @@ function initMap() {
       });
 }
 
-question = []
-
-question.push([40,70]);
-question.push([500,30]);
-question.push([30,70]);
-question.push([600,30]);
-
-
+game = []
 
 var socket = io.connect('http://localhost:3000');
 
 
-$('#createQuestion').click(function() {
+$('#authorGame').click(function() {
 	console.log(question);
-        socket.emit('Question', question);
+  socket.emit('authorGame', game);
+  console.log(game)
  })
 
+var x = 0;
 $(document).ready(function() {
     var max_fields      = 10; //maximum input boxes allowed
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
     var add_button      = $(".add_field_button"); //Add button ID
     
-    var x = 1; //initlal text box count
+     //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
-            $(wrapper).append('<div><input type="text" name="mytext[]"/><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+            var newBox = '<div><input id=distance_' + x +' type="text" name="mytext[]"/>'+
+              '<input id=angle'+ x +' type="text" name="mytext[]"/>'+
+              '<a href="#" class="remove_field">Remove</a></div>'
+            $(wrapper).append(newBox); //add input box
+            console.log(newBox)       
         }
     });
     
@@ -42,11 +41,27 @@ $(document).ready(function() {
     })
 });
 
+function submit() {
+    question = []
+    var elem = document.getElementById('center');
+    question.push(elem.value);
 
-function submit(){
-	console.log('hi')
-	AIzaSyC-V_7-ahl7rPf9iJWWQ4lFPPmqhzQNjzU
-	'https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyC-V_7-ahl7rPf9iJWWQ4lFPPmqhzQNjzU'
+    var i;
+    for (i = 0; i <= x; i++) {
+      var point = []
+      var id = "distance_" + i;
+      var elem = document.getElementById(id);
+      point.push(elem.value)
+
+      var id = "angle_" + i;
+      elem = document.getElementById(id);
+       point.push(elem.value)
+      }
+
+      question.push(point);
+      console.log(point)
+      console.log(question);
+      game.push(question)
 }
 
 function initAutocomplete() {
@@ -440,7 +455,7 @@ function initAutocomplete() {
       var pointInInterval;
 
       // console.log(points);
-      console.log(allPoints);
+      //console.log(allPoints);
       while (currentAngle < 360) 
       { 
         
@@ -799,6 +814,4 @@ document.getElementById('compass').addEventListener('touchmove', function(event)
         panorama.setVisible(false);
       }
     }
->>>>>>> 1eda66a72890f32308984b863fa68ef9615573b4
-
 

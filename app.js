@@ -33,8 +33,6 @@ app.get('/demo',function(req,res){
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', function (socket) {
-  // console.log('hi')
-  // socket.emit('news', { hello: 'world' });
   socket.on('POIs', function (data) {
     console.log(data);
     var writePath = __dirname + '/data.json';
@@ -47,30 +45,17 @@ io.on('connection', function (socket) {
 
   });
 
-
-
-
-  socket.on('Question', function (data) {
-    console.log('socket received')
+  socket.on('authorGame', function (data) {
     console.log(data);
-    var writePath = __dirname + '/question.json';
+    var writePath = __dirname + '/game.json';
     fs.writeFile(writePath, JSON.stringify(data), function(err) {
     if(err) {
         return console.log(err);
     }
-    console.log("question has been created!");
+    console.log("game has been created!");
   }); 
   });
-
 });
-
-
-
-
-
-
-
-
 
 var listener = app.listen(process.env.PORT, function () {
   var host = server.address().address;

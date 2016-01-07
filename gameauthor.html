@@ -13,8 +13,6 @@
   </head>
   <body>
 
-
-
     <form>
   <fieldset class="form-group">
     <label for="center">Center</label>
@@ -25,15 +23,13 @@
 <label for="POIs">Points of Interest</label>
 <div class="input_fields_wrap">
     <button class="add_field_button">Add More Fields</button>
-    <div><input type="text" name="mytext[]" placeholder="Distance from center"><input type="text" name="mytext[]" placeholder="Angle from north"></div>
+    <div>
+      <input id="distance_0" type="text" name="mytext[]" placeholder="Distance from center">
+      <input id="angle_0" type="text" name="mytext[]" placeholder="Angle from north"></div>
 </div>
+  <button type='button' id="authorGame" class="btn btn-default">Export</button>
 
-<<<<<<< HEAD
-  <button type='button' id="createQuestion" class="btn btn-default">Create Question</button>
-
-=======
-<button type="submit" onclick="submit()" class="btn btn-info" value="Submit Button">Submit</button>
->>>>>>> 1eda66a72890f32308984b863fa68ef9615573b4
+<button type="submit" onclick="submit()" class="btn btn-info" value="Submit Button">Add Question</button>
 
     <div id= "wrapper">
       <div id="map"></div>
