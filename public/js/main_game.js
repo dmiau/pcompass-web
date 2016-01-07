@@ -108,7 +108,7 @@ function submit() {
       });
       populateDB();
       k = 3;
-      // selectPOI(pointsDB); 
+      selectPOI(pointsDB); 
 
       panorama = map.getStreetView();
       //console.log(map.getCenter());
@@ -323,19 +323,19 @@ function submit() {
     }
     var reDraw = function() {
        var center = map.getCenter();
-            console.log(pointsDB);
+            // console.log(points);
             clearAllCtx();
             bounds = map.getBounds();
             minDistance = Infinity;
             x_coord = parseInt(pcompass.x) + pcompass.r;
             y_coord = parseInt(pcompass.y) + pcompass.r;
             compass_center = fromPointToLatLng(x_coord, y_coord, map);
-
+            for (var i in pointsDB) {
                 pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
                 pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
               
-              
-            
+            }
+            selectPOI(pointsDB, compass_center);
             
             if (pointsDB.length == 0)
                 return;
@@ -351,12 +351,8 @@ function submit() {
 
            
               pcompass.drawCompass();
-              
-              
-              if(!panorama.getVisible()) {
                 pcompass.drawFOV(distanceToCompass);
                 wedge.drawWedges();  
-            }
               pcompass.drawNeedles(); 
             
     };
@@ -391,10 +387,12 @@ function submit() {
     var selectPOI = function(allPoints, center){
       // var selectedPoints = new Array();
       //Select the closest POI
-      $('.dropdown-inverse li > a').click(function(e){
-        $('.status').text(this.innerHTML);
-        k = this.innerHTML;
-      }); 
+      // $('.dropdown-inverse li > a').click(function(e){
+      //   $('.status').text(this.innerHTML);
+      //   k = this.innerHTML;
+      // }); 
+      // k = 2;
+
 
       points = [];
 
@@ -404,7 +402,7 @@ function submit() {
               allPoints[i].distance = getDistance(center, allPoints[i].latlng);
               allPoints[i].angle = getAngle(center, allPoints[i].latlng);
             
-            if(allPoints[i].distance < minDist){
+            if(allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng))){
                 minIndex = i;
                 minDist = allPoints[i].distance;
             }
@@ -418,8 +416,7 @@ function submit() {
       var pointsAdded = 1;
       var pointInInterval;
 
-      // console.log(points);
-      //console.log(allPoints);
+      console.log(allPoints);
       while (currentAngle < 360) 
       { 
         
@@ -531,7 +528,7 @@ function submit() {
           y_coord = parseInt(pcompass.y) + pcompass.r;
           compass_center = fromPointToLatLng(x_coord, y_coord, map);
         
-            selectPOI(pointsDB, compass_center); 
+          selectPOI(pointsDB, compass_center); 
           
           markers.push(marker);
           return marker;
