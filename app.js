@@ -46,7 +46,31 @@ io.on('connection', function (socket) {
 	}); 
 
   });
+
+
+
+
+  socket.on('Question', function (data) {
+    console.log('socket received')
+    console.log(data);
+    var writePath = __dirname + '/question.json';
+    fs.writeFile(writePath, JSON.stringify(data), function(err) {
+    if(err) {
+        return console.log(err);
+    }
+    console.log("question has been created!");
+  }); 
+  });
+
 });
+
+
+
+
+
+
+
+
 
 var listener = app.listen(process.env.PORT, function () {
   var host = server.address().address;
