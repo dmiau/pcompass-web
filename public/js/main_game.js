@@ -168,7 +168,7 @@ function submit() {
 
 
 
-      pointsDB = [];
+      // pointsDB = [];
       points = [];
       var places = searchBox.getPlaces();
       if (places.length == 0) {
@@ -323,13 +323,14 @@ function submit() {
     }
     var reDraw = function() {
        var center = map.getCenter();
+            console.log(pointsDB);
             clearAllCtx();
             bounds = map.getBounds();
             minDistance = Infinity;
             x_coord = parseInt(pcompass.x) + pcompass.r;
             y_coord = parseInt(pcompass.y) + pcompass.r;
             compass_center = fromPointToLatLng(x_coord, y_coord, map);
-           
+
                 pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
                 pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
               
@@ -484,7 +485,7 @@ function submit() {
       service.getDetails({
         placeId: place.place_id
       }, function(place, status) {
-        console.log(status);
+        // console.log(status);
 
 
 
