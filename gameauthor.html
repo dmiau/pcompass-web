@@ -13,33 +13,27 @@
   </head>
   <body>
 
+
+
     <form>
   <fieldset class="form-group">
-    <label for="exampleInputEmail1">Center</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+    <label for="center">Center</label>
+    <input type="center" class="form-control" id="center" placeholder="Ex: New York, Columbia University">
   </fieldset>
-  
-  
-
 </form>
 
-<div class="container">
-  <div class="row">
-    <input type="hidden" name="count" value="1" />
-        <div class="control-group" id="fields">
-            <div class="controls" id="profs"> 
-                <form class="input-append">
-                    <div id="field"><input autocomplete="off" class="input" id="field1" name="prof1" type="text" placeholder="Type something" data-items="8"/><button id="b1" class="btn add-more" type="button">+</button></div>
-                </form>
-            <br>
-            <small>Press + to add another form field :)</small>
-            </div>
-        </div>
-  </div>
-  </div>
+<label for="POIs">Points of Interest</label>
+<div class="input_fields_wrap">
+    <button class="add_field_button">Add More Fields</button>
+    <div><input type="text" name="mytext[]" placeholder="Distance from center"><input type="text" name="mytext[]" placeholder="Angle from north"></div>
+</div>
 
+<<<<<<< HEAD
   <button type='button' id="createQuestion" class="btn btn-default">Create Question</button>
 
+=======
+<button type="submit" onclick="submit()" class="btn btn-info" value="Submit Button">Submit</button>
+>>>>>>> 1eda66a72890f32308984b863fa68ef9615573b4
 
     <div id= "wrapper">
       <div id="map"></div>
