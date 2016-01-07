@@ -380,7 +380,8 @@
               allPoints[i].distance = getDistance(center, allPoints[i].latlng);
               allPoints[i].angle = getAngle(center, allPoints[i].latlng);
             
-            if(allPoints[i].distance < minDist){
+            if(allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng)))
+            {
                 minIndex = i;
                 minDist = allPoints[i].distance;
             }
