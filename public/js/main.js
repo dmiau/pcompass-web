@@ -515,16 +515,13 @@
       }, function(place, status) {
         console.log(status);
 
-
-
         if (status === 'OVER_QUERY_LIMIT'){
           contentString= '<div>'+
           '<h4 id="firstHeading" class="firstHeading">'+ name +'</h4>'+
           '</div>';
 
-
           var marker = new google.maps.Marker({
-        position: POI,
+        position: ,
         map: map,
         title: name,
         snippet: contentString

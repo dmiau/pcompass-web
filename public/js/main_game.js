@@ -29,10 +29,11 @@ $(document).ready(function() {
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
             var newBox = '<div><input id=distance_' + x +' type="text" name="mytext[]"/>'+
-              '<input id=angle'+ x +' type="text" name="mytext[]"/>'+
+              '<input id=angle_'+ x +' type="text" name="mytext[]"/>'+
               '<a href="#" class="remove_field">Remove</a></div>'
             $(wrapper).append(newBox); //add input box
-            console.log(newBox)       
+            console.log(newBox)  
+            console.log('x' + x)     
         }
     });
     
@@ -41,13 +42,15 @@ $(document).ready(function() {
     })
 });
 
+
+
 function submit() {
     question = []
     var elem = document.getElementById('center');
-    question.push(elem.value);
+    question.push(map.getCenter())
+    console.log(map.getCenter());
 
-    var i;
-    for (i = 0; i <= x; i++) {
+    for (var i = 0; i <= x; i++) {
       var point = []
       var id = "distance_" + i;
       var elem = document.getElementById(id);
@@ -56,10 +59,8 @@ function submit() {
       var id = "angle_" + i;
       elem = document.getElementById(id);
        point.push(elem.value)
-      }
-      question.push(point);
-      console.log(point)
-      console.log(question);
+       question.push(point);
+      }    
       game.push(question)
 }
 
@@ -402,7 +403,7 @@ function initAutocomplete() {
     };
 
     //Distance between to latlng objects
-    var getDistance = function(p1, p2) {
+    function getDistance (p1, p2) {
       var R = 6378137; // Earth’s mean radius in meter
       var dLat = rad(p2.lat() - p1.lat());
       var dLong = rad(p2.lng() - p1.lng());
@@ -571,10 +572,6 @@ function initAutocomplete() {
           markers.push(marker);
           return marker;
         }
-
-
-
-
 
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           // console.log(name);

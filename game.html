@@ -49,6 +49,10 @@
       <button type='button' class="btn btn-default" onclick="startGame()">Start Game</button>
       <button type='button' class="btn btn-default" onclick="nextQuestion()">Next Question</button>
     </li>
+    <li>
+     <input type="file" id="file-input" />
+     </li>
+
 
   </ul>     
       </div><!-- /.navbar-collapse -->
@@ -83,14 +87,64 @@
     <div id="answerMap"></div>
 
     <script>
-   
+    var contents;
+   function readSingleFile(e) {
+        var file = e.target.files[0];
+        if (!file) {
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          contents = e.target.result;
+          points = [];
+          contents = JSON.parse(contents);
+          console.log(contents);
+          var i;
+          // for (i = 0; i < contents.length; i++) {
+          //   //console.log(contents[0][0].lat);
+          //  // console.log(contents[0][0].lng);
+
+          //  console.log(contents[i][0].lat);
+          //  console.log(contents[i][0].lng);
+
+          //   latlng = new google.maps.LatLng(contents[i][0].lat, contents[i][0].lng);
+          //   map.setCenter(latlng);
+          // }
+          
+          // for (i in contents) {
+          //   if (contains(contents[i]) == false){
+          //     contents[i].latlng = new google.maps.LatLng(contents[i].latlng.lat, contents[i].latlng.lng) ;
+          //     tablePoints.push(contents[i]);
+          //     pointsDB.push(contents[i]);
+          //  var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+          //  var row = table.insertRow(table.rows.length);
+          //  var cell1 = row.insertCell(0);
+          //  var cell2 = row.insertCell(1);
+          //  var cell3 = row.insertCell(2);
+          //  cell1.innerHTML = contents[i].name;
+          //  cell2.innerHTML = '<input type="checkbox" id="'+contents[i].name+'">'
+          //  cell3.innerHTML = '<button type="button" id ="'+contents[i].name+'Btn'+'"   >Delete</button> '
+          //  check();
+           
+          //   document.getElementById(contents[i].name+'Btn').onclick = function() {deletePOI(this)};
+          //   }
+          // }
+          // reDraw();
+        };
+        reader.readAsText(file);
+      }
+
+      document.getElementById('file-input')
+        .addEventListener('change', readSingleFile, false);
     
 
 
     var numQuestion = 0;
-    var locations = [{lat: 40.7127, lng: -74.0079},
+    /*var locations = [{lat: 40.7127, lng: -74.0079},
     {lat: 40.7137, lng: -74.0089}, 
     {lat: 40.7147, lng: -74.0079}, {lat: 40.7157, lng: -74.0039}] //Prompts to answer
+    */
+
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
@@ -188,35 +242,12 @@
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
       
       var POI = map.getCenter();
-
-      //Create marker, get Latitude and Longitude on click
-      // google.maps.event.addListener(map, 'click', function(event) {
-
-      //     POI = event.latLng;
-
-      //     var name = 'Marker'
-      //     marker = new google.maps.Marker({position: event.latLng, map: map});
-      //     infowindow = new google.maps.InfoWindow({
-      //       content: name,
-      //       disableAutoPan: true
-      //     });
-      //     infowindow.open(map, marker);
-      //     var center = map.getCenter();
-      //     distance = getDistance(center, POI);
-      //     angle = getAngle(center, POI);
-      //     var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      //     pointsDB.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
-      //     //Add probability that user knows this location
-      //     //selectPOI(pointsDB, 3); 
-      //     pcompass.drawNeedles();
-      //     return POI;
-      // });
-
         google.maps.event.addListener(answerMap, 'click', function(event) {
            placeMarker(event.latLng);
            dist = getDistance (map.getCenter(), event.latLng)
            console.log(dist)
-           document.getElementById("myDialog").childNodes[1].innerHTML = dist.toFixed(3) + ' km';
+           document.getElementById("myDialog").childNodes[1].innerHTML = 
+           dist.toFixed(3) + ' km';
            document.getElementById("myDialog").showModal();
            console.log(map.getCenter(), event.latLng);
 
@@ -255,26 +286,23 @@
 
     }
     var reDraw = function() {
-      
        var center = map.getCenter();
        clearAllCtx();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
-
             bounds = map.getBounds();
             minDistance = Infinity;
             pcompass.drawCompass();
             for (var i in pointsDB){
               pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
               pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
-             
             }
 
-            selectPOI(pointsDB, 3);
+            //selectPOI(pointsDB, 3);
             for (var i in points){
                 // console.log('i' + i);
                 // console.log(points);
-                if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
+                if(points[i].distance < minDistance /*&& !bounds.contains(points[i].latlng)*/)
                   minDistance = points[i].distance;
             }
             //pcompass.drawFOV(minDistance);
@@ -387,13 +415,11 @@
          for (var i = 0; i < results.length/2; i++) {
            var place = results[i];
            var name = place.name;
-           createMarker(place.geometry.location, name);
+           //createMarker(place.geometry.location, name);
          }
        }
      });
   }
-
-
 
     var selected = null, // Object of the element to be moved
     x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
@@ -417,9 +443,7 @@ function _move_elem(e) {
         selected.style.top = (y_pos - y_elem) + 'px';
         pcompass.x = selected.style.left;
         pcompass.y = selected.style.top;
-
     }
-
 }
 
 // Destroy the object when we are done
@@ -449,40 +473,39 @@ function startGame() {
 function nextQuestion() {
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
-    if(numQuestion == locations.length - 1){
+    if(numQuestion == contents.length){
       alert("GG");
       return;
-
     }
-
-    numQuestion++;
-    newLocation = new google.maps.LatLng(locations[numQuestion].lat, locations[numQuestion].lng);
+    console.log(contents[0][1][0])
+    newLocation = new google.maps.LatLng(contents[numQuestion][0].lat, contents[numQuestion][0].lng);
     console.log(newLocation)
     map.panTo(newLocation);
-  
-    var newYork = new google.maps.LatLng(40.7127, -74.0079);  
-     var request = {
-       location: newYork,
-       radius: '50000',
-       types: ['store','airport','university'],
-       rankBy: google.maps.places.RankBy.PROMINENCE
-            };  // Create the PlaceService and send the request.
-     // Handle the callback with an anonymous function.
-     var service = new google.maps.places.PlacesService(map);
-     service.nearbySearch(request, function(results, status) {
-       if (status == google.maps.places.PlacesServiceStatus.OK) {
-         for (var i = 0; i < results.length/2; i++) {
-           var place = results[i];
-           var name = place.name;
-         }
-       }
-     points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': results[0]});
 
-     });
+    /* Create the markers */
+    for (var i  = 1; i < contents[numQuestion].length; i++) {
+      var angle = contents[numQuestion][i][0];
+      var distance = contents[numQuestion][i][0];
+      console.log('angle'+ angle)
+      console.log('distance'+distance)
+      console.log(contents[numQuestion][0].lat);
 
-
-
-
+       var markerLocation = new google.maps.LatLng(
+          contents[numQuestion][0].lat  +distance * Math.cos(angle), 
+          contents[numQuestion][0].lng  +distance * Math.sin(angle));
+        var marker = new google.maps.Marker({
+          position: markerLocation,
+          map: map,
+          title: 'Hello World!'
+        });
+      center = map.getCenter();
+      distance = getDistance(center, markerLocation);
+      angle = getAngle(center, markerLocation);
+        points.push({'name': 'marker', 'distance': distance, 'angle': angle, 'latlng': markerLocation});
+        pcompass.drawNeedles();
+        wedge.drawWedges();
+        }
+    numQuestion++;
 }
   function fromLatLngToPoint(lat, lng, map) {
                 latLng = new google.maps.LatLng(lat, lng);
@@ -501,10 +524,7 @@ function nextQuestion() {
 
   }
 
-
-
     </script>
-
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
         async defer>
   </script>
