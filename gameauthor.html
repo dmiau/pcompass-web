@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>Personalized Compass Map</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style_game.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
           <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
 
@@ -13,23 +13,37 @@
   </head>
   <body>
 
+  <div class = "col-md-4 center">
     <form>
   <fieldset class="form-group">
     <label for="center">Center</label>
     <input type="center" class="form-control" id="pac-input2" placeholder="Ex: New York, Columbia University">
   </fieldset>
-</form>
-
-<label for="POIs">Points of Interest</label>
-<div class="input_fields_wrap">
-    <button class="add_field_button">Add More Fields</button>
-    <div>
-      <input id="distance_0" type="text" name="mytext[]" placeholder="Distance from center">
-      <input id="angle_0" type="text" name="mytext[]" placeholder="Angle from north"></div>
+  </form>
 </div>
-  <button type='button' id="authorGame" class="btn btn-default">Export</button>
 
-<button type="submit" onclick="submit()" class="btn btn-info" value="Submit Button">Add Question</button>
+<div class="col-md-4 center">
+<label for="POIs">Points of Interest</label>
+<button type='button' class="add_field_button btn btn-info">Add More Fields</button>
+<div class="input_fields_wrap">
+  
+  <div class = "row">
+  <div class="form-group col-md-5">
+  <input id="distance_0" type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div>
+  <div class="form-group col-md-5">
+  <input id="angle_0" type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div>
+  </div>
+
+</div>
+</div>
+
+<div class="col-md-4 center">
+  <label for="export">Export to Game</label>
+  <div>
+<button type='button' id="authorGame" class="btn btn-default">Export</button>
+<button type="submit" onclick="submit()" class="btn btn-success" value="Submit Button">Add Question</button>
+</div>
+</div>
 
     <div id= "wrapper">
       <div id="map"></div>
@@ -52,11 +66,9 @@
          <script src="/js/wedge.js" async></script>
          <script src="/js/main_game.js" async></script>
       </div>  
-      <input id="pac-input" class="controls" type="text" placeholder="Search Box">
-    </div>
-     <div id = "wrapper3">
-     
-  </div>
+<!--       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+ -->    </div>
+    
       <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
         async defer></script>

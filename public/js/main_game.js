@@ -31,6 +31,9 @@ $(document).ready(function() {
             var newBox = '<div><input id=distance_' + x +' type="text" name="mytext[]"/>'+
               '<input id=angle_'+ x +' type="text" name="mytext[]"/>'+
               '<a href="#" class="remove_field">Remove</a></div>'
+            var newBox = '<div class = "row"><div class="form-group col-md-5"><input id="distance_"' + x + 
+            'type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div><div class="form-group col-md-5"><input id="angle_"' + x + 
+            'type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div><a href="#" class="remove_field">Remove</a></div>'
             $(wrapper).append(newBox); //add input box
             console.log(newBox)  
             console.log('x' + x)     
@@ -252,6 +255,10 @@ function submit() {
        
 
     map.fitBounds(bounds);
+//     var listener = google.maps.event.addListener(map, "idle", function() { 
+//   if (map.getZoom() > 16) map.setZoom(2); 
+//   google.maps.event.removeListener(listener); 
+// });
     });
 
       // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
@@ -337,8 +344,8 @@ function submit() {
               
             }
             selectPOI(pointsDB, compass_center);
-            
-            if (pointsDB.length == 0)
+            // console.log(points);
+            if (pointsDB.length == 0 || points[0] == undefined)
                 return;
             for (var i in points){
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
@@ -417,7 +424,10 @@ function submit() {
       var pointsAdded = 1;
       var pointInInterval;
 
-      console.log(allPoints);
+      // console.log(allPoints);
+      if (allPoints = [])
+        return
+
       while (currentAngle < 360) 
       { 
         
