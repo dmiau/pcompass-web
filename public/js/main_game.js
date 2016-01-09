@@ -10,14 +10,13 @@ game = []
 
 var socket = io.connect('http://localhost:3000');
 
-
 $('#authorGame').click(function() {
 	console.log(question);
   socket.emit('authorGame', game);
   console.log(game)
  })
 
-var x = 0;
+var numFields;
 $(document).ready(function() {
     var max_fields      = 10; //maximum input boxes allowed
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
@@ -26,22 +25,19 @@ $(document).ready(function() {
      //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
-        if(x < max_fields){ //max input box allowed
-            x++; //text box increment
-            var newBox = '<div><input id=distance_' + x +' type="text" name="mytext[]"/>'+
-              '<input id=angle_'+ x +' type="text" name="mytext[]"/>'+
-              '<a href="#" class="remove_field">Remove</a></div>'
-            var newBox = '<div class = "row"><div class="form-group col-md-5"><input id="distance_"' + x + 
-            'type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div><div class="form-group col-md-5"><input id="angle_"' + x + 
-            'type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div><a href="#" class="remove_field">Remove</a></div>'
+        if(numFields < max_fields){ //max input box allowed
+            numFields++; //text box increment
+            var newBox = '<div class = "row"><div class="form-group col-md-5"><input id="distance_' + numFields + 
+            '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div><div class="form-group col-md-5"><input id="angle_' + numFields + 
+            '" type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div><a href="#" class="remove_field">Remove</a></div>'
             $(wrapper).append(newBox); //add input box
             console.log(newBox)  
-            console.log('x' + x)     
+            console.log('numFields' + numFields)     
         }
     });
     
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-        e.preventDefault(); $(this).parent('div').remove(); x--;
+        e.preventDefault(); $(this).parent('div').remove(); numFields--;
     })
 });
 
@@ -53,7 +49,7 @@ function submit() {
     question.push(map.getCenter())
     console.log(map.getCenter());
 
-    for (var i = 0; i <= x; i++) {
+    for (var i = 0; i <= numFields; i++) {
       var point = []
       var id = "distance_" + i;
       var elem = document.getElementById(id);
@@ -67,12 +63,39 @@ function submit() {
       game.push(question)
 }
 
+function preview() {
+  points = [];
+  console.log('previewing')
+    for (var i = 0; i <= numFields; i++) {
+      console.log('i' + i)
+      var id = "distance_" + i;
+      var elem = document.getElementById(id);
+      distance = elem.value;
+      console.log('distance' + distance)
+
+      var id = "angle_" + i;
+      elem = document.getElementById(id);
+      angle = elem.value;
+      console.log('angle' + angle)
 
 
+      var center = map.getCenter();
+      //console.log('lat' + center.lat())
+      var markerLocation = new google.maps.LatLng(
+          center.lat()  +distance * Math.cos(angle), 
+          center.lng()  +distance * Math.sin(angle));
 
-
-
-  var markers = [];
+      //console.log('marker loc: ' + markerLocation)
+      distance = getDistance(center, markerLocation);
+      angle = getAngle(center, markerLocation);
+      points.push({'name': '', 'distance': distance, 'angle': angle, 
+        'latlng': markerLocation, 'rating': 5.0});
+      }
+      console.log(points)
+      pcompass.drawNeedles();
+      wedge.drawWedges();
+}
+    var markers = [];
     var panorama; //Streetview
     var map;
     var pointsDB = new Array(); //Database of all points
@@ -104,7 +127,7 @@ function submit() {
     canvasCompass.height = 2 * pcompass.r;
 
     function initMap() {
-
+      numFields = 0;
       var newYork = new google.maps.LatLng(40.7127, -74.0079);  
       map = new google.maps.Map(document.getElementById('map'), {
         center: newYork, // New York
@@ -172,80 +195,80 @@ function submit() {
 
 
 
-      // pointsDB = [];
-      points = [];
+      // // pointsDB = [];
+      // points = [];
       var places = searchBox.getPlaces();
       if (places.length == 0) {
         return;
       }
       // For each place, get the icon, name and location
       var bounds = new google.maps.LatLngBounds();
-      for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(null);
-        }
-      markers = [];
+      // for (var i = 0; i < markers.length; i++) {
+      //     markers[i].setMap(null);
+      //   }
+      // markers = [];
       places.forEach(function(place) {
-            var icon = {
-              url: place.icon,
-              size: new google.maps.Size(71, 71),
-              origin: new google.maps.Point(0, 0),
-              anchor: new google.maps.Point(17, 34),
-              scaledSize: new google.maps.Size(25, 25)
-            };
-          name = place.name
-          rating = place.rating;
-          POI = place.geometry.location;      
+      //       var icon = {
+      //         url: place.icon,
+      //         size: new google.maps.Size(71, 71),
+      //         origin: new google.maps.Point(0, 0),
+      //         anchor: new google.maps.Point(17, 34),
+      //         scaledSize: new google.maps.Size(25, 25)
+      //       };
+      //     // name = place.name
+      //     // rating = place.rating;
+      //     // POI = place.geometry.location;      
 
-          createMarker(place);
-          var center = map.getCenter();
-          distance = getDistance(center, POI);
-          angle = getAngle(center, POI);
+      //     // createMarker(place);
+      //     // var center = map.getCenter();
+      //     // distance = getDistance(center, POI);
+      //     // angle = getAngle(center, POI);
 
-          // tablepoints = [];
-          // $("#POItable > tr").empty();
-          // var myNode = document.getElementById("POItable > tr");
-          // while (myNode.firstChild) {
-          //     myNode.removeChild(myNode.firstChild);
-          // }
+      //     // tablepoints = [];
+      //     // $("#POItable > tr").empty();
+      //     // var myNode = document.getElementById("POItable > tr");
+      //     // while (myNode.firstChild) {
+      //     //     myNode.removeChild(myNode.firstChild);
+      //     // }
 
 
 
-          // var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-          // points.push({'name': name, 'distance': distance, 'angle': angle,
-          //  'latlng': latlng, 'rating':rating});
-          // pointsDB.push({'name': name, 'distance': distance, 'angle': angle,
-          //   'latlng': latlng, 'rating':rating});
+      //     // var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+      //     // points.push({'name': name, 'distance': distance, 'angle': angle,
+      //     //  'latlng': latlng, 'rating':rating});
+      //     // pointsDB.push({'name': name, 'distance': distance, 'angle': angle,
+      //     //   'latlng': latlng, 'rating':rating});
 
-          // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
-          //   'latlng': latlng, 'rating':rating});
+      //     // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
+      //     //   'latlng': latlng, 'rating':rating});
 
-          // var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-          // var row = table.insertRow(table.rows.length);
-          // var cell1 = row.insertCell(0);
-          // var cell2 = row.insertCell(1);
-          // var cell3 = row.insertCell(2);
-          // cell1.innerHTML = name;
-          // cell2.innerHTML = '<input type="checkbox" id="'+name+'">'
-          // cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
-          // check();  
-          // document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
-          // var isCentroidChecked = document.getElementById('centroidCheck').checked;
-          //     if(isCentroidChecked)
-          //     {
-          //       reDraw();
-          //       selectPOI(pointsDB, center); 
-          //     }
-          //     else{
-          //       selectPOI(pointsDB, compass_center); 
-          //     }
-          // pcompass.drawNeedles();
+      //     // var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+      //     // var row = table.insertRow(table.rows.length);
+      //     // var cell1 = row.insertCell(0);
+      //     // var cell2 = row.insertCell(1);
+      //     // var cell3 = row.insertCell(2);
+      //     // cell1.innerHTML = name;
+      //     // cell2.innerHTML = '<input type="checkbox" id="'+name+'">'
+      //     // cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
+      //     // check();  
+      //     // document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
+      //     // var isCentroidChecked = document.getElementById('centroidCheck').checked;
+      //     //     if(isCentroidChecked)
+      //     //     {
+      //     //       reDraw();
+      //     //       selectPOI(pointsDB, center); 
+      //     //     }
+      //     //     else{
+      //     //       selectPOI(pointsDB, compass_center); 
+      //     //     }
+      //     // pcompass.drawNeedles();
           if (place.geometry.viewport) {
          // Only geocodes have viewport.
          bounds.union(place.geometry.viewport);
        } else {
-         bounds.extend(place.geometry.location);
+          bounds.extend(place.geometry.location);
        }
-         });
+          });
       
       // points = [];
 
@@ -330,6 +353,7 @@ function submit() {
       } 
     }
     var reDraw = function() {
+      console.log('redrawing')
        var center = map.getCenter();
             // console.log(points);
             clearAllCtx();
@@ -343,19 +367,21 @@ function submit() {
                 pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
               
             }
-            selectPOI(pointsDB, compass_center);
-            // console.log(points);
-            if (pointsDB.length == 0 || points[0] == undefined)
-                return;
-            for (var i in points){
-                if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
-                  minDistance = points[i].distance;
-                  // console.log(points[i])
-                  point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
-                  centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
-                  distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
-                  distanceToCenter = Math.sqrt((Math.pow(centerpt.x - point.x, 2)) + (Math.pow(centerpt.y - point.y, 2))) 
-            }
+            //selectPOI(pointsDB, compass_center);
+            distanceToCompass = 0;
+            console.log(points);
+            if ( points[0] !== undefined)
+            {
+                for (var i in points){
+                    if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
+                      minDistance = points[i].distance;
+                      // console.log(points[i])
+                      point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
+                      centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
+                      distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
+                      distanceToCenter = Math.sqrt((Math.pow(centerpt.x - point.x, 2)) + (Math.pow(centerpt.y - point.y, 2))) 
+                }
+          }
 
            
               pcompass.drawCompass();
@@ -612,7 +638,7 @@ function submit() {
     {
         var newYork = new google.maps.LatLng(40.7127, -74.0079);
         var defaultTypes = ['university', 'airport', 'stores']
-        generatePOI(newYork, defaultTypes);
+        //generatePOI(newYork, defaultTypes);
     
   };
 

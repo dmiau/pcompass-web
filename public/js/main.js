@@ -521,7 +521,7 @@
           '</div>';
 
           var marker = new google.maps.Marker({
-        position: ,
+        position: POI,
         map: map,
         title: name,
         snippet: contentString
