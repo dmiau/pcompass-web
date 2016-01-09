@@ -73,6 +73,11 @@
       <div id="compass">
        <canvas id="canvasCompass" height = '260px' width = '260px'></canvas>
       </div>
+      <div id="FOV">
+            <canvas id="canvasFOV"></canvas>
+        </div>
+
+
        <script src="/js/pcompass.js"></script>
        <script src="/js/wedge.js"></script>
     </div>
@@ -100,36 +105,6 @@
           contents = JSON.parse(contents);
           console.log(contents);
           var i;
-          // for (i = 0; i < contents.length; i++) {
-          //   //console.log(contents[0][0].lat);
-          //  // console.log(contents[0][0].lng);
-
-          //  console.log(contents[i][0].lat);
-          //  console.log(contents[i][0].lng);
-
-          //   latlng = new google.maps.LatLng(contents[i][0].lat, contents[i][0].lng);
-          //   map.setCenter(latlng);
-          // }
-          
-          // for (i in contents) {
-          //   if (contains(contents[i]) == false){
-          //     contents[i].latlng = new google.maps.LatLng(contents[i].latlng.lat, contents[i].latlng.lng) ;
-          //     tablePoints.push(contents[i]);
-          //     pointsDB.push(contents[i]);
-          //  var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-          //  var row = table.insertRow(table.rows.length);
-          //  var cell1 = row.insertCell(0);
-          //  var cell2 = row.insertCell(1);
-          //  var cell3 = row.insertCell(2);
-          //  cell1.innerHTML = contents[i].name;
-          //  cell2.innerHTML = '<input type="checkbox" id="'+contents[i].name+'">'
-          //  cell3.innerHTML = '<button type="button" id ="'+contents[i].name+'Btn'+'"   >Delete</button> '
-          //  check();
-           
-          //   document.getElementById(contents[i].name+'Btn').onclick = function() {deletePOI(this)};
-          //   }
-          // }
-          // reDraw();
         };
         reader.readAsText(file);
       }
@@ -140,14 +115,14 @@
 
 
     var numQuestion = 0;
-    /*var locations = [{lat: 40.7127, lng: -74.0079},
-    {lat: 40.7137, lng: -74.0089}, 
-    {lat: 40.7147, lng: -74.0079}, {lat: 40.7157, lng: -74.0039}] //Prompts to answer
-    */
-
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
+
+    var canvasFOV = document.getElementById("canvasFOV");
+    canvasFOV.setAttribute('width', window.innerWidth);
+    canvasFOV.setAttribute('height', window.innerHeight);
+    var ctxFOV = canvasFOV.getContext("2d");
 
     var canvasCompass = document.getElementById("canvasCompass");
     var ctxCompass = canvasCompass.getContext("2d");
@@ -305,7 +280,7 @@
                 if(points[i].distance < minDistance /*&& !bounds.contains(points[i].latlng)*/)
                   minDistance = points[i].distance;
             }
-            //pcompass.drawFOV(minDistance);
+            pcompass.drawFOV(minDistance);
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
     }
@@ -482,31 +457,87 @@ function nextQuestion() {
     console.log(newLocation)
     map.panTo(newLocation);
 
-    /* Create the markers */
+      createPOIs();
+        pcompass.drawNeedles();
+        wedge.drawWedges();
+            numQuestion++;
+}
+
+
+function toRad(deg) {
+      return deg* Math.PI / 180;
+}
+
+function toDeg(rad) {
+      return rad * 180 / Math.PI;
+}
+
+function getDestination(center, brng, dist) {
+     dist = dist / 6371;  
+     brng = toRad(brng);  
+     var lat1 = toRad(center.lat()), lon1 = toRad(center.lng());
+     var lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + 
+                          Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+     var lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) *
+                                  Math.cos(lat1), 
+                                  Math.cos(dist) - Math.sin(lat1) *
+                                  Math.sin(lat2));
+     if (isNaN(lat2) || isNaN(lon2)) return null;
+     return new google.maps.LatLng(toDeg(lat2), toDeg(lon2));
+  }
+
+  // drawFOV(dist)
+  //  {
+  //         r = parseInt(this.r)
+
+  //         var x_pc = r + parseInt(this.x)
+  //         var y_pc = r + parseInt(this.y)
+  //         var x_map = innerWidth/2;
+  //         var y_map = innerHeight/2;
+
+
+  //         var compassX = x_pc - x_map;
+  //         var compassY = y_pc - y_map;
+          
+  //         var offset_ratio_x = compassX / innerWidth;
+  //         var offset_ratio_y = compassY / innerHeight;
+
+  //         var w_fov = innerWidth * r / dist;
+  //         var h_fov = innerHeight * r / dist;
+
+  //         offsetX = w_fov * offset_ratio_x;
+  //         offsetY = h_fov * offset_ratio_y;
+          
+
+  //         ctxFOV.beginPath();
+  //         ctxFOV.lineWidth="2";
+  //         ctxFOV.strokeStyle="black";
+
+  //         ctxFOV.rect(x_pc - w_fov/2 - offsetX, y_pc - h_fov/2 - offsetY, w_fov, h_fov);
+
+  //         ctxFOV.stroke(); 
+  //   };
+
+function createPOIs() {
     for (var i  = 1; i < contents[numQuestion].length; i++) {
-      var angle = contents[numQuestion][i][0];
+      var angle = contents[numQuestion][i][1];
       var distance = contents[numQuestion][i][0];
       console.log('angle'+ angle)
       console.log('distance'+distance)
       console.log(contents[numQuestion][0].lat);
-
-       var markerLocation = new google.maps.LatLng(
-          contents[numQuestion][0].lat  +distance * Math.cos(angle), 
-          contents[numQuestion][0].lng  +distance * Math.sin(angle));
+      var center = map.getCenter();
+      var markerLocation = getDestination(center, angle, distance);
         var marker = new google.maps.Marker({
           position: markerLocation,
-          map: map,
-          title: 'Hello World!'
+          map: answerMap,
         });
-      center = map.getCenter();
       distance = getDistance(center, markerLocation);
       angle = getAngle(center, markerLocation);
-        points.push({'name': 'marker', 'distance': distance, 'angle': angle, 'latlng': markerLocation});
-        pcompass.drawNeedles();
-        wedge.drawWedges();
-        }
-    numQuestion++;
+      points.push({'name': '', 'distance': distance, 'angle': angle, 
+        'latlng': markerLocation, 'rating': 5.0});
+      }
 }
+
   function fromLatLngToPoint(lat, lng, map) {
                 latLng = new google.maps.LatLng(lat, lng);
                 var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());

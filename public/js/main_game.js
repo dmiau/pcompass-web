@@ -1,19 +1,9 @@
-function initMap() {
-      var newYork = new google.maps.LatLng(40.7127, -74.0079);  
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: newYork, // New York
-        zoom: 15
-      });
-}
-
 game = []
 
 var socket = io.connect('http://localhost:3000');
 
 $('#authorGame').click(function() {
-	console.log(question);
   socket.emit('authorGame', game);
-  console.log(game)
  })
 
 var numFields;
@@ -31,30 +21,50 @@ $(document).ready(function() {
             '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div><div class="form-group col-md-5"><input id="angle_' + numFields + 
             '" type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div><a href="#" class="remove_field">Remove</a></div>'
             $(wrapper).append(newBox); //add input box
-            console.log(newBox)  
             console.log('numFields' + numFields)     
         }
     });
-    
     $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
         e.preventDefault(); $(this).parent('div').remove(); numFields--;
     })
 });
 
+function toRad(deg) {
+           return deg* Math.PI / 180;
+        }
+
+     function toDeg(rad) {
+           return rad * 180 / Math.PI;
+        }
+
+    function getDestination(center, brng, dist) {
+         dist = dist / 6371;  
+         brng = toRad(brng);  
+         var lat1 = toRad(center.lat()), lon1 = toRad(center.lng());
+         var lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) + 
+                              Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
+         var lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) *
+                                      Math.cos(lat1), 
+                                      Math.cos(dist) - Math.sin(lat1) *
+                                      Math.sin(lat2));
+         if (isNaN(lat2) || isNaN(lon2)) return null;
+         return new google.maps.LatLng(toDeg(lat2), toDeg(lon2));
+      }
+
 
 
 function submit() {
+    points = []
+    clearAllCtx();
+    pcompass.drawCompass();
     question = []
     var elem = document.getElementById('center');
     question.push(map.getCenter())
-    console.log(map.getCenter());
-
     for (var i = 0; i <= numFields; i++) {
       var point = []
       var id = "distance_" + i;
       var elem = document.getElementById(id);
       point.push(elem.value)
-
       var id = "angle_" + i;
       elem = document.getElementById(id);
        point.push(elem.value)
@@ -65,27 +75,15 @@ function submit() {
 
 function preview() {
   points = [];
-  console.log('previewing')
     for (var i = 0; i <= numFields; i++) {
-      console.log('i' + i)
       var id = "distance_" + i;
       var elem = document.getElementById(id);
       distance = elem.value;
-      console.log('distance' + distance)
-
       var id = "angle_" + i;
       elem = document.getElementById(id);
       angle = elem.value;
-      console.log('angle' + angle)
-
-
       var center = map.getCenter();
-      //console.log('lat' + center.lat())
-      var markerLocation = new google.maps.LatLng(
-          center.lat()  +distance * Math.cos(angle), 
-          center.lng()  +distance * Math.sin(angle));
-
-      //console.log('marker loc: ' + markerLocation)
+      var markerLocation = getDestination(center, angle, distance);
       distance = getDistance(center, markerLocation);
       angle = getAngle(center, markerLocation);
       points.push({'name': '', 'distance': distance, 'angle': angle, 
@@ -118,8 +116,6 @@ function preview() {
     canvasLabels.setAttribute('height', window.innerHeight);
     var ctxLabels = canvasLabels.getContext("2d");
 
-   
-
     var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
     var wedge = new Wedge();
     var canvasCompass = document.getElementById('canvasCompass');
@@ -135,7 +131,7 @@ function preview() {
       });
       populateDB();
       k = 3;
-      selectPOI(pointsDB); 
+      //selectPOI(pointsDB); 
 
       panorama = map.getStreetView();
       //console.log(map.getCenter());
@@ -353,40 +349,35 @@ function preview() {
       } 
     }
     var reDraw = function() {
-      console.log('redrawing')
-       var center = map.getCenter();
-            // console.log(points);
-            clearAllCtx();
-            bounds = map.getBounds();
-            minDistance = Infinity;
-            x_coord = parseInt(pcompass.x) + pcompass.r;
-            y_coord = parseInt(pcompass.y) + pcompass.r;
-            compass_center = fromPointToLatLng(x_coord, y_coord, map);
-            for (var i in pointsDB) {
-                pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
-                pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
-              
-            }
-            //selectPOI(pointsDB, compass_center);
-            distanceToCompass = 0;
-            console.log(points);
-            if ( points[0] !== undefined)
-            {
-                for (var i in points){
-                    if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
-                      minDistance = points[i].distance;
-                      // console.log(points[i])
-                      point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
-                      centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
-                      distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
-                      distanceToCenter = Math.sqrt((Math.pow(centerpt.x - point.x, 2)) + (Math.pow(centerpt.y - point.y, 2))) 
-                }
+      var center = map.getCenter();
+      clearAllCtx();
+      bounds = map.getBounds();
+      minDistance = Infinity;
+      x_coord = parseInt(pcompass.x) + pcompass.r;
+      y_coord = parseInt(pcompass.y) + pcompass.r;
+      compass_center = fromPointToLatLng(x_coord, y_coord, map);
+      // for (var i in pointsDB) {
+      //     pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
+      //     pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
+        
+      // }
+      distanceToCompass = 0;
+      //console.log(points);
+      if ( points[0] !== undefined)
+      {
+          for (var i in points){
+              if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
+                minDistance = points[i].distance;
+                point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
+                centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
+                distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
+                distanceToCenter = Math.sqrt((Math.pow(centerpt.x - point.x, 2)) + (Math.pow(centerpt.y - point.y, 2))) 
           }
+    }
 
-           
               pcompass.drawCompass();
-                pcompass.drawFOV(distanceToCompass);
-                wedge.drawWedges();  
+              pcompass.drawFOV(distanceToCompass);
+              wedge.drawWedges();  
               pcompass.drawNeedles(); 
             
     };
@@ -450,7 +441,6 @@ function preview() {
       var pointsAdded = 1;
       var pointInInterval;
 
-      // console.log(allPoints);
       if (allPoints = [])
         return
 
@@ -479,8 +469,7 @@ function preview() {
         
           currentAngle += angleInterval;
       }
-      // console.log(points);
-      // console.log(points[0])
+
      
     };
 
@@ -515,12 +504,9 @@ function preview() {
       var infowindow = new google.maps.InfoWindow();
       var service = new google.maps.places.PlacesService(map);
 
-      // console.log(name);
       service.getDetails({
         placeId: place.place_id
       }, function(place, status) {
-        // console.log(status);
-
 
 
         if (status === 'OVER_QUERY_LIMIT'){
@@ -661,7 +647,7 @@ function preview() {
                var place = results[i];
                var name = place.name;
                var rating = place.rating;
-               createMarker(place);
+               //createMarker(place);
             
              }
              
