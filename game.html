@@ -151,13 +151,12 @@
         mapTypeControl: false,
         scaleControl: false,
         draggable: false,
-        minZoom: 17,
-        maxZoom: 17
+      
 
       });
       answerMap = new google.maps.Map(document.getElementById('answerMap'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
-        zoom: 9
+        zoom: 12
       });
       populateDB();
       // selectPOI(pointsDB, 3); 
@@ -172,6 +171,7 @@
     // Bias the SearchBox results towards current map's viewport.
     map.addListener('bounds_changed', function() {
       searchBox.setBounds(map.getBounds());
+
     });
 
 
@@ -458,9 +458,20 @@ function nextQuestion() {
       alert("You were off by a total of " + totalDist.toFixed(3) +" km");
       return;
     }
-    console.log(contents[0][1][0])
-    newLocation = new google.maps.LatLng(contents[numQuestion][0].lat, contents[numQuestion][0].lng);
+    console.log('loc' + contents[numQuestion][0][0])
+    console.log('loc' + contents[numQuestion][0][0].lat + ' ' + contents[numQuestion][0][0].lng)
+
+    newLocation = new google.maps.LatLng(contents[numQuestion][0][0].lat, 
+      contents[numQuestion][0][0].lng);
+
+
+
+    console.log('zoom' + contents[numQuestion][0][1])
+
+
+
     console.log(newLocation)
+    map.setZoom(contents[numQuestion][0][1])
     map.panTo(newLocation);
 
     createPOIs();
@@ -538,7 +549,6 @@ function createPOIs() {
       var distance = contents[numQuestion][i][0];
       console.log('angle'+ angle)
       console.log('distance'+distance)
-      console.log(contents[numQuestion][0].lat);
       var center = map.getCenter();
       var markerLocation = getDestination(center, angle, distance);
       var marker = new google.maps.Marker({
