@@ -321,7 +321,7 @@
               }
               else{
               if(!panorama.getVisible()) {
-                pcompass.drawFOV(distanceToCompass);
+                pcompass.drawFOV(distanceToCompass, innerHeight);
               }
               
                }
