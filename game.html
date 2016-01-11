@@ -115,6 +115,7 @@
 
     var markers = [];
     var numQuestion = 0;
+    totalDist = 0;
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
@@ -220,7 +221,8 @@
         google.maps.event.addListener(answerMap, 'click', function(event) {
            placeMarker(event.latLng);
            dist = getDistance (map.getCenter(), event.latLng)
-           console.log(dist)
+           totalDist += dist;
+           //console.log(dist)
            document.getElementById("myDialog").childNodes[1].innerHTML = 
            dist.toFixed(3) + ' km';
            document.getElementById("myDialog").showModal();
@@ -236,6 +238,7 @@
                 map: answerMap,
                 icon: 'http://rogcommunity.com/forums/images/awards/waldo.png'
             });
+            markers.push(marker)
         }
 
       //trying to get markers to delete on click
@@ -450,7 +453,7 @@ function nextQuestion() {
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
     if(numQuestion == contents.length){
-      alert("GG");
+      alert("You were off by a total of " + totalDist.toFixed(3) +" km");
       return;
     }
     console.log(contents[0][1][0])
