@@ -121,7 +121,7 @@
 
     var canvasFOV = document.getElementById("canvasFOV");
     canvasFOV.setAttribute('width', window.innerWidth);
-    canvasFOV.setAttribute('height', window.innerHeight);
+    canvasFOV.setAttribute('height', window.innerHeight/2);
     var ctxFOV = canvasFOV.getContext("2d");
 
     var canvasCompass = document.getElementById("canvasCompass");
@@ -129,11 +129,11 @@
 
     var canvasWedge = document.getElementById("canvasWedge");
     canvasWedge.setAttribute('width', window.innerWidth);
-    canvasWedge.setAttribute('height', window.innerHeight);
+    canvasWedge.setAttribute('height', window.innerHeight/2);
 
     var canvasLabels = document.getElementById("canvasLabels");
     canvasLabels.setAttribute('width', window.innerWidth);
-    canvasLabels.setAttribute('height', window.innerHeight);
+    canvasLabels.setAttribute('height', window.innerHeight/2);
     var ctxLabels = canvasLabels.getContext("2d");
 
     var ctxWedge = canvasWedge.getContext("2d");
@@ -277,7 +277,7 @@
             for (var i in points){
                 // console.log('i' + i);
                 // console.log(points);
-                if(points[i].distance < minDistance /*&& !bounds.contains(points[i].latlng)*/)
+                if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
             }
             pcompass.drawFOV(minDistance);
@@ -428,7 +428,7 @@ function _destroy() {
 
 // Bind the functions...
 document.getElementById('compass').onmousedown = function () {
-    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight/2);
     _drag_init(this);
     return false;
 };
@@ -444,8 +444,12 @@ document.onmouseup = _destroy;
 //*FUNCTIONS FOR THE GAME*//
 function startGame() {
     console.log("starting the game");
+    if (numQuestion == 0)
+      nextQuestion();
 }
 function nextQuestion() {
+    console.log(points);
+    points = [];
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
     if(numQuestion == contents.length){
@@ -457,10 +461,12 @@ function nextQuestion() {
     console.log(newLocation)
     map.panTo(newLocation);
 
-      createPOIs();
-        pcompass.drawNeedles();
-        wedge.drawWedges();
-            numQuestion++;
+    createPOIs();
+    // pcompass.drawNeedles();
+    // pcompass.drawFOV(minDistance)
+    // wedge.drawWedges();
+    reDraw();
+    numQuestion++;
 }
 
 
@@ -549,9 +555,10 @@ function createPOIs() {
         }
 
     function clearAllCtx() {
-    ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
-    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
-    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxFOV.clearRect(0,0,window.innerWidth, window.innerHeight/2);
+    ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight/2);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight/2);
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight/2);
 
   }
 
