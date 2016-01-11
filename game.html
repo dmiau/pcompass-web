@@ -113,8 +113,9 @@
         .addEventListener('change', readSingleFile, false);
     
 
-
+    var markers = [];
     var numQuestion = 0;
+    totalDist = 0;
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
@@ -220,7 +221,8 @@
         google.maps.event.addListener(answerMap, 'click', function(event) {
            placeMarker(event.latLng);
            dist = getDistance (map.getCenter(), event.latLng)
-           console.log(dist)
+           totalDist += dist;
+           //console.log(dist)
            document.getElementById("myDialog").childNodes[1].innerHTML = 
            dist.toFixed(3) + ' km';
            document.getElementById("myDialog").showModal();
@@ -236,6 +238,7 @@
                 map: answerMap,
                 icon: 'http://rogcommunity.com/forums/images/awards/waldo.png'
             });
+            markers.push(marker)
         }
 
       //trying to get markers to delete on click
@@ -448,12 +451,11 @@ function startGame() {
       nextQuestion();
 }
 function nextQuestion() {
-    console.log(points);
     points = [];
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
     if(numQuestion == contents.length){
-      alert("GG");
+      alert("You were off by a total of " + totalDist.toFixed(3) +" km");
       return;
     }
     console.log(contents[0][1][0])
@@ -525,6 +527,12 @@ function getDestination(center, brng, dist) {
   //   };
 
 function createPOIs() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+
+
+
     for (var i  = 1; i < contents[numQuestion].length; i++) {
       var angle = contents[numQuestion][i][1];
       var distance = contents[numQuestion][i][0];
@@ -533,10 +541,11 @@ function createPOIs() {
       console.log(contents[numQuestion][0].lat);
       var center = map.getCenter();
       var markerLocation = getDestination(center, angle, distance);
-        var marker = new google.maps.Marker({
-          position: markerLocation,
-          map: answerMap,
-        });
+      var marker = new google.maps.Marker({
+        position: markerLocation,
+        map: answerMap,
+      });
+      markers.push(marker);
       distance = getDistance(center, markerLocation);
       angle = getAngle(center, markerLocation);
       points.push({'name': '', 'distance': distance, 'angle': angle, 
