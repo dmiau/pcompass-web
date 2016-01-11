@@ -37,6 +37,13 @@ background-color: #ffffff;
   height:100%;
 }
 
+#header{
+  height:0%;
+}
+#maps{
+  height:93%;
+}
+
 #mapCompass{
   width:100%;
   height:100%;
