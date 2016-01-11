@@ -11,7 +11,6 @@
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   </head>
   <body>
-<div id="header">
 
     <nav class="navbar navbar-default">
   <div class="container-fluid">
@@ -59,7 +58,6 @@
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
-</div>
 <div id="maps">
     <div id="questionMap"></div>
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
@@ -458,8 +456,6 @@ function startGame() {
       nextQuestion();
 }
 function nextQuestion() {
-  if (numQuestion > 0)
-  {
     points = [];
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
@@ -489,7 +485,6 @@ function nextQuestion() {
     // wedge.drawWedges();
     reDraw();
     numQuestion++;
-  }
 }
 
 
