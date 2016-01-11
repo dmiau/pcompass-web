@@ -451,8 +451,12 @@ document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
     pcompass.drawCompass();
 //*FUNCTIONS FOR THE GAME*//
+var start;
+var end;
 function startGame() {
+  start = new Date().getTime();
     console.log("starting the game");
+
     if (numQuestion == 0)
       nextQuestion();
 }
@@ -461,7 +465,10 @@ function nextQuestion() {
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
     if(numQuestion == contents.length){
-      alert("You were off by a total of " + totalDist.toFixed(3) +" km");
+      end = new Date().getTime();
+      timeElapsed = (end - start) / 1000;
+      alert("You were off by a total of " + totalDist.toFixed(3) +" km" +
+        "you took " + timeElapsed + " seconds");
       return;
     }
     console.log('loc' + contents[numQuestion][0][0])
