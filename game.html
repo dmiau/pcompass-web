@@ -113,7 +113,7 @@
         .addEventListener('change', readSingleFile, false);
     
 
-
+    var markers = [];
     var numQuestion = 0;
     var map;
     var pointsDB = new Array(); //Database of all points
@@ -446,6 +446,7 @@ function startGame() {
     console.log("starting the game");
 }
 function nextQuestion() {
+  //markers = []
     console.log("next Question");
     console.log('numQuestion' + numQuestion);
     if(numQuestion == contents.length){
@@ -457,10 +458,10 @@ function nextQuestion() {
     console.log(newLocation)
     map.panTo(newLocation);
 
-      createPOIs();
-        pcompass.drawNeedles();
-        wedge.drawWedges();
-            numQuestion++;
+    createPOIs();
+    pcompass.drawNeedles();
+    wedge.drawWedges();
+    numQuestion++;
 }
 
 
@@ -519,6 +520,12 @@ function getDestination(center, brng, dist) {
   //   };
 
 function createPOIs() {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(null);
+  }
+
+
+
     for (var i  = 1; i < contents[numQuestion].length; i++) {
       var angle = contents[numQuestion][i][1];
       var distance = contents[numQuestion][i][0];
@@ -527,10 +534,11 @@ function createPOIs() {
       console.log(contents[numQuestion][0].lat);
       var center = map.getCenter();
       var markerLocation = getDestination(center, angle, distance);
-        var marker = new google.maps.Marker({
-          position: markerLocation,
-          map: answerMap,
-        });
+      var marker = new google.maps.Marker({
+        position: markerLocation,
+        map: answerMap,
+      });
+      markers.push(marker);
       distance = getDistance(center, markerLocation);
       angle = getAngle(center, markerLocation);
       points.push({'name': '', 'distance': distance, 'angle': angle, 
