@@ -104,7 +104,7 @@ var PCompass= function (lat, lng, x , y, r) {
         ctxCompass.stroke();
     };
     //Takes distance of closest point, outside of FOV
-    PCompass.prototype.drawFOV = function(dist)
+    PCompass.prototype.drawFOV = function(dist, innerHeight)
     {
           r = parseInt(this.r)
 

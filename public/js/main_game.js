@@ -18,7 +18,7 @@ $(document).ready(function() {
         if(numFields < max_fields){ //max input box allowed
             numFields++; //text box increment
             var newBox = '<div class = "row"><div class="form-group col-md-5"><input id="distance_' + numFields + 
-            '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div><div class="form-group col-md-5"><input id="angle_' + numFields + 
+            '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center (km)"></div><div class="form-group col-md-5"><input id="angle_' + numFields + 
             '" type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div><a href="#" class="remove_field">Remove</a></div>'
             $(wrapper).append(newBox); //add input box
             console.log('numFields' + numFields)     
@@ -376,7 +376,7 @@ function preview() {
     }
 
               pcompass.drawCompass();
-              pcompass.drawFOV(distanceToCompass);
+              pcompass.drawFOV(distanceToCompass, innerHeight);
               wedge.drawWedges();  
               pcompass.drawNeedles(); 
             

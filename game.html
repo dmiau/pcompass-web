@@ -122,7 +122,7 @@
 
     var canvasFOV = document.getElementById("canvasFOV");
     canvasFOV.setAttribute('width', window.innerWidth);
-    canvasFOV.setAttribute('height', window.innerHeight/2);
+    canvasFOV.setAttribute('height', window.innerHeight);
     var ctxFOV = canvasFOV.getContext("2d");
 
     var canvasCompass = document.getElementById("canvasCompass");
@@ -130,11 +130,11 @@
 
     var canvasWedge = document.getElementById("canvasWedge");
     canvasWedge.setAttribute('width', window.innerWidth);
-    canvasWedge.setAttribute('height', window.innerHeight/2);
+    canvasWedge.setAttribute('height', window.innerHeight);
 
     var canvasLabels = document.getElementById("canvasLabels");
     canvasLabels.setAttribute('width', window.innerWidth);
-    canvasLabels.setAttribute('height', window.innerHeight/2);
+    canvasLabels.setAttribute('height', window.innerHeight);
     var ctxLabels = canvasLabels.getContext("2d");
 
     var ctxWedge = canvasWedge.getContext("2d");
@@ -265,6 +265,7 @@
     }
     var reDraw = function() {
        var center = map.getCenter();
+       var distanceToCompass;
        clearAllCtx();
             ctxCompass.clearRect(0, 0, canvasCompass.width, canvasCompass.height);
             ctxWedge.clearRect(0, 0, canvasWedge.width, canvasWedge.height);
@@ -282,8 +283,13 @@
                 // console.log(points);
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
+
+                  point = fromLatLngToPoint(points[i].latlng.lat(), points[i].latlng.lng(), map);
+                  centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
+                  distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
             }
-            pcompass.drawFOV(minDistance);
+            console.log(distanceToCompass);
+            pcompass.drawFOV(distanceToCompass, innerHeight/2);
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
     }
@@ -431,7 +437,7 @@ function _destroy() {
 
 // Bind the functions...
 document.getElementById('compass').onmousedown = function () {
-    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight/2);
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
     _drag_init(this);
     return false;
 };
@@ -564,10 +570,10 @@ function createPOIs() {
         }
 
     function clearAllCtx() {
-    ctxFOV.clearRect(0,0,window.innerWidth, window.innerHeight/2);
-    ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight/2);
-    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight/2);
-    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight/2);
+    ctxFOV.clearRect(0,0,window.innerWidth, window.innerHeight);
+    ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
+    ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
 
   }
 
