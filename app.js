@@ -2,6 +2,8 @@ var express = require('express')//.createServer(); //
 var app = express();
 var path = require("path");
 var fs = require("fs");
+var favicon = require('serve-favicon');
+app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 
 // var app = require('express')();
 var server = require('http').Server(app);
