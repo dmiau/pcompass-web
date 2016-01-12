@@ -33,6 +33,8 @@ app.get('/demo',function(req,res){
 app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', function (socket) {
+
+
   socket.on('POIs', function (data) {
     console.log(data);
     var writePath = __dirname + '/data.json';
@@ -55,6 +57,19 @@ io.on('connection', function (socket) {
     console.log("game has been created!");
   }); 
   });
+
+  socket.on('gameResults', function (data) {
+     console.log(data);
+    // var writePath = __dirname + '/game.json';
+    // fs.writeFile(writePath, JSON.stringify(data), function(err) {
+    // if(err) {
+    //     return console.log(err);
+    // }
+    console.log("tigme!");
+  // }); 
+  });
+
+
 });
 
 var listener = app.listen(process.env.PORT, function () {

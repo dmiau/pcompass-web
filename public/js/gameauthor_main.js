@@ -71,7 +71,13 @@ function submit() {
        question.push(point);
       }    
       game.push(question)
+      $("#success").html("Question added!");
 }
+
+function exportSuccess() {
+  $("#success").html("Exported!");
+}
+
 
 function preview() {
   points = [];
