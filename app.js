@@ -67,7 +67,7 @@ io.on('connection', function (socket) {
     // if(err) {
     //     return console.log(err);
     // }
-    console.log("tigme!");
+    console.log("time!");
   // }); 
   });
 
@@ -82,24 +82,37 @@ var listener = app.listen(process.env.PORT, function () {
 });
 
 
-// var Spreadsheet = require('edit-google-spreadsheet');
-// Spreadsheet.load({
-//     debug: true,
-//     spreadsheetName: 'pcompass-user-results',
-//     worksheetName: 'Sheet1', 
-//     oauth2: {
-//       client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
-//       client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
-//       refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
-//     },
-//   }, function sheetReady(err, spreadsheet) {
+var Spreadsheet = require('edit-google-spreadsheet');
+Spreadsheet.load({
+    debug: true,
+    spreadsheetName: 'pcompass-user-results',
+    worksheetName: 'Sheet1', 
+    oauth2: {
+      client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
+      client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
+      refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
+    },
+  }, function sheetReady(err, spreadsheet) {
+    spreadsheet.receive(function(err, rows, info) {
+      if(err) throw err;
+      console.log("Found rows:", rows);
+      
+      lastRow = info.lastRow+1
+      console.log(lastRow);
+      // Found rows: { '3': { '5': 'hello!' } } 
+    });
 
 
 
-//     if(err) throw err;
-//     spreadsheet.add({2 : [[1]]});
-//     spreadsheet.send(function(err) {
-//       if(err) throw err;
-//     });
-//   });
+    if(err) throw err;
+    console.log(lastRow);
+    spreadsheet.add({ lastRow: { 6: "hi!" } });
+ 
+    spreadsheet.send(function(err) {
+      if(err) throw err;
+      console.log("Updated Cell at row 3, column 5 to 'hello!'");
+    });
+  });
+
+
 
