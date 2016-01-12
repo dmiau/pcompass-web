@@ -60,7 +60,7 @@
   </nav>
 <div id="maps">
     <div id="questionMap"></div>
-    <input id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box"> -->
 
     <div id="overlay">
       <div id="wedge">
@@ -115,6 +115,7 @@
     var markers = [];
     var numQuestion = 0;
     totalDist = 0;
+    previousDist = 0;
     var map;
     var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
@@ -150,12 +151,14 @@
         mapTypeControl: false,
         scaleControl: false,
         draggable: false,
+        streetViewControl: false,
+        disableDefaultUI: true,
       
 
       });
       answerMap = new google.maps.Map(document.getElementById('answerMap'), {
         center: {lat: 40.7127, lng: -74.0079}, // New York
-        zoom: 12
+        zoom: 2
       });
       populateDB();
       // selectPOI(pointsDB, 3); 
@@ -163,69 +166,71 @@
     answerMap.setOptions({ draggableCursor : "url(http://rogcommunity.com/forums/images/awards/waldo.png) 10 50, auto" })
 
     // Create the search box and link it to the UI element.
-    var input = document.getElementById('pac-input');
-    var searchBox = new google.maps.places.SearchBox(input);
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+    // var input = document.getElementById('pac-input');
+    // var searchBox = new google.maps.places.SearchBox(input);
+    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-    // Bias the SearchBox results towards current map's viewport.
-    map.addListener('bounds_changed', function() {
-      searchBox.setBounds(map.getBounds());
+    // // Bias the SearchBox results towards current map's viewport.
+    // map.addListener('bounds_changed', function() {
+    //   searchBox.setBounds(map.getBounds());
 
-    });
+    // });
 
 
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
-    searchBox.addListener('places_changed', function() {
-      var places = searchBox.getPlaces();
+    // searchBox.addListener('places_changed', function() {
+    //   var places = searchBox.getPlaces();
 
-      if (places.length == 0) {
-        return;
-      }
+    //   if (places.length == 0) {
+    //     return;
+    //   }
 
-      // For each place, get the icon, name and location
-      var bounds = new google.maps.LatLngBounds();
-      places.forEach(function(place) {
-        var icon = {
-          url: place.icon,
-          size: new google.maps.Size(71, 71),
-          origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(17, 34),
-          scaledSize: new google.maps.Size(25, 25)
-        };
-      });
+    //   // For each place, get the icon, name and location
+    //   var bounds = new google.maps.LatLngBounds();
+    //   places.forEach(function(place) {
+    //     var icon = {
+    //       url: place.icon,
+    //       size: new google.maps.Size(71, 71),
+    //       origin: new google.maps.Point(0, 0),
+    //       anchor: new google.maps.Point(17, 34),
+    //       scaledSize: new google.maps.Size(25, 25)
+    //     };
+    //   });
 
-      name = places[0].name
-      POI = places[0].geometry.location;
-      marker = new google.maps.Marker({position: POI, map: map});
-      var infowindow = new google.maps.InfoWindow({
-        content: name,
-        disableAutoPan: true
-      });
-      infowindow.open(map, marker);
-      var center = map.getCenter();
-      distance = getDistance(center, POI);
-      angle = getAngle(center, POI);
-      var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+    //   name = places[0].name
+    //   POI = places[0].geometry.location;
+    //   marker = new google.maps.Marker({position: POI, map: map});
+    //   var infowindow = new google.maps.InfoWindow({
+    //     content: name,
+    //     disableAutoPan: true
+    //   });
+    //   infowindow.open(map, marker);
+    //   var center = map.getCenter();
+    //   distance = getDistance(center, POI);
+    //   angle = getAngle(center, POI);
+    //   var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+    //   points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
 
-      pcompass.drawNeedles();
+    //   pcompass.drawNeedles();
 
-      // map.fitBounds(bounds);
-    });
+    //   // map.fitBounds(bounds);
+    // });
 
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
       
       var POI = map.getCenter();
+      var numClicks;
+
         google.maps.event.addListener(answerMap, 'click', function(event) {
+          previousDist = totalDist;
            placeMarker(event.latLng);
            dist = getDistance (map.getCenter(), event.latLng)
            totalDist += dist;
-           //console.log(dist)
            document.getElementById("myDialog").childNodes[1].innerHTML = 
            dist.toFixed(3) + ' km';
            document.getElementById("myDialog").showModal();
-           console.log(map.getCenter(), event.latLng);
+           document.getElementById('answerMap').style.pointerEvents = 'none';
 
         });
 
@@ -241,16 +246,14 @@
         }
 
       //trying to get markers to delete on click
-      google.maps.event.addListener(map, 'click', function(event) {
-          marker.addListener('click', function() {
-            points = points.filter(function(el){
-              // console.log(el.latlng);
-              // console.log(event.latLng);
-              return (el.latlng !== event.latLng);
-            });
+      // google.maps.event.addListener(map, 'click', function(event) {
+      //     marker.addListener('click', function() {
+      //       points = points.filter(function(el){
+      //         return (el.latlng !== event.latLng);
+      //       });
 
-          });
-      });
+      //     });
+      // });
 
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {
@@ -278,8 +281,6 @@
 
             //selectPOI(pointsDB, 3);
             for (var i in points){
-                // console.log('i' + i);
-                // console.log(points);
                 if(points[i].distance < minDistance && !bounds.contains(points[i].latlng))
                   minDistance = points[i].distance;
 
@@ -287,7 +288,6 @@
                   centerpt = fromLatLngToPoint(center.lat(), center.lng(), map)
                   distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2))) 
             }
-            console.log(distanceToCompass);
             pcompass.drawFOV(distanceToCompass, innerHeight/2);
             pcompass.drawNeedles(); 
             wedge.drawWedges();  
@@ -354,7 +354,6 @@
           }
           currentAngle += angleInterval;
       }
-      console.log(points);
     }
 
     var createMarker = function(POI, name) {
@@ -452,37 +451,31 @@ document.onmouseup = _destroy;
 //*FUNCTIONS FOR THE GAME*//
 var start;
 var end;
+document.getElementById('answerMap').style.pointerEvents = 'none'; 
 function startGame() {
   start = new Date().getTime();
-    console.log("starting the game");
 
     if (numQuestion == 0)
       nextQuestion();
 }
 function nextQuestion() {
+  if (previousDist == totalDist && numQuestion > 0)
+    alert("You didn't place Waldo!")
+
+    document.getElementById('answerMap').style.pointerEvents = 'auto'; 
     points = [];
-    console.log("next Question");
-    console.log('numQuestion' + numQuestion);
     if(numQuestion == contents.length){
       end = new Date().getTime();
       timeElapsed = (end - start) / 1000;
-      alert("You were off by a total of " + totalDist.toFixed(3) +" km" +
-        "you took " + timeElapsed + " seconds");
+      alert("You were off by a total of " + totalDist.toFixed(3) +" km! \n" +
+        "You took " + timeElapsed + " seconds!");
+      document.getElementById('answerMap').style.pointerEvents = 'none'; 
       return;
     }
-    console.log('loc' + contents[numQuestion][0][0])
-    console.log('loc' + contents[numQuestion][0][0].lat + ' ' + contents[numQuestion][0][0].lng)
 
     newLocation = new google.maps.LatLng(contents[numQuestion][0][0].lat, 
       contents[numQuestion][0][0].lng);
 
-
-
-    console.log('zoom' + contents[numQuestion][0][1])
-
-
-
-    console.log(newLocation)
     map.setZoom(contents[numQuestion][0][1])
     map.panTo(newLocation);
 
@@ -492,6 +485,7 @@ function nextQuestion() {
     // wedge.drawWedges();
     reDraw();
     numQuestion++;
+    previousDist = totalDist;
 }
 
 
@@ -559,8 +553,6 @@ function createPOIs() {
     for (var i  = 1; i < contents[numQuestion].length; i++) {
       var angle = contents[numQuestion][i][1];
       var distance = contents[numQuestion][i][0];
-      console.log('angle'+ angle)
-      console.log('distance'+distance)
       var center = map.getCenter();
       var markerLocation = getDestination(center, angle, distance);
       var marker = new google.maps.Marker({
