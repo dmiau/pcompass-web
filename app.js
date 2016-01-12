@@ -63,3 +63,26 @@ var listener = app.listen(process.env.PORT, function () {
 
   console.log('PCompass app listening at http://%s:%s', host, port);
 });
+
+
+// var Spreadsheet = require('edit-google-spreadsheet');
+// Spreadsheet.load({
+//     debug: true,
+//     spreadsheetName: 'pcompass-user-results',
+//     worksheetName: 'Sheet1', 
+//     oauth2: {
+//       client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
+//       client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
+//       refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
+//     },
+//   }, function sheetReady(err, spreadsheet) {
+
+
+
+//     if(err) throw err;
+//     spreadsheet.add({2 : [[1]]});
+//     spreadsheet.send(function(err) {
+//       if(err) throw err;
+//     });
+//   });
+
