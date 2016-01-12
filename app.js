@@ -93,25 +93,33 @@ Spreadsheet.load({
       refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
     },
   }, function sheetReady(err, spreadsheet) {
-    spreadsheet.receive(function(err, rows, info) {
+    
+
+    spreadsheet.receive(
+
+    	function(err, rows, info) {
       if(err) throw err;
       console.log("Found rows:", rows);
-      
-      lastRow = info.lastRow+1
-      console.log(lastRow);
+      nextRow = info.nextRow
+
+       
+
       // Found rows: { '3': { '5': 'hello!' } } 
     });
 
-
-
-    if(err) throw err;
-    console.log(lastRow);
-    spreadsheet.add({ lastRow: { 6: "hi!" } });
- 
+    setTimeout(function() {
+    if(err) throw err; 
+    console.log('nextRow' + nextRow);
+    console.log(typeof(nextRow))
+    spreadsheet.add({ nextRow: { 1: "hi!" } });
     spreadsheet.send(function(err) {
       if(err) throw err;
       console.log("Updated Cell at row 3, column 5 to 'hello!'");
     });
+  }, 3000);
+
+
+
   });
 
 
