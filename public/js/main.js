@@ -1,61 +1,61 @@
-  var markers = [];
-    var panorama; //Streetview
-    var map;
-    var pointsDB = new Array(); //Database of all points
-    var points = new Array(); //Points that are shown
-    var tablePoints = [];
-    var canvasCompass = document.getElementById("canvasCompass");
-    var ctxCompass = canvasCompass.getContext("2d");
+//'use strict';
+var markers = [];
+var panorama; //Streetview
+var map;
+var pointsDB = new Array(); //Database of all points
+var points = new Array(); //Points that are shown
+var tablePoints = [];
+var canvasCompass = document.getElementById("canvasCompass");
+var ctxCompass = canvasCompass.getContext("2d");
 
-    var canvasFOV = document.getElementById("canvasFOV");
-    canvasFOV.setAttribute('width', window.innerWidth);
-    canvasFOV.setAttribute('height', window.innerHeight);
-    var ctxFOV = canvasFOV.getContext("2d");
+var canvasFOV = document.getElementById("canvasFOV");
+canvasFOV.setAttribute('width', window.innerWidth);
+canvasFOV.setAttribute('height', window.innerHeight);
+var ctxFOV = canvasFOV.getContext("2d");
 
-    var canvasWedge = document.getElementById("canvasWedge");
-    canvasWedge.setAttribute('width', window.innerWidth);
-    canvasWedge.setAttribute('height', window.innerHeight);
-    var ctxWedge = canvasWedge.getContext("2d");
+var canvasWedge = document.getElementById("canvasWedge");
+canvasWedge.setAttribute('width', window.innerWidth);
+canvasWedge.setAttribute('height', window.innerHeight);
+var ctxWedge = canvasWedge.getContext("2d");
 
-    var canvasLabels = document.getElementById("canvasLabels");
-    canvasLabels.setAttribute('width', window.innerWidth);
-    canvasLabels.setAttribute('height', window.innerHeight);
-    var ctxLabels = canvasLabels.getContext("2d");
+var canvasLabels = document.getElementById("canvasLabels");
+canvasLabels.setAttribute('width', window.innerWidth);
+canvasLabels.setAttribute('height', window.innerHeight);
+var ctxLabels = canvasLabels.getContext("2d");
 
-    function toggleTable() {
-      if (document.getElementById("wrapper3").style.display == "initial"){
-        document.getElementById("wrapper3").style.display = "none";
-        document.getElementById("wrapper").style.width = "100%";
-      }
-      else{
-        document.getElementById("wrapper3").style.display = "initial"; 
-        document.getElementById("wrapper").style.width = "80%";
-      }
-    }
+function toggleTable() {
+  if (document.getElementById("wrapper3").style.display == "initial"){
+    document.getElementById("wrapper3").style.display = "none";
+    document.getElementById("wrapper").style.width = "100%";
+  }
+  else{
+    document.getElementById("wrapper3").style.display = "initial"; 
+    document.getElementById("wrapper").style.width = "80%";
+  }
+  }
 
-    var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
-    var wedge = new Wedge();
-    var canvasCompass = document.getElementById('canvasCompass');
-    canvasCompass.width = 2 * pcompass.r;
-    canvasCompass.height = 2 * pcompass.r;
+var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
+var wedge = new Wedge();
+var canvasCompass = document.getElementById('canvasCompass');
+canvasCompass.width = 2 * pcompass.r;
+canvasCompass.height = 2 * pcompass.r;
 
-    function initMap() {
+function initMap() {
+  var newYork = new google.maps.LatLng(40.7127, -74.0079);  
+  map = new google.maps.Map(document.getElementById('map'), {
+  center: newYork, // New York
+  zoom: 15
+});
+populateDB();
+k = 3;
+// selectPOI(pointsDB); 
 
-      var newYork = new google.maps.LatLng(40.7127, -74.0079);  
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: newYork, // New York
-        zoom: 15
-      });
-      populateDB();
-      k = 3;
-      // selectPOI(pointsDB); 
-
-      panorama = map.getStreetView();
-      //console.log(map.getCenter());
-      panorama.setPov(/** @type {google.maps.StreetViewPov} */({
-        heading: 0,
-        pitch: 0
-      }));
+panorama = map.getStreetView();
+//console.log(map.getCenter());
+panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+heading: 0,
+pitch: 0
+}));
 
 
     // Create the search box and link it to the UI element.
@@ -67,8 +67,6 @@
     map.addListener('bounds_changed', function() {
       searchBox.setBounds(map.getBounds());
     });
-
-    // check();
 
     google.maps.event.addListener(panorama, "position_changed", function() {
       map.setCenter(panorama.getPosition());
@@ -166,12 +164,6 @@
           //     }
           // pcompass.drawNeedles();
          });
-      
-      // points = [];
-
-      // console.log(tablePoints);
-      // tablePoints = [];
-      // pointsDB = [];
     // map.fitBounds(bounds);
     });
 
@@ -210,15 +202,6 @@
           pcompass.drawNeedles();
           return POI;
       });
-
-      //trying to get markers to delete on click
-      // google.maps.event.addListener(map, 'click', function(event) {
-      //     marker.addListener('click', function() {
-      //       points = points.filter(function(el){
-      //         return (el.latlng !== event.latLng);
-      //       });
-      //     });
-      // });
 
       // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
       google.maps.event.addListener(map, 'center_changed', function () {

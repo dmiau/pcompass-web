@@ -14,24 +14,24 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 {
         centerX = window.innerWidth/2;
         centerY = window.innerHeight/2;
-        point = fromLatLngToPoint(POILat, POILng, map);
-        ne = map.getBounds().getNorthEast();
-        sw = map.getBounds().getSouthWest();
-        nePoint = fromLatLngToPoint(ne.lat(), ne.lng(), map);
-        newNePoint = toCenter(nePoint.x, nePoint.y)
-        swPoint = fromLatLngToPoint(sw.lat(), sw.lng(), map);
-        newSwPoint = toCenter(swPoint.x, swPoint.y)
+        var point = fromLatLngToPoint(POILat, POILng, map);
+        var ne = map.getBounds().getNorthEast();
+        var sw = map.getBounds().getSouthWest();
+        var nePoint = fromLatLngToPoint(ne.lat(), ne.lng(), map);
+        var newNePoint = toCenter(nePoint.x, nePoint.y)
+        var swPoint = fromLatLngToPoint(sw.lat(), sw.lng(), map);
+        var newSwPoint = toCenter(swPoint.x, swPoint.y)
 
-        newCenter = toCenter(centerX, centerY);
-        newPoint = toCenter(point.x, point.y)
+        var newCenter = toCenter(centerX, centerY);
+        var newPoint = toCenter(point.x, point.y)
 
-        mapSlope = newNePoint.y  / newNePoint.x;
+        var mapSlope = newNePoint.y  / newNePoint.x;
         
         var screenEdgePointX;
         var screenEdgePointY;
 
-        slope = (newPoint.y - newCenter.y) / (newPoint.x - newCenter.x)
-        abs_slope = Math.abs(slope);
+        var slope = (newPoint.y - newCenter.y) / (newPoint.x - newCenter.x)
+        var abs_slope = Math.abs(slope);
 
         if(abs_slope > mapSlope && newPoint.y > newCenter.y) {
             // console.log('point is in quadrant 2')
@@ -62,25 +62,25 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
         }
 
 
-        dist = Math.sqrt(Math.pow(newPoint.x - screenEdgePointX, 2) + Math.pow(newPoint.y - screenEdgePointY, 2));
-        leg = 1.3 * dist + Math.log((dist + 20)/12) * 10;
-        aperture = (5 + dist* 0.3)/ leg;
-        theta = aperture / 2;
+        var dist = Math.sqrt(Math.pow(newPoint.x - screenEdgePointX, 2) + Math.pow(newPoint.y - screenEdgePointY, 2));
+        var leg = 1.3 * dist + Math.log((dist + 20)/12) * 10;
+        var aperture = (5 + dist* 0.3)/ leg;
+        var theta = aperture / 2;
 
-        phiLeft = angle * Math.PI/180 - theta;
-        phiRight = Math.PI/2 - angle * Math.PI/180 - theta;
-        newLeftX = newPoint.x - Math.cos(phiLeft) * leg;
-        newLeftY = newPoint.y - Math.sin(phiLeft) * leg;
+        var phiLeft = angle * Math.PI/180 - theta;
+        var phiRight = Math.PI/2 - angle * Math.PI/180 - theta;
+        var newLeftX = newPoint.x - Math.cos(phiLeft) * leg;
+        var newLeftY = newPoint.y - Math.sin(phiLeft) * leg;
 
-        newRightX = newPoint.x - Math.sin(phiRight) * leg;
-        newRightY = newPoint.y - Math.cos(phiRight) * leg;
+        var newRightX = newPoint.x - Math.sin(phiRight) * leg;
+        var newRightY = newPoint.y - Math.cos(phiRight) * leg;
 
         var leftPoint = toCorner(newLeftX, newLeftY);
         var rightPoint = toCorner(newRightX, newRightY);
-        leftX = leftPoint.x;
-        leftY = leftPoint.y;
-        rightX = rightPoint.x;
-        rightY = rightPoint.y;
+        var leftX = leftPoint.x;
+        var leftY = leftPoint.y;
+        var rightX = rightPoint.x;
+        var rightY = rightPoint.y;
 
         ctxWedge.beginPath();
         ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
@@ -102,11 +102,11 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 Wedge.prototype.drawWedges = function() {
     for(var i in points)
         {
-          normalized_rating = ((points[i].rating - 3.0) / 2.0 );
-          red = 255;
-          green = parseInt(255 * (1 - normalized_rating));
-          blue = 0;
-          rating_color = "rgb(" + red + ", " + green + ", " + blue + ")";
+          var normalized_rating = ((points[i].rating - 3.0) / 2.0 );
+          var red = 255;
+          var green = parseInt(255 * (1 - normalized_rating));
+          var blue = 0;
+          var rating_color = "rgb(" + red + ", " + green + ", " + blue + ")";
           if (points[i].rating < 3.0) {
             rating_color = 'rgb(200, 200, 0)';
           }
@@ -126,11 +126,11 @@ Wedge.prototype.drawWedges = function() {
 //         }
 
 var toCenter =  function(cornerX, cornerY) {
-    point_temp = new google.maps.Point(cornerX - centerX, -cornerY + centerY);
+    var point_temp = new google.maps.Point(cornerX - centerX, -cornerY + centerY);
     return point_temp;
 } 
 
 var toCorner =  function(middleX, middleY) {
-    point_center = new google.maps.Point(middleX + centerX, -middleY + centerY);
+    var point_center = new google.maps.Point(middleX + centerX, -middleY + centerY);
     return point_center;
 } 

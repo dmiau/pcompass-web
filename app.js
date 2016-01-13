@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express')//.createServer(); // 
 var app = express();
 var path = require("path");
@@ -82,45 +83,39 @@ var listener = app.listen(process.env.PORT, function () {
 });
 
 
-var Spreadsheet = require('edit-google-spreadsheet');
-Spreadsheet.load({
-    debug: true,
-    spreadsheetName: 'pcompass-user-results',
-    worksheetName: 'Sheet1', 
-    oauth2: {
-      client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
-      client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
-      refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
-    },
-  }, function sheetReady(err, spreadsheet) {
-    
-
-    spreadsheet.receive(
-
-    	function(err, rows, info) {
-      if(err) throw err;
-      console.log("Found rows:", rows);
-      nextRow = info.nextRow
-
-       
-
-      // Found rows: { '3': { '5': 'hello!' } } 
-    });
-
-    setTimeout(function() {
-    if(err) throw err; 
-    console.log('nextRow' + nextRow);
-    console.log(typeof(nextRow))
-    spreadsheet.add({ nextRow: { 1: "hi!" } });
-    spreadsheet.send(function(err) {
-      if(err) throw err;
-      console.log("Updated Cell at row 3, column 5 to 'hello!'");
-    });
-  }, 3000);
+// var Spreadsheet = require('edit-google-spreadsheet');
+// Spreadsheet.load({
+//     debug: true,
+//     spreadsheetName: 'pcompass-user-results',
+//     worksheetName: 'Sheet1', 
+//     oauth2: {
+//       client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
+//       client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
+//       refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
+//     },
+//   }, function sheetReady(err, spreadsheet) {
+//     spreadsheet.receive(
+//     	function(err, rows, info) {
+//       if(err) throw err;
+//       console.log("Found rows:", rows);
+//       nextRow = info.nextRow
+//       // Found rows: { '3': { '5': 'hello!' } } 
+//     });
+//     setTimeout(function() {
+//     if(err) throw err; 
+//     console.log('nextRow' + nextRow);
+//     console.log('type of nextrow' + typeof(eval(nextRow)));
+//     stringified = '{ ' +nextRow +' :{ 3: "HI" } }';
+//     console.log('STRINGIFIED: '+ stringified)
 
 
-
-  });
+//     spreadsheet.add(stringified);
+//     spreadsheet.send(function(err) {
+//       if(err) throw err;
+//       console.log("Updated Cell at row 3, column 5 to 'hello!'");
+//     });
+//   }, 3000);
+// });
 
 
 
