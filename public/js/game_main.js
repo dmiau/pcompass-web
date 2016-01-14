@@ -379,10 +379,10 @@ function nextQuestion() {
       alert("You were off by a total of " + totalDist.toFixed(3) +" km! \n" +
         "You took " + timeElapsed + " seconds!");
       document.getElementById('answerMap').style.pointerEvents = 'none'; 
-
+      logging = [timeElapsed, totalDist];
 
       var socket = io.connect('http://localhost:3000');
-      socket.emit('gameResults', timeElapsed);
+      socket.emit('gameResults', logging);
       return;
     }
 

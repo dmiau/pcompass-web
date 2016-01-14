@@ -66,16 +66,12 @@ io.on('connection', function (socket) {
   }); 
   });
 
-  
 
   socket.on('gameResults', function(data) {
-    
-    // var writePath = __dirname + '/game.json';
-    // fs.writeFile(writePath, JSON.stringify(data), function(err) {
-    // if(err) {
-    //     return console.log(err);
-    // }function (data, function() {
     console.log('Starting spreadsheet')
+    console.log('data' + data)
+    console.log('data type' + typeof(data))
+
     Spreadsheet.load({
     debug: true,
     spreadsheetName: 'pcompass-user-results',
@@ -91,15 +87,15 @@ io.on('connection', function (socket) {
       if(err) throw err;
       console.log("Found rows:", rows);
       nextRow = info.nextRow
-      // Found rows: { '3': { '5': 'hello!' } } 
     });
     setTimeout(function() {
     if(err) throw err; 
     console.log('nextRow' + nextRow);
+    console.log('data' + data)
     console.log('type of nextrow' + typeof(eval(nextRow)));
-    obj = '{ "' +nextRow +'" :{ "1": "'+data+'" } }';
+    obj = '{ "' +nextRow +'" :{ "1": "'+data[0]+'" } }';
     spreadsheet.add( JSON.parse(obj));
-    obj = '{ "' +nextRow +'" :{ "2": "'+data+'" } }';
+    obj = '{ "' +nextRow +'" :{ "2": "'+data[1]+'" } }';
     spreadsheet.add( JSON.parse(obj));
     spreadsheet.send(function(err) {
       if(err) throw err;
@@ -116,39 +112,6 @@ var listener = app.listen(process.env.PORT, function () {
 
   console.log('PCompass app listening at http://%s:%s', host, port);
 });
-
-
-
-// Spreadsheet.load({
-//     debug: true,
-//     spreadsheetName: 'pcompass-user-results',
-//     worksheetName: 'Sheet1', 
-//     oauth2: {
-//       client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
-//       client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
-//       refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
-//     },
-//   }, function sheetReady(err, spreadsheet) {
-//     spreadsheet.receive(
-//     	function(err, rows, info) {
-//       if(err) throw err;
-//       console.log("Found rows:", rows);
-//       nextRow = info.nextRow
-//       // Found rows: { '3': { '5': 'hello!' } } 
-//     });
-//     setTimeout(function() {
-//     if(err) throw err; 
-//     console.log('nextRow' + nextRow);
-//     console.log('type of nextrow' + typeof(eval(nextRow)));
-//     obj = '{ "' +nextRow +'" :{ "3": "'+result+'" } }';
-//     //obj = '{ "' +nextRow +'" : [ 1 , 2, 3] }';
-//     spreadsheet.add( JSON.parse(obj));
-//     spreadsheet.send(function(err) {
-//       if(err) throw err;
-//       console.log("Update successful");
-//     });
-//   }, 3000);
-// });
 
 
 
