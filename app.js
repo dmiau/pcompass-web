@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 var express = require('express')//.createServer(); // 
 var app = express();
 var path = require("path");
@@ -9,6 +9,9 @@ app.use(favicon(path.join(__dirname,'public','images','favicon.ico')));
 // var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var Spreadsheet = require('edit-google-spreadsheet');
+
+
 
 server.listen(3000);
 
@@ -35,6 +38,8 @@ app.get('/demo',function(req,res){
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+var result;
 io.on('connection', function (socket) {
 
 
@@ -61,18 +66,48 @@ io.on('connection', function (socket) {
   }); 
   });
 
-  socket.on('gameResults', function (data) {
-     console.log(data);
+  
+
+  socket.on('gameResults', function(data) {
+    
     // var writePath = __dirname + '/game.json';
     // fs.writeFile(writePath, JSON.stringify(data), function(err) {
     // if(err) {
     //     return console.log(err);
-    // }
-    console.log("time!");
-  // }); 
-  });
-
-
+    // }function (data, function() {
+    console.log('Starting spreadsheet')
+    Spreadsheet.load({
+    debug: true,
+    spreadsheetName: 'pcompass-user-results',
+    worksheetName: 'Sheet1', 
+    oauth2: {
+      client_id: '369078590099-i42v5kb5kthbkeaf6t8600rgq3gu09io.apps.googleusercontent.com',
+      client_secret: 'pv4x6MI2ywkbOWc9cCzt_JDD',
+      refresh_token: '1/-PrhBVhHLsUItdNPaDKJP2O0qRCxUzrvs4ypu_yueP8'
+    },
+  }, function sheetReady(err, spreadsheet) {
+    spreadsheet.receive(
+      function(err, rows, info) {
+      if(err) throw err;
+      console.log("Found rows:", rows);
+      nextRow = info.nextRow
+      // Found rows: { '3': { '5': 'hello!' } } 
+    });
+    setTimeout(function() {
+    if(err) throw err; 
+    console.log('nextRow' + nextRow);
+    console.log('type of nextrow' + typeof(eval(nextRow)));
+    obj = '{ "' +nextRow +'" :{ "1": "'+data+'" } }';
+    spreadsheet.add( JSON.parse(obj));
+    obj = '{ "' +nextRow +'" :{ "2": "'+data+'" } }';
+    spreadsheet.add( JSON.parse(obj));
+    spreadsheet.send(function(err) {
+      if(err) throw err;
+      console.log("Update successful");
+    });
+  }, 3000);
+});
+});
 });
 
 var listener = app.listen(process.env.PORT, function () {
@@ -83,7 +118,7 @@ var listener = app.listen(process.env.PORT, function () {
 });
 
 
-// var Spreadsheet = require('edit-google-spreadsheet');
+
 // Spreadsheet.load({
 //     debug: true,
 //     spreadsheetName: 'pcompass-user-results',
@@ -105,14 +140,12 @@ var listener = app.listen(process.env.PORT, function () {
 //     if(err) throw err; 
 //     console.log('nextRow' + nextRow);
 //     console.log('type of nextrow' + typeof(eval(nextRow)));
-//     stringified = '{ ' +nextRow +' :{ 3: "HI" } }';
-//     console.log('STRINGIFIED: '+ stringified)
-
-
-//     spreadsheet.add(stringified);
+//     obj = '{ "' +nextRow +'" :{ "3": "'+result+'" } }';
+//     //obj = '{ "' +nextRow +'" : [ 1 , 2, 3] }';
+//     spreadsheet.add( JSON.parse(obj));
 //     spreadsheet.send(function(err) {
 //       if(err) throw err;
-//       console.log("Updated Cell at row 3, column 5 to 'hello!'");
+//       console.log("Update successful");
 //     });
 //   }, 3000);
 // });
