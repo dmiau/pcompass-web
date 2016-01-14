@@ -1,12 +1,3 @@
-Math.radians = function(degrees) {
-  return degrees * Math.PI / 180;
-};
- 
-// Converts from radians to degrees.
-Math.degrees = function(radians) {
-  return radians * 180 / Math.PI;
-};
-
 var Wedge = function () {  
 };
 
@@ -114,16 +105,6 @@ Wedge.prototype.drawWedges = function() {
             points[i].latlng.lat(), points[i].latlng.lng(), rating_color);
         }
 };
-
-// function fromLatLngToPoint(lat, lng, map) {
-//                 latLng = new google.maps.LatLng(lat, lng);
-//                 var topRight = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast());
-//                 var bottomLeft = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
-//                 var scale = Math.pow(2, map.getZoom());
-//                 var worldPoint = map.getProjection().fromLatLngToPoint(latLng);
-//                 pointTemp = new google.maps.Point((worldPoint.x - bottomLeft.x) * scale, (worldPoint.y - topRight.y) * scale);
-//                 return pointTemp;
-//         }
 
 var toCenter =  function(cornerX, cornerY) {
     var point_temp = new google.maps.Point(cornerX - centerX, -cornerY + centerY);

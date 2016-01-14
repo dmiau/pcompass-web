@@ -1,7 +1,5 @@
 'use strict';
 var Y_OFFSET = 0;
-
-
 var PCompass= function (lat, lng, x , y, r) {
     this.lat = lat;
     this.lng = lng;

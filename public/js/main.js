@@ -1,10 +1,10 @@
 //'use strict';
-var markers = [];
-var panorama; //Streetview
-var map;
-var pointsDB = new Array(); //Database of all points
-var points = new Array(); //Points that are shown
-var tablePoints = [];
+var markers = []; /* List of markers on the map */
+var panorama; /* Streetview */
+var map; 
+var pointsDB = new Array(); /* Database of all points */
+var points = new Array(); /* Points that are shown */
+var tablePoints = []; /* Points displayed on the table */
 var canvasCompass = document.getElementById("canvasCompass");
 var ctxCompass = canvasCompass.getContext("2d");
 
@@ -23,6 +23,12 @@ canvasLabels.setAttribute('width', window.innerWidth);
 canvasLabels.setAttribute('height', window.innerHeight);
 var ctxLabels = canvasLabels.getContext("2d");
 
+var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
+var wedge = new Wedge();
+var canvasCompass = document.getElementById('canvasCompass');
+canvasCompass.width = 2 * pcompass.r;
+canvasCompass.height = 2 * pcompass.r;
+
 function toggleTable() {
   if (document.getElementById("wrapper3").style.display == "initial"){
     document.getElementById("wrapper3").style.display = "none";
@@ -32,13 +38,7 @@ function toggleTable() {
     document.getElementById("wrapper3").style.display = "initial"; 
     document.getElementById("wrapper").style.width = "80%";
   }
-  }
-
-var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
-var wedge = new Wedge();
-var canvasCompass = document.getElementById('canvasCompass');
-canvasCompass.width = 2 * pcompass.r;
-canvasCompass.height = 2 * pcompass.r;
+}
 
 function initMap() {
   var newYork = new google.maps.LatLng(40.7127, -74.0079);  
@@ -56,7 +56,6 @@ panorama.setPov(/** @type {google.maps.StreetViewPov} */({
 heading: 0,
 pitch: 0
 }));
-
 
     // Create the search box and link it to the UI element.
     var input = document.getElementById('pac-input');
@@ -124,46 +123,7 @@ pitch: 0
           var center = map.getCenter();
           distance = getDistance(center, POI);
           angle = getAngle(center, POI);
-
-          // tablepoints = [];
-          // $("#POItable > tr").empty();
-          // var myNode = document.getElementById("POItable > tr");
-          // while (myNode.firstChild) {
-          //     myNode.removeChild(myNode.firstChild);
-          // }
-
-
-
-          // var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-          // points.push({'name': name, 'distance': distance, 'angle': angle,
-          //  'latlng': latlng, 'rating':rating});
-          // pointsDB.push({'name': name, 'distance': distance, 'angle': angle,
-          //   'latlng': latlng, 'rating':rating});
-
-          // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
-          //   'latlng': latlng, 'rating':rating});
-
-          // var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-          // var row = table.insertRow(table.rows.length);
-          // var cell1 = row.insertCell(0);
-          // var cell2 = row.insertCell(1);
-          // var cell3 = row.insertCell(2);
-          // cell1.innerHTML = name;
-          // cell2.innerHTML = '<input type="checkbox" id="'+name+'">'
-          // cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
-          // check();  
-          // document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
-          // var isCentroidChecked = document.getElementById('centroidCheck').checked;
-          //     if(isCentroidChecked)
-          //     {
-          //       reDraw();
-          //       selectPOI(pointsDB, center); 
-          //     }
-          //     else{
-          //       selectPOI(pointsDB, compass_center); 
-          //     }
-          // pcompass.drawNeedles();
-         });
+           });
     // map.fitBounds(bounds);
     });
 
@@ -317,7 +277,7 @@ pitch: 0
             if(!panorama.getVisible()) {
                  pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
               }
-              console.log(points);
+              //console.log(points);
               pcompass.drawNeedles(); 
             
     };
@@ -409,8 +369,6 @@ pitch: 0
         
           currentAngle += angleInterval;
       }
-      // console.log(points);
-      // console.log(points[0])
       var table = document.getElementById("POItable");
       for (var i = 1, row; row = table.rows[i]; i++) {
          //iterate through rows
@@ -567,10 +525,6 @@ pitch: 0
           markers.push(marker);
           return marker;
         }
-
-
-
-
 
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           // console.log(name);
@@ -756,17 +710,17 @@ pitch: 0
     x_pos = 0, y_pos = 0, // Stores x & y coordinates of the mouse pointer
     x_elem = 0, y_elem = 0; // Stores top, left values (edge) of the element
 
-// Will be called when user starts dragging an element
-function _drag_init(elem) {
+  // Will be called when user starts dragging an element
+  function _drag_init(elem) {
     // Store the object of the element which needs to be moved
     selected = elem;
     x_elem = x_pos - selected.offsetLeft;
     y_elem = y_pos - selected.offsetTop;
 
-}
+  }
 
-// Will be called when user dragging an element
-function _move_elem(e) {
+  // Will be called when user dragging an element
+  function _move_elem(e) {
     // console.log('moving');
     x_pos = document.all ? window.event.clientX : e.pageX;
     y_pos = document.all ? window.event.clientY : e.pageY;
@@ -776,15 +730,15 @@ function _move_elem(e) {
         pcompass.x = selected.style.left;
         pcompass.y = selected.style.top;
     }
-}
+  }
 
-// Destroy the object when we are done
-function _destroy() {
+  // Destroy the object when we are done
+  function _destroy() {
     selected = null;
-}
+  }
 
-// Bind the functions...
-document.getElementById('compass').onmousedown = function () {
+  // Bind the functions...
+  document.getElementById('compass').onmousedown = function () {
     _drag_init(this);
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
     ctxFOV.clearRect(0,0, window.innerWidth, window.innerHeight);
@@ -792,16 +746,16 @@ document.getElementById('compass').onmousedown = function () {
 
     //clearAllCtx();
     return false;
-};
-document.getElementById('compass').onmouseup = function () {
+  };
+  document.getElementById('compass').onmouseup = function () {
     reDraw();
     return false;
-};
-document.onmousemove = _move_elem;
-document.onmouseup = _destroy;
+  };
+  document.onmousemove = _move_elem;
+  document.onmouseup = _destroy;
     pcompass.drawCompass();
 
-document.getElementById('compass').addEventListener('touchstart', function () {
+  document.getElementById('compass').addEventListener('touchstart', function () {
     _drag_init(this);
     // console.log('touch start');
     ctxWedge.clearRect(0,0, window.innerWidth, window.innerHeight);
@@ -809,17 +763,17 @@ document.getElementById('compass').addEventListener('touchstart', function () {
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
     //clearAllCtx();
     return false;
-});
-document.getElementById('compass').addEventListener('touchend', function () {
+  });
+  document.getElementById('compass').addEventListener('touchend', function () {
     reDraw();
     // console.log('touch end')
     return false;
-});
+  });
 
-// document.addEventListener('touchmove',_move_elem);
-document.getElementById('compass').addEventListener('touchend',_destroy);
+  // document.addEventListener('touchmove',_move_elem);
+  document.getElementById('compass').addEventListener('touchend',_destroy);
 
-document.getElementById('compass').addEventListener('touchmove', function(event) {
+  document.getElementById('compass').addEventListener('touchmove', function(event) {
   // If there's exactly one finger inside this element
   if (event.targetTouches.length == 1) {
     var touch = event.targetTouches[0];
@@ -827,7 +781,7 @@ document.getElementById('compass').addEventListener('touchmove', function(event)
     selected.style.left = (touch.pageX-25) + 'px';
     selected.style.top = (touch.pageY-80) + 'px';
   }
-}, false);
+  }, false);
 
   function clearAllCtx() {
     ctxCompass.clearRect(0,0, window.innerWidth, window.innerHeight);
