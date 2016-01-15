@@ -42,6 +42,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 var result;
 io.on('connection', function (socket) {
 
+  var filePath = path.join(__dirname, 'game.json');
+  fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
+      if (!err){
+          socket.emit('getGame', JSON.parse(data))
+      }else{
+          console.log(err);
+      }
+  });
+
 
   socket.on('POIs', function (data) {
     console.log(data);

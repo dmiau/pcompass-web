@@ -1,26 +1,4 @@
-var contents;
-
-   function readSingleFile(e) {
-        var file = e.target.files[0];
-        if (!file) {
-          return;
-        }
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          contents = e.target.result;
-          points = [];
-          contents = JSON.parse(contents);
-
-
-          var i;
-        };
-        reader.readAsText(file);
-      }
-
-      document.getElementById('file-input')
-        .addEventListener('change', readSingleFile, false);
-    
-
+    var contents;
     var markers = [];
     var numQuestion = 0;
     totalDist = 0;
@@ -362,12 +340,22 @@ var start;
 var end;
 document.getElementById('answerMap').style.pointerEvents = 'none'; 
 function startGame() {
-  start = new Date().getTime();
+  // readSingleFile();
+  var socket = io.connect('http://localhost:3000');
+        socket.on('getGame', function (data) {
+          console.log(data);
+          contents = data;
+          (function(){
+            start = new Date().getTime();
 
-    if (numQuestion == 0)
-      nextQuestion();
-}
+            if (numQuestion == 0)
+              nextQuestion();
+          })();        
+  }); 
+};
+
 function nextQuestion() {
+  console.log('contents' + contents.length);
   if (previousDist == totalDist && numQuestion > 0)
     alert("You didn't place Waldo!")
 
@@ -400,6 +388,37 @@ function nextQuestion() {
     numQuestion++;
     previousDist = totalDist;
 }
+
+ function readSingleFile(e) {
+   var socket = io.connect('http://localhost:3000');
+        socket.on('getGame', function (data) {
+          console.log(data);
+          contents = data;
+        
+
+
+
+
+        }, function(){ contents = data; } 
+        );
+        // var file = e.target.files[0];
+        // if (!file) {
+        //   return;
+        // }
+      //   var reader = new FileReader();
+      //   reader.onload = function(e) {
+      //     contents = e.target.result;
+      //     points = [];
+      //     contents = JSON.parse(contents);
+
+
+      //     var i;
+      //   };
+      //   // reader.readAsText(file);
+      }
+
+      // document.getElementById('file-input')
+      //   .addEventListener('change', readSingleFile, false);
 
 
 function toRad(deg) {
