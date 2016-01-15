@@ -1,137 +1,94 @@
+var contents;
+var markers = [];
+var numQuestion = 0;
+totalDist = 0;
+previousDist = 0;
+var map;
+var pointsDB = new Array(); //Database of all points
+var points = new Array(); //Points that are shown
 
-    var contents;
-    var markers = [];
-    var numQuestion = 0;
-    totalDist = 0;
-    previousDist = 0;
-    var map;
-    var pointsDB = new Array(); //Database of all points
-    var points = new Array(); //Points that are shown
+var canvasFOV = document.getElementById("canvasFOV");
+canvasFOV.setAttribute('width', window.innerWidth);
+canvasFOV.setAttribute('height', window.innerHeight);
+var ctxFOV = canvasFOV.getContext("2d");
 
-    var canvasFOV = document.getElementById("canvasFOV");
-    canvasFOV.setAttribute('width', window.innerWidth);
-    canvasFOV.setAttribute('height', window.innerHeight);
-    var ctxFOV = canvasFOV.getContext("2d");
+var canvasCompass = document.getElementById("canvasCompass");
+var ctxCompass = canvasCompass.getContext("2d");
 
-    var canvasCompass = document.getElementById("canvasCompass");
-    var ctxCompass = canvasCompass.getContext("2d");
+var canvasWedge = document.getElementById("canvasWedge");
+canvasWedge.setAttribute('width', window.innerWidth);
+canvasWedge.setAttribute('height', window.innerHeight);
 
-    var canvasWedge = document.getElementById("canvasWedge");
-    canvasWedge.setAttribute('width', window.innerWidth);
-    canvasWedge.setAttribute('height', window.innerHeight);
+var canvasLabels = document.getElementById("canvasLabels");
+canvasLabels.setAttribute('width', window.innerWidth);
+canvasLabels.setAttribute('height', window.innerHeight);
+var ctxLabels = canvasLabels.getContext("2d");
 
-    var canvasLabels = document.getElementById("canvasLabels");
-    canvasLabels.setAttribute('width', window.innerWidth);
-    canvasLabels.setAttribute('height', window.innerHeight);
-    var ctxLabels = canvasLabels.getContext("2d");
+var ctxWedge = canvasWedge.getContext("2d");
 
-    var ctxWedge = canvasWedge.getContext("2d");
+var pcompass = new PCompass(0, 0, 0, 0, innerWidth / 16);
+var wedge = new Wedge();
 
-    var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
-    var wedge = new Wedge();
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('questionMap'), {
-        center: {lat: 40.7127, lng: -74.0079}, // New York
-        zoom: 17,
-        scrollwheel: false,
-        navigationControl: false,
-        mapTypeControl: false,
-        scaleControl: false,
-        draggable: false,
-        streetViewControl: false,
-        disableDefaultUI: true,
-      
-
-      });
-      answerMap = new google.maps.Map(document.getElementById('answerMap'), {
-        center: {lat: 40.7127, lng: -74.0079}, // New York
-        zoom: 2
-      });
-      //populateDB();
-      // selectPOI(pointsDB, 3); 
-
-    answerMap.setOptions({ draggableCursor : "url(http://rogcommunity.com/forums/images/awards/waldo.png) 10 50, auto" })
-
-    // Create the search box and link it to the UI element.
-    // var input = document.getElementById('pac-input');
-    // var searchBox = new google.maps.places.SearchBox(input);
-    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-    // // Bias the SearchBox results towards current map's viewport.
-    // map.addListener('bounds_changed', function() {
-    //   searchBox.setBounds(map.getBounds());
-
-    // });
+function initMap() {
+  map = new google.maps.Map(document.getElementById('questionMap'), {
+    center: {
+      lat: 40.7127,
+      lng: -74.0079
+    }, // New York
+    zoom: 17,
+    scrollwheel: false,
+    navigationControl: false,
+    mapTypeControl: false,
+    scaleControl: false,
+    draggable: false,
+    streetViewControl: false,
+    disableDefaultUI: true,
 
 
-    // Listen for the event fired when the user selects a prediction and retrieve
-    // more details for that place.
-    // searchBox.addListener('places_changed', function() {
-    //   var places = searchBox.getPlaces();
+  });
+  answerMap = new google.maps.Map(document.getElementById('answerMap'), {
+    center: {
+      lat: 40.7127,
+      lng: -74.0079
+    }, // New York
+    zoom: 2
+  });
+  //populateDB();
+  // selectPOI(pointsDB, 3); 
 
-    //   if (places.length == 0) {
-    //     return;
-    //   }
+  answerMap.setOptions({
+    draggableCursor: "url(http://rogcommunity.com/forums/images/awards/waldo.png) 10 50, auto"
+  })
 
-    //   // For each place, get the icon, name and location
-    //   var bounds = new google.maps.LatLngBounds();
-    //   places.forEach(function(place) {
-    //     var icon = {
-    //       url: place.icon,
-    //       size: new google.maps.Size(71, 71),
-    //       origin: new google.maps.Point(0, 0),
-    //       anchor: new google.maps.Point(17, 34),
-    //       scaledSize: new google.maps.Size(25, 25)
-    //     };
-    //   });
+  map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
 
-    //   name = places[0].name
-    //   POI = places[0].geometry.location;
-    //   marker = new google.maps.Marker({position: POI, map: map});
-    //   var infowindow = new google.maps.InfoWindow({
-    //     content: name,
-    //     disableAutoPan: true
-    //   });
-    //   infowindow.open(map, marker);
-    //   var center = map.getCenter();
-    //   distance = getDistance(center, POI);
-    //   angle = getAngle(center, POI);
-    //   var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-    //   points.push({'name': name, 'distance': distance, 'angle': angle, 'latlng': latlng});
+  var POI = map.getCenter();
+  var numClicks;
 
-    //   pcompass.drawNeedles();
+  google.maps.event.addListener(answerMap, 'click', function(event) {
+    previousDist = totalDist;
+    placeMarker(event.latLng);
+    dist = getDistance(map.getCenter(), event.latLng)
+    totalDist += dist;
+    document.getElementById("myDialog").childNodes[1].innerHTML =
+      dist.toFixed(3) + ' km';
+    document.getElementById("myDialog").showModal();
+    document.getElementById('answerMap').style.pointerEvents = 'none';
 
-    //   // map.fitBounds(bounds);
-    // });
+  });
 
-      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
-      
-      var POI = map.getCenter();
-      var numClicks;
+  document.getElementById('hide').onclick = function() {
+    document.getElementById('myDialog').close();
+  };
 
-        google.maps.event.addListener(answerMap, 'click', function(event) {
-          previousDist = totalDist;
-           placeMarker(event.latLng);
-           dist = getDistance (map.getCenter(), event.latLng)
-           totalDist += dist;
-           document.getElementById("myDialog").childNodes[1].innerHTML = 
-           dist.toFixed(3) + ' km';
-           document.getElementById("myDialog").showModal();
-           document.getElementById('answerMap').style.pointerEvents = 'none';
-
-        });
-
-        document.getElementById('hide').onclick = function() {  document.getElementById('myDialog').close();      };
-
-        function placeMarker(location) {
-            var marker = new google.maps.Marker({
-                position: location, 
-                map: answerMap,
-                icon: 'http://rogcommunity.com/forums/images/awards/waldo.png'
-            });
-            markers.push(marker)
-        }
+  function placeMarker(location) {
+    var marker = new google.maps.Marker({
+      position: location,
+      map: answerMap,
+      icon: 'http://rogcommunity.com/forums/images/awards/waldo.png'
+    });
+    markers.push(marker)
+  }
 
 
   // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
@@ -145,6 +102,7 @@
 
 }
 var reDraw = function() {
+  console.log(arguments);
   var center = map.getCenter();
   var distanceToCompass;
   clearAllCtx();
@@ -168,8 +126,8 @@ var reDraw = function() {
     distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2)))
   }
   pcompass.drawFOV(distanceToCompass, innerHeight / 2);
-  pcompass.drawNeedles();
-  wedge.drawWedges();
+  if(arguments[0] === 'PCompass') pcompass.drawNeedles();
+  else if (arguments[0] === 'Wedge') wedge.drawWedges();
 }
 
 //Haversine formula to calculate distance
@@ -341,16 +299,16 @@ document.getElementById('answerMap').style.pointerEvents = 'none';
 function startGame() {
   // readSingleFile();
   var socket = io.connect('http://localhost:3000');
-        socket.on('getGame', function (data) {
-          console.log(data);
-          contents = data;
-          (function(){
-            start = new Date().getTime();
+  socket.on('getGame', function(data) {
+    console.log(data);
+    contents = data;
+    (function() {
+      start = new Date().getTime();
 
-            if (numQuestion == 0)
-              nextQuestion();
-          })();        
-  }); 
+      if (numQuestion == 0)
+        nextQuestion();
+    })();
+  });
 };
 
 
@@ -384,41 +342,40 @@ function nextQuestion() {
   // pcompass.drawNeedles();
   // pcompass.drawFOV(minDistance)
   // wedge.drawWedges();
-  reDraw();
+  reDraw(contents[numQuestion][0][2]);
   numQuestion++;
   previousDist = totalDist;
 }
 
- function readSingleFile(e) {
-   var socket = io.connect('http://localhost:3000');
-        socket.on('getGame', function (data) {
-          console.log(data);
-          contents = data;
-        
+function readSingleFile(e) {
+  var socket = io.connect('http://localhost:3000');
+  socket.on('getGame', function(data) {
+    console.log(data);
+    contents = data;
 
 
 
+  }, function() {
+    contents = data;
+  });
+  // var file = e.target.files[0];
+  // if (!file) {
+  //   return;
+  // }
+  //   var reader = new FileReader();
+  //   reader.onload = function(e) {
+  //     contents = e.target.result;
+  //     points = [];
+  //     contents = JSON.parse(contents);
 
-        }, function(){ contents = data; } 
-        );
-        // var file = e.target.files[0];
-        // if (!file) {
-        //   return;
-        // }
-      //   var reader = new FileReader();
-      //   reader.onload = function(e) {
-      //     contents = e.target.result;
-      //     points = [];
-      //     contents = JSON.parse(contents);
 
+  //     var i;
+  //   };
+  //   // reader.readAsText(file);
+}
 
-      //     var i;
-      //   };
-      //   // reader.readAsText(file);
-      }
-
-      // document.getElementById('file-input')
-      //   .addEventListener('change', readSingleFile, false);
+// document.getElementById('file-input')
+//   .addEventListener('change', readSingleFile, false);
 
 
 function toRad(deg) {

@@ -57,12 +57,15 @@ function getDestination(center, brng, dist) {
 
 
 function submit() {
+  var modes = ['PCompass','Wedge'];
+  var mode = modes[Math.floor(Math.random() * 2)]
+  console.log(mode);
   points = []
   clearAllCtx();
   pcompass.drawCompass();
   question = []
   var elem = document.getElementById('center');
-  question.push([map.getCenter(), map.getZoom()])
+  question.push([map.getCenter(), map.getZoom(), mode])
   for (var i = 0; i <= numFields; i++) {
     var point = []
     var id = "distance_" + i;
