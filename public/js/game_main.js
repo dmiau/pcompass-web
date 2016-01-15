@@ -1,4 +1,5 @@
 var contents;
+var logging = [];
 var markers = [];
 var numQuestion = 0;
 totalDist = 0;
@@ -126,7 +127,7 @@ var reDraw = function() {
     distanceToCompass = Math.sqrt((Math.pow(parseInt(pcompass.x) - point.x, 2)) + (Math.pow(parseInt(pcompass.y) - point.y, 2)))
   }
   pcompass.drawFOV(distanceToCompass, innerHeight / 2);
-  if(arguments[0] === 'PCompass') pcompass.drawNeedles();
+  if (arguments[0] === 'PCompass') pcompass.drawNeedles();
   else if (arguments[0] === 'Wedge') wedge.drawWedges();
 }
 
@@ -304,6 +305,7 @@ function startGame() {
     contents = data;
     (function() {
       start = new Date().getTime();
+      console.log('start' + start)
 
       if (numQuestion == 0)
         nextQuestion();
@@ -313,24 +315,38 @@ function startGame() {
 
 
 function nextQuestion() {
-  console.log('contents' + contents.length);
+  console.log('num question:' + numQuestion)
+
+
+  points = [];
+  document.getElementById('answerMap').style.pointerEvents = 'auto';
   if (previousDist == totalDist && numQuestion > 0)
     alert("You didn't place Waldo!")
 
-  document.getElementById('answerMap').style.pointerEvents = 'auto';
-  points = [];
-  if (numQuestion == contents.length) {
+  if (numQuestion > 0) {
     end = new Date().getTime();
     timeElapsed = (end - start) / 1000;
+    start = end
+    logging.push(timeElapsed);
+    console.log('TIME' + timeElapsed)
+
+    logging.push(contents[numQuestion - 1][0][2]);
+    logging.push(dist);
+  }
+
+
+  if (numQuestion == contents.length) {
+
     alert("You were off by a total of " + totalDist.toFixed(3) + " km! \n" +
       "You took " + timeElapsed + " seconds!");
     document.getElementById('answerMap').style.pointerEvents = 'none';
-    logging = [timeElapsed, totalDist];
+    //logging = [timeElapsed, totalDist];
 
     var socket = io.connect('http://localhost:3000');
     socket.emit('gameResults', logging);
     return;
   }
+
 
   newLocation = new google.maps.LatLng(contents[numQuestion][0][0].lat,
     contents[numQuestion][0][0].lng);
@@ -352,8 +368,6 @@ function readSingleFile(e) {
   socket.on('getGame', function(data) {
     console.log(data);
     contents = data;
-
-
 
   }, function() {
     contents = data;

@@ -102,9 +102,10 @@ io.on('connection', function(socket) {
         console.log('nextRow' + nextRow);
         console.log('data' + data)
         console.log('type of nextrow' + typeof(eval(nextRow)));
-        obj = '{ "' + nextRow + '" :{ "1": "' + data[0] + '" } }';
+        for (var i = 0; i < data.length; i++) {
+        obj = '{ "' + nextRow + '" :{ "' + (i + 1)+ '": "' + data[i] + '" } }';
         spreadsheet.add(JSON.parse(obj));
-        obj = '{ "' + nextRow + '" :{ "2": "' + data[1] + '" } }';
+      }
         spreadsheet.add(JSON.parse(obj));
         spreadsheet.send(function(err) {
           if (err) throw err;
