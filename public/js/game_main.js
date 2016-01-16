@@ -4,6 +4,8 @@ var markers = [];
 var numQuestion = 0;
 var totalDist = 0;
 var previousDist = 0;
+
+var totalTime = 0;
 var map;
 var pointsDB = new Array(); //Database of all points
 var points = new Array(); //Points that are shown
@@ -102,7 +104,6 @@ function initMap() {
 
 }
 var reDraw = function() {
-  console.log(arguments);
   var center = map.getCenter();
   var distanceToCompass;
   clearAllCtx();
@@ -116,7 +117,6 @@ var reDraw = function() {
     pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
   }
 
-  //selectPOI(pointsDB, 3);
   for (var i in points) {
     if (points[i].distance < minDistance && !bounds.contains(points[i].latlng))
       minDistance = points[i].distance;
@@ -157,7 +157,6 @@ var getAngle = function(p1, p2) {
 
 
 var selectPOI = function(allPoints, k) {
-  // var selectedPoints = new Array();
   //Select the closest POI
   points = [];
   var center = map.getCenter();
@@ -167,7 +166,7 @@ var selectPOI = function(allPoints, k) {
     allPoints[i].distance = getDistance(center, allPoints[i].latlng);
     allPoints[i].angle = getAngle(center, allPoints[i].latlng);
 
-    if (allPoints[i].distance < minDist) {
+    if (allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng))) {
       minIndex = i;
       minDist = allPoints[i].distance;
     }
@@ -194,8 +193,6 @@ var selectPOI = function(allPoints, k) {
 
 var createMarker = function(POI, name) {
   var marker = new google.maps.Marker({
-    // The below line is equivalent to writing:
-    // position: new google.maps.LatLng(-34.397, 150.644)
     position: POI,
     map: map
   });
@@ -256,7 +253,6 @@ function _drag_init(elem) {
   selected = elem;
   x_elem = x_pos - selected.offsetLeft;
   y_elem = y_pos - selected.offsetTop;
-
 }
 
 // Will be called when user dragging an element
@@ -291,21 +287,18 @@ document.getElementById('compass').onmouseup = function() {
 document.onmousemove = _move_elem;
 document.onmouseup = _destroy;
 pcompass.drawCompass();
+
 //*FUNCTIONS FOR THE GAME*//
 var start;
 var end;
 document.getElementById('answerMap').style.pointerEvents = 'none';
 
 function startGame() {
-  // var socket = io.connect('http://localhost:3000') 
-  // var socket = io.connect('pcompass.herokuapp.com:80/game');
   var socket = io.connect();
   socket.on('getGame', function(data) {
-    console.log(data);
     contents = data;
     (function() {
       start = new Date().getTime();
-      console.log('start' + start)
 
       if (numQuestion == 0)
         nextQuestion();
@@ -315,23 +308,20 @@ function startGame() {
 
 
 function nextQuestion() {
-  if (previousDist == totalDist && numQuestion > 0)
-  {
+  if (previousDist == totalDist && numQuestion > 0) {
     alert("You didn't place Waldo!");
     return;
   }
 
-  console.log('num question:' + numQuestion)
-
   points = [];
   document.getElementById('answerMap').style.pointerEvents = 'auto';
-  
+
   if (numQuestion > 0) {
     end = new Date().getTime();
     timeElapsed = (end - start) / 1000;
+    totalTime = totalTime + timeElapsed;
     start = end
     logging.push(timeElapsed);
-    console.log('TIME' + timeElapsed)
 
     logging.push(contents[numQuestion - 1][0][2]);
     logging.push(dist);
@@ -341,12 +331,8 @@ function nextQuestion() {
   if (numQuestion == contents.length) {
 
     alert("You were off by a total of " + totalDist.toFixed(3) + " km! \n" +
-      "You took " + timeElapsed + " seconds!");
+      "You took " + totalTime + " seconds!");
     document.getElementById('answerMap').style.pointerEvents = 'none';
-    //logging = [timeElapsed, totalDist];
-
-    // var socket = io.connect('http://localhost:3000')
-    // var socket = io.connect('pcompass.herokuapp.com:80/game');
     var socket = io.connect();
     socket.emit('gameResults', logging);
     return;
@@ -360,9 +346,6 @@ function nextQuestion() {
   map.panTo(newLocation);
 
   createPOIs();
-  // pcompass.drawNeedles();
-  // pcompass.drawFOV(minDistance)
-  // wedge.drawWedges();
   reDraw(contents[numQuestion][0][2]);
   numQuestion++;
   previousDist = totalDist;
@@ -433,5 +416,4 @@ function clearAllCtx() {
   ctxCompass.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxWedge.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxLabels.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
 }

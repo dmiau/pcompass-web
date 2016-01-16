@@ -3,23 +3,15 @@ var express = require('express') //.createServer(); //
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
-//'use strict';
-
 var path = require("path");
 var fs = require("fs");
 var favicon = require('serve-favicon');
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
-// var app = require('express')();
-//var server = require('http').Server(app);
-//var io = require('socket.io')(server);
 var Spreadsheet = require('edit-google-spreadsheet');
-
-// server.listen(3000);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/googlemap.html'));
-  //__dirname : It will resolve to your project folder.
 });
 
 app.get('/game', function(req, res) {
@@ -40,7 +32,6 @@ app.get('/demo', function(req, res) {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 var result;
 io.on('connection', function(socket) {
 
@@ -54,7 +45,6 @@ io.on('connection', function(socket) {
       console.log(err);
     }
   });
-
 
   socket.on('POIs', function(data) {
     console.log(data);
@@ -75,16 +65,12 @@ io.on('connection', function(socket) {
       if (err) {
         return console.log(err);
       }
-      console.log("game has been created!");
+      console.log("The game has been created!");
     });
   });
 
 
   socket.on('gameResults', function(data) {
-    console.log('Starting spreadsheet')
-    console.log('data' + data)
-    console.log('data type' + typeof(data))
-
     Spreadsheet.load({
       debug: true,
       spreadsheetName: 'pcompass-user-results',
@@ -98,14 +84,10 @@ io.on('connection', function(socket) {
       spreadsheet.receive(
         function(err, rows, info) {
           if (err) throw err;
-          console.log("Found rows:", rows);
           nextRow = info.nextRow
         });
       setTimeout(function() {
         if (err) throw err;
-        console.log('nextRow' + nextRow);
-        console.log('data' + data)
-        console.log('type of nextrow' + typeof(eval(nextRow)));
         for (var i = 0; i < data.length; i++) {
           obj = '{ "' + nextRow + '" :{ "' + (i + 1) + '": "' + data[i] + '" } }';
           spreadsheet.add(JSON.parse(obj));
@@ -113,7 +95,6 @@ io.on('connection', function(socket) {
         spreadsheet.add(JSON.parse(obj));
         spreadsheet.send(function(err) {
           if (err) throw err;
-          console.log("Update successful");
         });
       }, 3000);
     });
