@@ -298,8 +298,7 @@ var end;
 document.getElementById('answerMap').style.pointerEvents = 'none';
 
 function startGame() {
-  // readSingleFile();
-  var socket = io.connect('http://localhost:3000');
+  var socket = io.connect('http://localhost:3000') || io.connect('https://pcompass.herokuapp.com/game');
   socket.on('getGame', function(data) {
     console.log(data);
     contents = data;
@@ -315,14 +314,17 @@ function startGame() {
 
 
 function nextQuestion() {
-  console.log('num question:' + numQuestion)
+  if (previousDist == totalDist && numQuestion > 0)
+  {
+    alert("You didn't place Waldo!");
+    return;
+  }
 
+  console.log('num question:' + numQuestion)
 
   points = [];
   document.getElementById('answerMap').style.pointerEvents = 'auto';
-  if (previousDist == totalDist && numQuestion > 0)
-    alert("You didn't place Waldo!")
-
+  
   if (numQuestion > 0) {
     end = new Date().getTime();
     timeElapsed = (end - start) / 1000;
@@ -342,7 +344,7 @@ function nextQuestion() {
     document.getElementById('answerMap').style.pointerEvents = 'none';
     //logging = [timeElapsed, totalDist];
 
-    var socket = io.connect('http://localhost:3000');
+    var socket = io.connect('http://localhost:3000') || io.connect('https://pcompass.herokuapp.com/game') ;
     socket.emit('gameResults', logging);
     return;
   }
@@ -362,35 +364,6 @@ function nextQuestion() {
   numQuestion++;
   previousDist = totalDist;
 }
-
-function readSingleFile(e) {
-  var socket = io.connect('http://localhost:3000');
-  socket.on('getGame', function(data) {
-    console.log(data);
-    contents = data;
-
-  }, function() {
-    contents = data;
-  });
-  // var file = e.target.files[0];
-  // if (!file) {
-  //   return;
-  // }
-  //   var reader = new FileReader();
-  //   reader.onload = function(e) {
-  //     contents = e.target.result;
-  //     points = [];
-  //     contents = JSON.parse(contents);
-
-
-  //     var i;
-  //   };
-  //   // reader.readAsText(file);
-}
-
-// document.getElementById('file-input')
-//   .addEventListener('change', readSingleFile, false);
-
 
 function toRad(deg) {
   return deg * Math.PI / 180;
