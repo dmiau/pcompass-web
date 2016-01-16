@@ -1,19 +1,21 @@
-//'use strict';
+var http = require('http');
 var express = require('express') //.createServer(); // 
 var app = express();
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+//'use strict';
+
 var path = require("path");
 var fs = require("fs");
 var favicon = require('serve-favicon');
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 
 // var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+//var server = require('http').Server(app);
+//var io = require('socket.io')(server);
 var Spreadsheet = require('edit-google-spreadsheet');
 
-
-
-server.listen(3000);
+// server.listen(3000);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/googlemap.html'));
@@ -116,9 +118,8 @@ io.on('connection', function(socket) {
   });
 });
 
-var listener = app.listen(process.env.PORT, function() {
+var port = process.env.PORT || 3000;
+var listener = server.listen(port, function() {
   var host = server.address().address;
-  var port = server.address().port;
-
   console.log('PCompass app listening at http://%s:%s', host, port);
 });
