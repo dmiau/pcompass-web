@@ -298,7 +298,8 @@ var end;
 document.getElementById('answerMap').style.pointerEvents = 'none';
 
 function startGame() {
-  var socket = io.connect('http://localhost:3000') || io.connect('https://pcompass.herokuapp.com/game');
+  // var socket = io.connect('http://localhost:3000') 
+  var socket = io.connect('https://pcompass.herokuapp.com');
   socket.on('getGame', function(data) {
     console.log(data);
     contents = data;
@@ -344,7 +345,8 @@ function nextQuestion() {
     document.getElementById('answerMap').style.pointerEvents = 'none';
     //logging = [timeElapsed, totalDist];
 
-    var socket = io.connect('http://localhost:3000') || io.connect('https://pcompass.herokuapp.com/game') ;
+    // var socket = io.connect('http://localhost:3000')
+    var socket = io.connect('https://pcompass.herokuapp.com');
     socket.emit('gameResults', logging);
     return;
   }
