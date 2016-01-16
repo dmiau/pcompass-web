@@ -147,7 +147,6 @@ function initMap() {
     center: newYork, // New York
     zoom: 15
   });
-  populateDB();
   k = 3;
   //selectPOI(pointsDB); 
 
@@ -204,76 +203,14 @@ function initMap() {
   });
 
   searchBox.addListener('places_changed', function() {
-
-
-
-    // // pointsDB = [];
-    // points = [];
     var places = searchBox.getPlaces();
     if (places.length == 0) {
       return;
     }
     // For each place, get the icon, name and location
     var bounds = new google.maps.LatLngBounds();
-    // for (var i = 0; i < markers.length; i++) {
-    //     markers[i].setMap(null);
-    //   }
-    // markers = [];
     places.forEach(function(place) {
-      //       var icon = {
-      //         url: place.icon,
-      //         size: new google.maps.Size(71, 71),
-      //         origin: new google.maps.Point(0, 0),
-      //         anchor: new google.maps.Point(17, 34),
-      //         scaledSize: new google.maps.Size(25, 25)
-      //       };
-      //     // name = place.name
-      //     // rating = place.rating;
-      //     // POI = place.geometry.location;      
-
-      //     // createMarker(place);
-      //     // var center = map.getCenter();
-      //     // distance = getDistance(center, POI);
-      //     // angle = getAngle(center, POI);
-
-      //     // tablepoints = [];
-      //     // $("#POItable > tr").empty();
-      //     // var myNode = document.getElementById("POItable > tr");
-      //     // while (myNode.firstChild) {
-      //     //     myNode.removeChild(myNode.firstChild);
-      //     // }
-
-
-
-      //     // var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      //     // points.push({'name': name, 'distance': distance, 'angle': angle,
-      //     //  'latlng': latlng, 'rating':rating});
-      //     // pointsDB.push({'name': name, 'distance': distance, 'angle': angle,
-      //     //   'latlng': latlng, 'rating':rating});
-
-      //     // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
-      //     //   'latlng': latlng, 'rating':rating});
-
-      //     // var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-      //     // var row = table.insertRow(table.rows.length);
-      //     // var cell1 = row.insertCell(0);
-      //     // var cell2 = row.insertCell(1);
-      //     // var cell3 = row.insertCell(2);
-      //     // cell1.innerHTML = name;
-      //     // cell2.innerHTML = '<input type="checkbox" id="'+name+'">'
-      //     // cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
-      //     // check();  
-      //     // document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
-      //     // var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      //     //     if(isCentroidChecked)
-      //     //     {
-      //     //       reDraw();
-      //     //       selectPOI(pointsDB, center); 
-      //     //     }
-      //     //     else{
-      //     //       selectPOI(pointsDB, compass_center); 
-      //     //     }
-      //     // pcompass.drawNeedles();
+      
       if (place.geometry.viewport) {
         // Only geocodes have viewport.
         bounds.union(place.geometry.viewport);
@@ -281,22 +218,9 @@ function initMap() {
         bounds.extend(place.geometry.location);
       }
     });
-
-    // points = [];
-
-    // console.log(tablePoints);
-    // tablePoints = [];
-    // pointsDB = [];
-
-
     map.fitBounds(bounds);
-    //     var listener = google.maps.event.addListener(map, "idle", function() { 
-    //   if (map.getZoom() > 16) map.setZoom(2); 
-    //   google.maps.event.removeListener(listener); 
-    // });
   });
 
-  // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
   var POI = map.getCenter();
 
   //Create marker, get Latitude and Longitude on click
@@ -323,7 +247,7 @@ function initMap() {
       'latlng': latlng,
       'show': true
     });
-    //Add probability that user knows this location
+
     x_coord = parseInt(pcompass.x) + pcompass.r;
     y_coord = parseInt(pcompass.y) + pcompass.r;
     compass_center = fromPointToLatLng(x_coord, y_coord, map);
@@ -336,16 +260,6 @@ function initMap() {
     return POI;
   });
 
-  //trying to get markers to delete on click
-  // google.maps.event.addListener(map, 'click', function(event) {
-  //     marker.addListener('click', function() {
-  //       points = points.filter(function(el){
-  //         return (el.latlng !== event.latLng);
-  //       });
-  //     });
-  // });
-
-  // Compute Latitude and Longitude of center, dynamically computes distance and angle from marker
   google.maps.event.addListener(map, 'center_changed', function() {
     reDraw();
   });
@@ -355,7 +269,6 @@ function initMap() {
   });
 };
 
-// var tablePoints = pointsDB;
 var check = function() {
   checkboxes = document.getElementsByTagName("input");
 
@@ -364,7 +277,6 @@ var check = function() {
     checkbox.onclick = function() {
       var currentRow = this.parentNode.parentNode;
       var secondColumn = currentRow.getElementsByTagName("td")[0];
-      // if (checkbox.checked) 
       if (secondColumn == undefined)
         return
 
@@ -381,13 +293,7 @@ var reDraw = function() {
   x_coord = parseInt(pcompass.x) + pcompass.r;
   y_coord = parseInt(pcompass.y) + pcompass.r;
   compass_center = fromPointToLatLng(x_coord, y_coord, map);
-  // for (var i in pointsDB) {
-  //     pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
-  //     pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
-
-  // }
   distanceToCompass = 0;
-  //console.log(points);
   if (points[0] !== undefined) {
     for (var i in points) {
       if (points[i].distance < minDistance && !bounds.contains(points[i].latlng))
@@ -434,14 +340,6 @@ var getAngle = function(p1, p2) {
 
 
 var selectPOI = function(allPoints, center) {
-  // var selectedPoints = new Array();
-  //Select the closest POI
-  // $('.dropdown-inverse li > a').click(function(e){
-  //   $('.status').text(this.innerHTML);
-  //   k = this.innerHTML;
-  // }); 
-  // k = 2;
-
 
   points = [];
 
@@ -495,7 +393,6 @@ var selectPOI = function(allPoints, center) {
 
 };
 
-// var socket = io.connect('http://localhost:3000');
 var socket = io.connect();
 socket.on('news', function(data) {
   console.log(data);
@@ -653,62 +550,7 @@ function createMarker(place) {
   });
 };
 
-function populateDB() {
-  var newYork = new google.maps.LatLng(40.7127, -74.0079);
-  var defaultTypes = ['university', 'airport', 'stores']
-    //generatePOI(newYork, defaultTypes);
 
-};
-
-function generatePOI(searchCenter, searchTypes) {
-  var request = {
-    location: searchCenter,
-    radius: '5000',
-    types: searchTypes,
-    rankBy: google.maps.places.RankBy.PROMINENCE
-  }; // Create the PlaceService and send the request.
-  // Handle the callback with an anonymous function.
-  var service = new google.maps.places.PlacesService(map);
-
-
-  service.nearbySearch(request, function(results, status) {
-
-
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < results.length; i++) {
-        var place = results[i];
-        var name = place.name;
-        var rating = place.rating;
-        //createMarker(place);
-
-      }
-
-      pcompass.drawNeedles();
-    }
-  });
-}
-
-
-function deletePOI(t) {
-  var currentRow = t.parentNode.parentNode;
-  var secondColumn = currentRow.getElementsByTagName("td")[0];
-
-  for (var j in pointsDB) {
-    if (secondColumn.textContent == pointsDB[j].name) {
-      pointsDB.splice(j, 1);
-    }
-  }
-
-
-
-  for (var l in markers) {
-    if (secondColumn.textContent == markers[l].title) {
-      markers[l].setMap(null);
-      markers.splice(l, 1);
-    }
-  }
-  reDraw();
-};
 
 function fromLatLngToPoint(lat, lng, map) {
   latLng = new google.maps.LatLng(lat, lng);
