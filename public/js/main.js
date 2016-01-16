@@ -1,4 +1,5 @@
 //'use strict';
+
 var markers = []; /* List of markers on the map */
 var panorama; /* Streetview */
 var map;
@@ -47,10 +48,7 @@ function initMap() {
   });
   populateDB();
   k = 3;
-  // selectPOI(pointsDB); 
-
   panorama = map.getStreetView();
-  //console.log(map.getCenter());
   panorama.setPov( /** @type {google.maps.StreetViewPov} */ ({
     heading: 0,
     pitch: 0
@@ -119,14 +117,12 @@ function initMap() {
       POI = place.geometry.location;
 
       createMarker(place);
-      var center = map.getCenter();
-      distance = getDistance(center, POI);
-      angle = getAngle(center, POI);
+      distance = getDistance(map.getCenter(), POI);
+      angle = getAngle(map.getCenter(), POI);
     });
     // map.fitBounds(bounds);
   });
 
-  // map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(document.getElementById('overlay'));
   var POI = map.getCenter();
 
   //Create marker, get Latitude and Longitude on click
@@ -142,9 +138,8 @@ function initMap() {
       disableAutoPan: true
     });
     infowindow.open(map, marker);
-    var center = map.getCenter();
-    distance = getDistance(center, POI);
-    angle = getAngle(center, POI);
+    distance = getDistance(map.getCenter(), POI);
+    angle = getAngle(map.getCenter(), POI);
     var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
     pointsDB.push({
       'name': name,
@@ -188,7 +183,6 @@ function initMap() {
 // var tablePoints = pointsDB;
 var check = function() {
   checkboxes = document.getElementsByTagName("input");
-
   for (var i = 0; i < checkboxes.length; i++) {
     var checkbox = checkboxes[i];
     checkbox.onclick = function() {
@@ -197,19 +191,15 @@ var check = function() {
       // if (checkbox.checked) 
       if (secondColumn == undefined)
         return
-
       if (document.getElementById(secondColumn.textContent).checked) {
         for (var j in tablePoints) {
           if (secondColumn.textContent == tablePoints[j].name) {
             tablePoints.splice(j, 1);
           }
         }
-
       } else {
         for (var k in pointsDB) {
-
           if (secondColumn.textContent == pointsDB[k].name) {
-            // console.log('hi')
             tablePoints.push(pointsDB[k]);
           }
         }
@@ -219,7 +209,7 @@ var check = function() {
   }
 }
 var reDraw = function() {
-  var center = map.getCenter();
+  center = map.getCenter();
   clearAllCtx();
   bounds = map.getBounds();
   minDistance = Infinity;
@@ -229,10 +219,8 @@ var reDraw = function() {
   var isCentroidChecked = document.getElementById('centroidCheck').checked;
   for (var i in pointsDB) {
     if (isCentroidChecked) {
-      //should this be tablePoints instead?
       pointsDB[i].distance = getDistance(center, pointsDB[i].latlng);
       pointsDB[i].angle = getAngle(center, pointsDB[i].latlng);
-      // console.log('centroid checked ' + pointsDB[i].distance)
     } else {
       pointsDB[i].distance = getDistance(compass_center, pointsDB[i].latlng);
       pointsDB[i].angle = getAngle(compass_center, pointsDB[i].latlng);
@@ -278,79 +266,41 @@ var reDraw = function() {
   if (!panorama.getVisible()) {
     pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
   }
-  //console.log(points);
   pcompass.drawNeedles();
 
 };
 
-//Haversine formula to calculate distance
-var rad = function(x) {
-  return x * Math.PI / 180;
-};
-
-//Distance between to latlng objects
-var getDistance = function(p1, p2) {
-  var R = 6378137; // Earth’s mean radius in meter
-  var dLat = rad(p2.lat() - p1.lat());
-  var dLong = rad(p2.lng() - p1.lng());
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
-    Math.sin(dLong / 2) * Math.sin(dLong / 2);
-  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  var d = R * c;
-  return d / 1000; // returns the distance in KILOmeter
-};
-
-//Calculate angle
-var getAngle = function(p1, p2) {
-  var heading = google.maps.geometry.spherical.computeHeading(p2, p1);
-  heading = (heading + 360 + 90) % 360;
-  heading = 360 - heading;
-  return heading;
-};
-
-
 var selectPOI = function(allPoints, center) {
-  if (allPoints == [] || allPoints[0] == undefined)
-    return
-    // var selectedPoints = new Array();
-    //Select the closest POI
+  if (allPoints == [] || allPoints[0] == undefined) return;
   $('.dropdown-inverse li > a').click(function(e) {
     $('.status').text(this.innerHTML);
     k = this.innerHTML;
   });
-
   points = [];
-
   minDist = Infinity;
   minIndex = Infinity;
   for (var i in allPoints) {
     allPoints[i].distance = getDistance(center, allPoints[i].latlng);
     allPoints[i].angle = getAngle(center, allPoints[i].latlng);
-
     if (allPoints[i].distance < minDist && (!map.getBounds().contains(allPoints[i].latlng))) {
       minIndex = i;
       minDist = allPoints[i].distance;
     }
   }
-
+  if (minIndex === Infinity) return;
   points.push(allPoints[minIndex]);
+  console.log(points)
   var angleInterval = 360 / k;
   var margin = 15;
   var spacing = 30
   var currentAngle = angleInterval;
   var pointsAdded = 1;
   var pointInInterval;
-
-  // console.log(points);
-  // console.log(allPoints);
   while (currentAngle < 360) {
-
     pointInInterval = false;
     for (var i in allPoints) {
       if (Math.abs(allPoints[minIndex].angle - allPoints[i].angle) >= spacing) {
         if (Math.abs(allPoints[i].angle - currentAngle) < margin && pointInInterval == false) {
-          // console.log(map.getBounds(), allPoints[i])
           if (map.getBounds().contains(allPoints[i].latlng)) {
             continue;
           } else {
@@ -364,7 +314,6 @@ var selectPOI = function(allPoints, center) {
         }
       }
     }
-
     currentAngle += angleInterval;
   }
   var table = document.getElementById("POItable");
@@ -534,22 +483,31 @@ function createMarker(place) {
     }
 
     if (status === google.maps.places.PlacesServiceStatus.OK) {
-      // console.log(name);
       contentString = '<div>' +
         '<h4 id="firstHeading" class="firstHeading">' + name + '</h4>' +
         '<p>' + place.formatted_address + '</p>' +
         '<p>' + place.formatted_phone_number + '</p>' +
-        '<a href=' + place.website + '>+' + place.website + '</a>' +
-        '<div>' + '<img src="' + place.photos[0].getUrl({
-          'maxWidth': 150,
-          'maxHeight': 150
-        }) + ' alt="some_text" >' +
+        '<a href=' + place.website + '>+' + place.website + '</a>'
 
-        '<img src="' + place.photos[1].getUrl({
+      if(place.photos !== undefined)
+      {
+        if (place.photos[0] !== undefined) {
+        contentString += '<div>' + '<img src="' + place.photos[0].getUrl({
           'maxWidth': 150,
           'maxHeight': 150
-        }) + ' alt="some_text" >' +
-        '</div>' +
+        }) + ' alt="some_text" >'
+      }
+      if (place.photos[1] !== undefined) {
+
+        contentString += '<img src="' + place.photos[1].getUrl({
+          'maxWidth': 150,
+          'maxHeight': 150
+        }) + ' alt="some_text" >'
+      }
+    }
+
+
+      contentString += '</div>' +
         '</div>';
 
       var marker = new google.maps.Marker({
@@ -587,8 +545,6 @@ function createMarker(place) {
         'show': true,
         'rating': rating
       });
-      // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
-      //   'latlng': latlng, 'show': true, 'rating': rating})
       var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
       var row = table.insertRow(table.rows.length);
       var cell1 = row.insertCell(0);
@@ -638,31 +594,17 @@ function generatePOI(searchCenter, searchTypes) {
   var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
   tablePoints = [];
   service.nearbySearch(request, function(results, status) {
-
-
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
         var place = results[i];
         var name = place.name;
         var rating = place.rating;
         createMarker(place);
-        // var row = table.insertRow(table.rows.length);
-        // var cell1 = row.insertCell(0);
-        // var cell2 = row.insertCell(1);
-        // var cell3 = row.insertCell(2);
-        // cell1.innerHTML = name;
-        // cell2.innerHTML = '<input type="checkbox" id="'+name+'">'
-        // cell3.innerHTML = '<button type="button" id ="'+name+'Btn'+'"   >Delete</button> '
-        // check();
-        //  document.getElementById(name+'Btn').onclick = function() {deletePOI(this)};
       }
-
       pcompass.drawNeedles();
     }
   });
 }
-
-function createTable() {}
 
 function deletePOI(t) {
   var currentRow = t.parentNode.parentNode;
@@ -673,8 +615,6 @@ function deletePOI(t) {
       pointsDB.splice(j, 1);
     }
   }
-
-
 
   for (var k in tablePoints) {
     if (secondColumn.textContent == tablePoints[k].name) {
@@ -751,8 +691,6 @@ document.getElementById('compass').onmousedown = function() {
   ctxWedge.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxFOV.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxLabels.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-  //clearAllCtx();
   return false;
 };
 document.getElementById('compass').onmouseup = function() {
@@ -765,20 +703,16 @@ pcompass.drawCompass();
 
 document.getElementById('compass').addEventListener('touchstart', function() {
   _drag_init(this);
-  // console.log('touch start');
   ctxWedge.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxFOV.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxLabels.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  //clearAllCtx();
   return false;
 });
 document.getElementById('compass').addEventListener('touchend', function() {
   reDraw();
-  // console.log('touch end')
   return false;
 });
 
-// document.addEventListener('touchmove',_move_elem);
 document.getElementById('compass').addEventListener('touchend', _destroy);
 
 document.getElementById('compass').addEventListener('touchmove', function(event) {
@@ -791,12 +725,6 @@ document.getElementById('compass').addEventListener('touchmove', function(event)
   }
 }, false);
 
-function clearAllCtx() {
-  ctxCompass.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  ctxWedge.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  ctxFOV.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  ctxLabels.clearRect(0, 0, window.innerWidth, window.innerHeight);
-}
 
 function toggleStreetView() {
   panorama.setPosition(map.getCenter());

@@ -2,8 +2,8 @@ var contents;
 var logging = [];
 var markers = [];
 var numQuestion = 0;
-totalDist = 0;
-previousDist = 0;
+var totalDist = 0;
+var previousDist = 0;
 var map;
 var pointsDB = new Array(); //Database of all points
 var points = new Array(); //Points that are shown
@@ -54,8 +54,7 @@ function initMap() {
     }, // New York
     zoom: 2
   });
-  //populateDB();
-  // selectPOI(pointsDB, 3); 
+
 
   answerMap.setOptions({
     draggableCursor: "url(http://rogcommunity.com/forums/images/awards/waldo.png) 10 50, auto"

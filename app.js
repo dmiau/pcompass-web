@@ -45,12 +45,14 @@ var result;
 io.on('connection', function(socket) {
 
   var filePath = path.join(__dirname, 'game.json');
-  fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
-      if (!err){
-          socket.emit('getGame', JSON.parse(data))
-      }else{
-          console.log(err);
-      }
+  fs.readFile(filePath, {
+    encoding: 'utf-8'
+  }, function(err, data) {
+    if (!err) {
+      socket.emit('getGame', JSON.parse(data))
+    } else {
+      console.log(err);
+    }
   });
 
 
@@ -105,9 +107,9 @@ io.on('connection', function(socket) {
         console.log('data' + data)
         console.log('type of nextrow' + typeof(eval(nextRow)));
         for (var i = 0; i < data.length; i++) {
-        obj = '{ "' + nextRow + '" :{ "' + (i + 1)+ '": "' + data[i] + '" } }';
-        spreadsheet.add(JSON.parse(obj));
-      }
+          obj = '{ "' + nextRow + '" :{ "' + (i + 1) + '": "' + data[i] + '" } }';
+          spreadsheet.add(JSON.parse(obj));
+        }
         spreadsheet.add(JSON.parse(obj));
         spreadsheet.send(function(err) {
           if (err) throw err;
