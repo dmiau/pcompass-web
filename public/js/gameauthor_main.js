@@ -1,6 +1,7 @@
 game = []
 
-var socket = io.connect('http://localhost:3000');
+// var socket = io.connect('http://localhost:3000');
+var socket = io.connect();
 
 $('#authorGame').click(function() {
   socket.emit('authorGame', game);
