@@ -22,6 +22,8 @@ node app.js
   |-- css
   \
   	|--style.css
+  |-- images
+  |-- js
 ```
 
 
