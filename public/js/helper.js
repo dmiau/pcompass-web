@@ -2,6 +2,10 @@ function rad(x) {
   return x * Math.PI / 180;
 };
 
+function deg(x) {
+  return x * 180 / Math.PI;
+};
+
 function clearAllCtx() {
   ctxCompass.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxWedge.clearRect(0, 0, window.innerWidth, window.innerHeight);

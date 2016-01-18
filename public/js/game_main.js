@@ -351,19 +351,19 @@ function nextQuestion() {
   previousDist = totalDist;
 }
 
-function toRad(deg) {
-  return deg * Math.PI / 180;
-}
+// function toRad(deg) {
+//   return deg * Math.PI / 180;
+// }
 
-function toDeg(rad) {
-  return rad * 180 / Math.PI;
-}
+// function toDeg(rad) {
+//   return rad * 180 / Math.PI;
+// }
 
 function getDestination(center, brng, dist) {
   dist = dist / 6371;
-  brng = toRad(brng);
-  var lat1 = toRad(center.lat()),
-    lon1 = toRad(center.lng());
+  brng = rad(brng);
+  var lat1 = rad(center.lat()),
+    lon1 = rad(center.lng());
   var lat2 = Math.asin(Math.sin(lat1) * Math.cos(dist) +
     Math.cos(lat1) * Math.sin(dist) * Math.cos(brng));
   var lon2 = lon1 + Math.atan2(Math.sin(brng) * Math.sin(dist) *
@@ -371,7 +371,7 @@ function getDestination(center, brng, dist) {
     Math.cos(dist) - Math.sin(lat1) *
     Math.sin(lat2));
   if (isNaN(lat2) || isNaN(lon2)) return null;
-  return new google.maps.LatLng(toDeg(lat2), toDeg(lon2));
+  return new google.maps.LatLng(deg(lat2), deg(lon2));
 }
 
 function createPOIs() {
