@@ -12,9 +12,11 @@ node app.js
 ## Application Structure
 ```
 |-- README.md (This file)
+|-- Procfile
+|-- package.json
 |-- app.js    (runs the server)
-|-- googlemap.html/
 |-- node_modules
+|-- templates
 |-- public
 \
   |-- css
