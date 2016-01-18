@@ -23,7 +23,7 @@ getDistance = function(p1, p2) {
 };
 
 //Calculate angle
-var getAngle = function(p1, p2) {
+getAngle = function(p1, p2) {
   var heading = google.maps.geometry.spherical.computeHeading(p2, p1);
   heading = (heading + 360 + 90) % 360;
   heading = 360 - heading;

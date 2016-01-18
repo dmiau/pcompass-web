@@ -11,23 +11,23 @@ app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 var Spreadsheet = require('edit-google-spreadsheet');
 
 app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname + '/googlemap.html'));
+  res.sendFile(path.join(__dirname + '/templates/googlemap.html'));
 });
 
 app.get('/game', function(req, res) {
-  res.sendFile(path.join(__dirname + '/game.html'));
+  res.sendFile(path.join(__dirname + '/templates/game.html'));
 });
 
 app.get('/gameauthor', function(req, res) {
-  res.sendFile(path.join(__dirname + '/gameauthor.html'));
+  res.sendFile(path.join(__dirname + '/templates/gameauthor.html'));
 });
 
 app.get('/builder', function(req, res) {
-  res.sendFile(path.join(__dirname + '/builder.html'));
+  res.sendFile(path.join(__dirname + '/templates/builder.html'));
 });
 
 app.get('/demo', function(req, res) {
-  res.sendFile(path.join(__dirname + '/demo.html'));
+  res.sendFile(path.join(__dirname + '/templates/demo.html'));
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

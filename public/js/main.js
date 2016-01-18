@@ -1,5 +1,4 @@
 //'use strict';
-
 var markers = []; /* List of markers on the map */
 var panorama; /* Streetview */
 var map;
@@ -92,9 +91,10 @@ function initMap() {
     tablePoints = [];
     pointsDB = [];
     points = [];
+    markers = [];
+    var places = searchBox.getPlaces();
     var Table = document.getElementById("tbodyid");
     Table.innerHTML = "";
-    var places = searchBox.getPlaces();
     if (places.length == 0) {
       return;
     }
@@ -103,7 +103,6 @@ function initMap() {
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
     }
-    markers = [];
     places.forEach(function(place) {
       var icon = {
         url: place.icon,
@@ -124,7 +123,6 @@ function initMap() {
   });
 
   var POI = map.getCenter();
-
   //Create marker, get Latitude and Longitude on click
   google.maps.event.addListener(map, 'click', function(event) {
     POI = event.latLng;
