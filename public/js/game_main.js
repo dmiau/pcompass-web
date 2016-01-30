@@ -31,6 +31,8 @@ var ctxWedge = canvasWedge.getContext("2d");
 
 var pcompass = new PCompass(0, 0, 0, 0, innerWidth / 16);
 var wedge = new Wedge();
+document.getElementById('questionMap').style.pointerEvents = 'none';
+document.getElementById('compass').style.pointerEvents = 'none';
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('questionMap'), {
@@ -49,6 +51,7 @@ function initMap() {
 
 
   });
+
   answerMap = new google.maps.Map(document.getElementById('answerMap'), {
     center: {
       lat: 40.7127,
