@@ -92,12 +92,11 @@ function preview() {
     var id = "distance_" + i;
     var elem = document.getElementById(id);
     distance = elem.value;
-    pixel_distance = distance / 3779575.17575;
     var id = "angle_" + i;
     elem = document.getElementById(id);
     angle = elem.value;
     var center = map.getCenter();
-    var markerLocation = getDestination(center, angle, pixel_distance);
+    var markerLocation = getDestination(center, angle, distance);
     distance = getDistance(center, markerLocation);
     angle = getAngle(center, markerLocation);
     points.push({
