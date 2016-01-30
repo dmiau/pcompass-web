@@ -71,6 +71,8 @@ function initMap() {
     previousDist = totalDist;
     placeMarker(event.latLng);
     dist = getDistance(map.getCenter(), event.latLng)
+    userAnswer = event.latLng;
+    errorDetail = [map.getCenter(), event.latLng]
     totalDist += dist;
     document.getElementById("myDialog").childNodes[1].innerHTML =
       dist.toFixed(3) + ' km';
@@ -324,7 +326,11 @@ function nextQuestion() {
     logging.push(timeElapsed);
 
     logging.push(contents[numQuestion - 1][0][2]);
-    logging.push(dist);
+    logging.push(map.getCenter().lat());
+    logging.push(map.getCenter().lng());
+    logging.push(userAnswer.lat());
+    logging.push(userAnswer.lng());
+
   }
 
 
