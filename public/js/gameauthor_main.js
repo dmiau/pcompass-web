@@ -92,11 +92,12 @@ function preview() {
     var id = "distance_" + i;
     var elem = document.getElementById(id);
     distance = elem.value;
+    pixel_distance = distance / 3779575.17575;
     var id = "angle_" + i;
     elem = document.getElementById(id);
     angle = elem.value;
     var center = map.getCenter();
-    var markerLocation = getDestination(center, angle, distance);
+    var markerLocation = getDestination(center, angle, pixel_distance);
     distance = getDistance(center, markerLocation);
     angle = getAngle(center, markerLocation);
     points.push({
@@ -108,8 +109,10 @@ function preview() {
     });
   }
   console.log(points)
-  pcompass.drawNeedles();
-  wedge.drawWedges();
+
+  // pcompass.drawNeedles();
+  // wedge.drawWedges();
+  reDraw();
 }
 var markers = [];
 var panorama; //Streetview
@@ -306,9 +309,11 @@ var reDraw = function() {
   }
 
   pcompass.drawCompass();
-  pcompass.drawFOV(distanceToCompass);
+  pcompass.drawFOV(distanceToCompass, innerHeight);
+  console.log(distanceToCompass);
   wedge.drawWedges();
   pcompass.drawNeedles();
+
 
 };
 

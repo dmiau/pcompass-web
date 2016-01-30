@@ -70,6 +70,12 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
 
 /* Add a needle for each POI */
 PCompass.prototype.drawNeedles = function() {
+  var maxDistance = 0
+  for (var i in points) {
+    if (points[i].distance > maxDistance){
+      maxDistance = points[i].distance
+    }
+  }
   for (var i in points) {
     var normalized_rating = ((points[i].rating - 3.0) / 2.0);
     var red = 255;
@@ -79,7 +85,7 @@ PCompass.prototype.drawNeedles = function() {
     if (points[i].rating < 3.0) {
       rating_color = 'rgb(200, 200, 0)';
     }
-    pcompass.drawNeedle(points[i].name, points[i].distance, points[i].angle, rating_color);
+    pcompass.drawNeedle(points[i].name, points[i].distance/maxDistance, points[i].angle, rating_color);
   }
   /* Draw center dot */
   var x = parseInt(this.x);

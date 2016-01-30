@@ -29,6 +29,9 @@ var canvasCompass = document.getElementById('canvasCompass');
 canvasCompass.width = 2 * pcompass.r;
 canvasCompass.height = 2 * pcompass.r;
 
+document.getElementById("wrapper3").style.display = "none";
+document.getElementById("wrapper").style.width = "100%";
+
 function toggleTable() {
   if (document.getElementById("wrapper3").style.display == "initial") {
     document.getElementById("wrapper3").style.display = "none";
@@ -287,7 +290,6 @@ var selectPOI = function(allPoints, center) {
   }
   if (minIndex === Infinity) return;
   points.push(allPoints[minIndex]);
-  console.log(points)
   var angleInterval = 360 / k;
   var margin = 15;
   var spacing = 30
