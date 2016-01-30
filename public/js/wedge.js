@@ -52,7 +52,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 
 
     var dist = Math.sqrt(Math.pow(newPoint.x - screenEdgePointX, 2) + Math.pow(newPoint.y - screenEdgePointY, 2));
-    console.log('dist ' + dist)
+    // console.log('dist ' + dist)
     var leg = 1.3 * dist + Math.log((dist + 20) / 12) * 10;
     if(leg - dist > 150) leg = dist + 150;
     if(leg - dist < 20) leg = dist + 20;
@@ -60,15 +60,15 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
     if((15 < angle  && angle < 75) || (105 < angle && angle < 170) 
         || (195 < angle && angle< 255)|| (285 < angle && angle < 345))
     {
-        console.log('cap the aperture!')
+        // console.log('cap the aperture!')
         aperture = 0.10
     }
     if(aperture > 0.27) aperture = 0.27;
     if(dist > 200) aperture = aperture - Math.log(dist)/20000
 
 
-    console.log('angle' + angle)
-    console.log('aperture' + aperture)
+    // console.log('angle' + angle)
+    // console.log('aperture' + aperture)
 
     var theta = aperture / 2;
 

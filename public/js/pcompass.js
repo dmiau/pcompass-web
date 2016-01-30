@@ -102,6 +102,7 @@ PCompass.prototype.drawNeedles = function() {
 
 /* Takes distance of closest point, outside of FOV */
 PCompass.prototype.drawFOV = function(dist, innerHeight) {
+  
   var r = parseInt(this.r)
 
   var x_pc = r + parseInt(this.x)
