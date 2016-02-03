@@ -358,7 +358,7 @@ var selectPOI = function(allPoints, center) {
   }
 };
 
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect();
 socket.on('news', function(data) {
   console.log(data);
 })
