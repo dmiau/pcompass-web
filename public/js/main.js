@@ -1,5 +1,6 @@
 //'use strict';
 var markers = []; /* List of markers on the map */
+var locked = false
 var panorama; /* Streetview */
 var map;
 var pointsDB = new Array(); /* Database of all points */
@@ -187,24 +188,47 @@ var check = function() {
   for (var i = 0; i < checkboxes.length; i++) {
     var checkbox = checkboxes[i];
     checkbox.onclick = function() {
+      if (locked == false) {
+        points = []
+      }
       var currentRow = this.parentNode.parentNode;
       var secondColumn = currentRow.getElementsByTagName("td")[0];
       // if (checkbox.checked) 
       if (secondColumn == undefined)
         return
       if (document.getElementById(secondColumn.textContent).checked) {
-        for (var j in tablePoints) {
-          if (secondColumn.textContent == tablePoints[j].name) {
-            tablePoints.splice(j, 1);
-          }
-        }
-      } else {
+        locked = true
+        // for (var j in tablePoints) {
+        //   if (secondColumn.textContent == tablePoints[j].name) {
+        //     console.log(tablePoints)
+        //     tablePoints.splice(j, 1);
+        //   }
+        // }
         for (var k in pointsDB) {
           if (secondColumn.textContent == pointsDB[k].name) {
-            tablePoints.push(pointsDB[k]);
+              points.push(pointsDB[k]);
           }
         }
       }
+      else{
+        for (var k in points) {
+          if (secondColumn.textContent == points[k].name) {
+              points.splice(k, 1);
+          }
+        }
+        if (points.length == 0) {
+          locked = false
+        }
+      }
+      
+
+      // else {
+      //   for (var k in pointsDB) {
+      //     if (secondColumn.textContent == pointsDB[k].name) {
+      //       tablePoints.push(pointsDB[k]);
+      //     }
+      //   }
+      // }
       reDraw();
     };
   }
@@ -228,10 +252,12 @@ var reDraw = function() {
     }
 
   }
-  if (isCentroidChecked) {
-    selectPOI(pointsDB, center);
-  } else {
-    selectPOI(pointsDB, compass_center);
+  if (locked == false) {
+    if (isCentroidChecked) {
+      selectPOI(pointsDB, center);
+    } else {
+      selectPOI(pointsDB, compass_center);
+    }
   }
   if (pointsDB.length == 0)
     return;
@@ -471,12 +497,14 @@ function createMarker(place) {
       y_coord = parseInt(pcompass.y) + pcompass.r;
       compass_center = fromPointToLatLng(x_coord, y_coord, map);
       var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      if (isCentroidChecked) {
+      if (locked == false){
+        if (isCentroidChecked) {
 
-        selectPOI(pointsDB, center);
-      } else {
-        // console.log(pointsDB);
-        selectPOI(pointsDB, compass_center);
+          selectPOI(pointsDB, center);
+        } else {
+          // console.log(pointsDB);
+          selectPOI(pointsDB, compass_center);
+        }
       }
       markers.push(marker);
       return marker;
@@ -563,10 +591,12 @@ function createMarker(place) {
       y_coord = parseInt(pcompass.y) + pcompass.r;
       compass_center = fromPointToLatLng(x_coord, y_coord, map);
       var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      if (isCentroidChecked) {
-        selectPOI(pointsDB, center);
-      } else {
-        selectPOI(pointsDB, compass_center);
+      if (locked == false){
+        if (isCentroidChecked) {
+          selectPOI(pointsDB, center);
+        } else {
+          selectPOI(pointsDB, compass_center);
+        }
       }
       markers.push(marker);
       return marker;
