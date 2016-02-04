@@ -327,13 +327,18 @@ function nextQuestion() {
     totalTime = totalTime + timeElapsed;
     start = end
     logging.push(timeElapsed);
-
     logging.push(contents[numQuestion - 1][0][2]);
     logging.push(map.getCenter().lat());
     logging.push(map.getCenter().lng());
     logging.push(userAnswer.lat());
     logging.push(userAnswer.lng());
-
+    answerPoint = fromLatLngToPoint(map.getCenter().lat(), map.getCenter().lng(), answerMap)
+    userPoint = fromLatLngToPoint(userAnswer.lat(), userAnswer.lng(), answerMap)
+    logging.push(answerPoint.x)
+    logging.push(answerPoint.y)
+    logging.push(userPoint.x)
+    logging.push(userPoint.y)
+    logging.push(map.getZoom())
   }
 
 

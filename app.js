@@ -47,9 +47,9 @@ io.on('connection', function(socket) {
   });
 
   socket.on('POIs', function(data) {
-    console.log(data);
-    var writePath = __dirname + '/data.json';
-    fs.writeFile(writePath, JSON.stringify(data), function(err) {
+    console.log(data.points);
+    var writePath = __dirname + '/' + data.filename;
+    fs.writeFile(writePath, JSON.stringify(data.points), function(err) {
       if (err) {
         return console.log(err);
       }
@@ -59,9 +59,10 @@ io.on('connection', function(socket) {
   });
 
   socket.on('authorGame', function(data) {
-    console.log(data);
-    var writePath = __dirname + '/game.json';
-    fs.writeFile(writePath, JSON.stringify(data), function(err) {
+    console.log(data)
+    console.log(data.game);
+    var writePath = __dirname + '/' + data.filename;
+    fs.writeFile(writePath, JSON.stringify(data.game), function(err) {
       if (err) {
         return console.log(err);
       }

@@ -338,7 +338,8 @@ socket.on('news', function(data) {
 })
 
 $('#exportButton').click(function() {
-  socket.emit('POIs', points);
+  var filename = prompt("Please enter file name", "data.json");
+  socket.emit('POIs', {'points': points, 'filename': filename});
 })
 
 function readSingleFile(e) {

@@ -3,9 +3,9 @@ game = []
 // var socket = io.connect('http://localhost:3000');
 var socket = io.connect();
 
-$('#authorGame').click(function() {
-  socket.emit('authorGame', game);
-})
+// $('#authorGame').click(function() {
+//   socket.emit('authorGame', game);
+// })
 
 var numFields;
 $(document).ready(function() {
@@ -81,9 +81,10 @@ function submit() {
   $("#success").html("Question added!");
 }
 
-function exportSuccess() {
-  $("#success").html("Exported!");
-}
+// function exportSuccess() {
+
+
+// }
 
 
 function preview() {
@@ -402,8 +403,11 @@ socket.on('news', function(data) {
   console.log(data);
 })
 
-$('#exportButton').click(function() {
-  socket.emit('POIs', points);
+$('#exportGame').click(function() {
+var filename = prompt("Please enter file name", "data.json");
+  
+  $("#success").html("Exported!");
+  socket.emit('authorGame', {'game': game, 'filename': filename});
 })
 
 
