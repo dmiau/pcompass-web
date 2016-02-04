@@ -364,7 +364,20 @@ socket.on('news', function(data) {
 })
 
 $('#exportButton').click(function() {
-  socket.emit('POIs', points);
+  socket.emit('POIs', pointsDB);
+})
+
+$('#clearButton').click(function() {
+  pointsDB = [];
+  reDraw();
+  console.log(markers.length)
+  console.log(markers)
+
+  for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+      markers.splice(i, 1);
+    }
+  console.log(markers)
 })
 
 function readSingleFile(e) {
@@ -624,15 +637,17 @@ function generatePOI(searchCenter, searchTypes) {
   var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
   tablePoints = [];
   service.nearbySearch(request, function(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
+    // if (status == google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
         var place = results[i];
         var name = place.name;
         var rating = place.rating;
         createMarker(place);
+
       }
+      // console.log(markers)
       pcompass.drawNeedles();
-    }
+    // }
   });
 }
 
