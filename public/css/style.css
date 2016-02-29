@@ -41,7 +41,7 @@ background-color: #ffffff;
   height:0%;
 }
 #maps{
-  height:calc(100% - 50px);
+  height:100%;
 }
 
 #mapCompass{

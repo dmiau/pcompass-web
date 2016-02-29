@@ -9,6 +9,10 @@ var tablePoints = []; /* Points displayed on the table */
 var canvasCompass = document.getElementById("canvasCompass");
 var ctxCompass = canvasCompass.getContext("2d");
 
+var navHeight = $('.navbar').height(); 
+var mapHeight = window.innerHeight - navHeight;
+$('#maps').css('height', mapHeight);
+
 var canvasFOV = document.getElementById("canvasFOV");
 canvasFOV.setAttribute('width', window.innerWidth);
 canvasFOV.setAttribute('height', window.innerHeight);
@@ -291,7 +295,8 @@ var reDraw = function() {
     }
   }
   if (!panorama.getVisible()) {
-    pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
+    //pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
+    pcompass.drawNorthNeedle();
   }
   pcompass.drawNeedles();
 

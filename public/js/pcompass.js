@@ -36,6 +36,17 @@ PCompass.prototype.drawCompass = function() {
 
 };
 
+PCompass.prototype.drawNorthNeedle = function() {
+  angle = 90 * Math.PI / 180;
+  ctxFOV.beginPath();
+  ctxFOV.moveTo(this.r, this.r + Y_OFFSET);
+  ctxFOV.lineTo(this.r + 90 * Math.cos(angle), this.r - 90 * Math.sin(angle) + Y_OFFSET);
+  ctxFOV.strokeStyle = '#A8A8A8'; //'#000000';
+  ctxFOV.fillStyle = '#A8A8A8'; //'#000000';
+  ctxFOV.lineWidth = 3;
+  ctxFOV.stroke();
+};
+
 PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   //draw lines
   distance = this.r * distance;

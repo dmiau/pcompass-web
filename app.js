@@ -30,6 +30,10 @@ app.get('/demo', function(req, res) {
   res.sendFile(path.join(__dirname + '/templates/demo.html'));
 });
 
+app.get('/load', function(req, res) {
+  res.sendFile(path.join(__dirname + '/templates/load.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 var result;
