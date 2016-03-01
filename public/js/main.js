@@ -69,6 +69,10 @@ function initMap() {
   // Bias the SearchBox results towards current map's viewport.
   map.addListener('bounds_changed', function() {
     searchBox.setBounds(map.getBounds());
+    var navHeight = $('.navbar').height(); 
+var mapHeight = window.innerHeight - navHeight;
+$('#maps').css('height', mapHeight);
+
   });
 
   google.maps.event.addListener(panorama, "position_changed", function() {
