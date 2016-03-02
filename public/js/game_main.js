@@ -77,16 +77,13 @@ function initMap() {
     userAnswer = event.latLng;
     errorDetail = [map.getCenter(), event.latLng]
     totalDist += dist;
-    document.getElementById("myDialog").childNodes[1].innerHTML =
-      dist.toFixed(3) + ' km';
-    document.getElementById("myDialog").showModal();
+    document.getElementById("modal-text").innerHTML =
+     'You were only off by: ' + dist.toFixed(3) + ' km';
+    $('#myDialog').modal('show')
+    // document.getElementById("myDialog").showModal();
     document.getElementById('answerMap').style.pointerEvents = 'none';
 
   });
-
-  document.getElementById('hide').onclick = function() {
-    document.getElementById('myDialog').close();
-  };
 
   function placeMarker(location) {
     var marker = new google.maps.Marker({

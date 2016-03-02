@@ -72,11 +72,22 @@
       <script src="/js/wedge.js" async></script>
       <script src='/js/game_main.js' async></script>
     </div>
-    <dialog id="myDialog">
-      You were only off by:
-      <div id='distance'></div>
-      <button id="hide">Close</button>
-    </dialog>
+
+    <div id="myDialog" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-body" id="modal-text">
+            <p>Some text in the modal.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <div id="answerMap"></div>
   </div>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap" async defer>
