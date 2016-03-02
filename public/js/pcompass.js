@@ -37,7 +37,7 @@ PCompass.prototype.drawCompass = function() {
 };
 
 PCompass.prototype.drawNorthNeedle = function() {
-  angle = 90 * Math.PI / 180;
+  var angle = 90 * Math.PI / 180;
   ctxFOV.beginPath();
   ctxFOV.moveTo(this.r, this.r + Y_OFFSET);
   ctxFOV.lineTo(this.r + 90 * Math.cos(angle), this.r - 90 * Math.sin(angle) + Y_OFFSET);
