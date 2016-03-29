@@ -30,6 +30,10 @@ var canvasCompass = document.getElementById('canvasCompass');
 canvasCompass.width = 2 * pcompass.r;
 canvasCompass.height = 2 * pcompass.r;
 
+
+
+
+
 document.getElementById("wrapper3").style.display = "none";
 document.getElementById("wrapper").style.width = "100%";
 
@@ -777,7 +781,11 @@ function toggleStreetView() {
   var toggle = panorama.getVisible();
   if (toggle == false) {
     panorama.setVisible(true);
+    ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
+
   } else {
     panorama.setVisible(false);
+    ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
+    reDraw();
   }
 }
