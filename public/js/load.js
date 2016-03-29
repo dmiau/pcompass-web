@@ -34,10 +34,6 @@ var canvasCompass = document.getElementById('canvasCompass');
 canvasCompass.width = 2 * pcompass.r;
 canvasCompass.height = 2 * pcompass.r;
 
-
-
-
-
 document.getElementById("wrapper3").style.display = "none";
 document.getElementById("wrapper").style.width = "100%";
 
@@ -57,7 +53,6 @@ function initMap() {
     center: newYork, // New York
     zoom: 15
   });
-  populateDB();
   k = 3;
   panorama = map.getStreetView();
   panorama.setPov( /** @type {google.maps.StreetViewPov} */ ({
@@ -410,6 +405,8 @@ function readSingleFile(e) {
         contents[i].latlng = new google.maps.LatLng(contents[i].latlng.lat, contents[i].latlng.lng);
         tablePoints.push(contents[i]);
         pointsDB.push(contents[i]);
+        createMarker(contents[i]);
+
         var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
         var row = table.insertRow(table.rows.length);
         var cell1 = row.insertCell(0);
@@ -451,220 +448,75 @@ function createMarker(place) {
   var name = place.name;
   var rating = place.rating;
 
-  var POI = place.geometry.location;
+  var POI = place.latlng;
   var contentString;
 
   var infowindow = new google.maps.InfoWindow();
-  var service = new google.maps.places.PlacesService(map);
+ 
+  contentString = '<div>' +
+    '<h4 id="firstHeading" class="firstHeading">' + name + '</h4>' +
+    '</div>';
 
-  // console.log(name);
-  service.getDetails({
-    placeId: place.place_id
-  }, function(place, status) {
-    // console.log(status);
+  var marker = new google.maps.Marker({
+    position: POI,
+    map: map,
+    title: name,
+    snippet: contentString
 
-    if (status === 'OVER_QUERY_LIMIT') {
-      contentString = '<div>' +
-        '<h4 id="firstHeading" class="firstHeading">' + name + '</h4>' +
-        '</div>';
-
-      var marker = new google.maps.Marker({
-        position: POI,
-        map: map,
-        title: name,
-        snippet: contentString
-
-      });
-
-      var infowindow = new google.maps.InfoWindow({
-        content: name,
-        disableAutoPan: true
-      });
-      infowindow.open(map, marker);
-      infowindowDetail = new google.maps.InfoWindow({
-        content: marker.snippet,
-        maxWidth: 350,
-        disableAutoPan: true,
-      });
-      marker.addListener('click', function() {
-        infowindowDetail.setContent(this.snippet)
-        infowindowDetail.setZIndex(10);
-        infowindowDetail.open(map, this);
-      });
-      var center = map.getCenter();
-      distance = getDistance(center, POI);
-      angle = getAngle(center, POI);
-      var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      pointsDB.push({
-        'name': name,
-        'distance': distance,
-        'angle': angle,
-        'latlng': latlng,
-        'show': true,
-        'rating': rating
-      });
-
-      // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
-      //   'latlng': latlng, 'show': true, 'rating': rating})
-      var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-      var row = table.insertRow(table.rows.length);
-      var cell1 = row.insertCell(0);
-      var cell2 = row.insertCell(1);
-      var cell3 = row.insertCell(2);
-      cell1.innerHTML = name;
-      cell2.innerHTML = '<input type="checkbox" id="' + name + '">'
-      cell3.innerHTML = '<button type="button" id ="' + name + 'Btn' + '"   >Delete</button> '
-      check();
-      document.getElementById(name + 'Btn').onclick = function() {
-        deletePOI(this)
-      };
-
-      //Add probability that user knows this location
-      x_coord = parseInt(pcompass.x) + pcompass.r;
-      y_coord = parseInt(pcompass.y) + pcompass.r;
-      compass_center = fromPointToLatLng(x_coord, y_coord, map);
-      var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      if (locked == false){
-        if (isCentroidChecked) {
-
-          selectPOI(pointsDB, center);
-        } else {
-          // console.log(pointsDB);
-          selectPOI(pointsDB, compass_center);
-        }
-      }
-      markers.push(marker);
-      return marker;
-    }
-
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      contentString = '<div>' +
-        '<h4 id="firstHeading" class="firstHeading">' + name + '</h4>' +
-        '<p>' + place.formatted_address + '</p>' +
-        '<p>' + place.formatted_phone_number + '</p>' +
-        '<a href=' + place.website + '>+' + place.website + '</a>'
-
-      if(place.photos !== undefined)
-      {
-        if (place.photos[0] !== undefined) {
-        contentString += '<div>' + '<img src="' + place.photos[0].getUrl({
-          'maxWidth': 150,
-          'maxHeight': 150
-        }) + ' alt="some_text" >'
-      }
-      if (place.photos[1] !== undefined) {
-
-        contentString += '<img src="' + place.photos[1].getUrl({
-          'maxWidth': 150,
-          'maxHeight': 150
-        }) + ' alt="some_text" >'
-      }
-    }
-
-
-      contentString += '</div>' +
-        '</div>';
-
-      var marker = new google.maps.Marker({
-        position: POI,
-        map: map,
-        title: name,
-        snippet: contentString
-
-      });
-
-      var infowindow = new google.maps.InfoWindow({
-        content: place.name,
-        disableAutoPan: true
-      });
-      infowindow.open(map, marker);
-      infowindowDetail = new google.maps.InfoWindow({
-        content: marker.snippet,
-        maxWidth: 350,
-        disableAutoPan: true,
-      });
-      marker.addListener('click', function() {
-        infowindowDetail.setContent(this.snippet)
-        infowindowDetail.setZIndex(10);
-        infowindowDetail.open(map, this);
-      });
-      var center = map.getCenter();
-      distance = getDistance(center, POI);
-      angle = getAngle(center, POI);
-      var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      pointsDB.push({
-        'name': name,
-        'distance': distance,
-        'angle': angle,
-        'latlng': latlng,
-        'show': true,
-        'rating': rating
-      });
-      var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-      var row = table.insertRow(table.rows.length);
-      var cell1 = row.insertCell(0);
-      var cell2 = row.insertCell(1);
-      var cell3 = row.insertCell(2);
-      cell1.innerHTML = name;
-      cell2.innerHTML = '<input type="checkbox" id="' + name + '">'
-      cell3.innerHTML = '<button type="button" id ="' + name + 'Btn' + '"   >Delete</button> '
-      check();
-      document.getElementById(name + 'Btn').onclick = function() {
-        deletePOI(this)
-      };
-
-      //Add probability that user knows this location
-      x_coord = parseInt(pcompass.x) + pcompass.r;
-      y_coord = parseInt(pcompass.y) + pcompass.r;
-      compass_center = fromPointToLatLng(x_coord, y_coord, map);
-      var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      if (locked == false){
-        if (isCentroidChecked) {
-          selectPOI(pointsDB, center);
-        } else {
-          selectPOI(pointsDB, compass_center);
-        }
-      }
-      markers.push(marker);
-      return marker;
-    }
   });
-};
 
-function populateDB() {
-  var newYork = new google.maps.LatLng(40.7127, -74.0079);
-  var defaultTypes = ['university', 'airport', 'stores']
-  generatePOI(newYork, defaultTypes);
-
-};
-
-function generatePOI(searchCenter, searchTypes) {
-  var request = {
-    location: searchCenter,
-    radius: '5000',
-    types: searchTypes,
-    rankBy: google.maps.places.RankBy.PROMINENCE
-  }; // Create the PlaceService and send the request.
-  // Handle the callback with an anonymous function.
-  var service = new google.maps.places.PlacesService(map);
+  var infowindow = new google.maps.InfoWindow({
+    content: name,
+    disableAutoPan: true
+  });
+  infowindow.open(map, marker);
+  
+  
+  var center = map.getCenter();
+  distance = getDistance(center, POI);
+  angle = getAngle(center, POI);
+  var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+  pointsDB.push({
+    'name': name,
+    'distance': distance,
+    'angle': angle,
+    'latlng': latlng,
+    'show': true,
+    'rating': rating
+  });
 
   var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-  tablePoints = [];
-  service.nearbySearch(request, function(results, status) {
-    // if (status == google.maps.places.PlacesServiceStatus.OK) {
-      for (var i = 0; i < results.length; i++) {
-        var place = results[i];
-        var name = place.name;
-        var rating = place.rating;
-        createMarker(place);
+  var row = table.insertRow(table.rows.length);
+  var cell1 = row.insertCell(0);
+  var cell2 = row.insertCell(1);
+  var cell3 = row.insertCell(2);
+  cell1.innerHTML = name;
+  cell2.innerHTML = '<input type="checkbox" id="' + name + '">'
+  cell3.innerHTML = '<button type="button" id ="' + name + 'Btn' + '"   >Delete</button> '
+  check();
+  document.getElementById(name + 'Btn').onclick = function() {
+    deletePOI(this)
+  };
 
-      }
-      // console.log(markers)
-      pcompass.drawNeedles();
-    // }
-  });
+  //Add probability that user knows this location
+  x_coord = parseInt(pcompass.x) + pcompass.r;
+  y_coord = parseInt(pcompass.y) + pcompass.r;
+  compass_center = fromPointToLatLng(x_coord, y_coord, map);
+  var isCentroidChecked = document.getElementById('centroidCheck').checked;
+  if (locked == false){
+    if (isCentroidChecked) {
+
+      selectPOI(pointsDB, center);
+    } else {
+      // console.log(pointsDB);
+      selectPOI(pointsDB, compass_center);
+    }
+  }
+  markers.push(marker);
+  return marker;
 }
 
+  
 function deletePOI(t) {
   var currentRow = t.parentNode.parentNode;
   var secondColumn = currentRow.getElementsByTagName("td")[0];
@@ -790,11 +642,7 @@ function toggleStreetView() {
   var toggle = panorama.getVisible();
   if (toggle == false) {
     panorama.setVisible(true);
-    ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
-
   } else {
     panorama.setVisible(false);
-    ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
-    reDraw();
   }
 }
