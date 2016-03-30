@@ -37,10 +37,15 @@ PCompass.prototype.drawCompass = function() {
 };
 
 PCompass.prototype.drawNorthNeedle = function() {
+
+  var r = parseInt(this.r)
+  var x_pc = r + parseInt(this.x)
+  var y_pc = r + parseInt(this.y)
+
   var angle = 90 * Math.PI / 180;
   ctxFOV.beginPath();
-  ctxFOV.moveTo(this.r, this.r + Y_OFFSET);
-  ctxFOV.lineTo(this.r + 90 * Math.cos(angle), this.r - 90 * Math.sin(angle) + Y_OFFSET);
+  ctxFOV.moveTo(x_pc, y_pc + Y_OFFSET);
+  ctxFOV.lineTo(x_pc + 90 * Math.cos(angle), y_pc - 110 * Math.sin(angle) + Y_OFFSET);
   ctxFOV.strokeStyle = '#A8A8A8'; //'#000000';
   ctxFOV.fillStyle = '#A8A8A8'; //'#000000';
   ctxFOV.lineWidth = 3;
