@@ -786,7 +786,10 @@ function toggleStreetView() {
   var toggle = panorama.getVisible();
   if (toggle == false) {
     panorama.setVisible(true);
+   ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
   } else {
     panorama.setVisible(false);
+    ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
+reDraw();
   }
 }
