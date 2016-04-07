@@ -68,6 +68,8 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
 
   //Draw the labels
   ctxLabels.font = "15px Arial";
+  ctxLabels.fillStyle = '#FFFFFF'
+  ctxLabels.shadowColor = "black"
   if (angle < Math.PI / 2 || angle > 3 * Math.PI / 2) {
     ctxLabels.fillText(name,
         this.r + distance * Math.cos(angle) + parseInt(this.x), //compassX, 
