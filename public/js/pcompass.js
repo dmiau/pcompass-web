@@ -153,7 +153,7 @@ PCompass.prototype.drawFOV = function(dist, innerHeight) {
 
 PCompass.prototype.drawFOVCentered = function(dist) {
   //Compass x and y
-  r = parseInt(this.r)
+  var r = parseInt(this.r)
   var x_pc = r + parseInt(this.x)
   var y_pc = r + parseInt(this.y)
   var w_fov = innerWidth * r / dist;
