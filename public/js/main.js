@@ -1,5 +1,5 @@
 //'use strict';
-var markers = []; /* List of markers on the map */
+var markers; /* List of markers on the map */
 var locked = false
 var panorama; /* Streetview */
 var map;
@@ -8,6 +8,8 @@ var points = new Array(); /* Points that are shown */
 var tablePoints = []; /* Points displayed on the table */
 var canvasCompass = document.getElementById("canvasCompass");
 var ctxCompass = canvasCompass.getContext("2d");
+var distanceToCenter;
+var distanceToCompass;
 
 var navHeight = $('.navbar').height(); 
 var mapHeight = window.innerHeight - navHeight;
@@ -267,8 +269,8 @@ var reDraw = function() {
       selectPOI(pointsDB, compass_center);
     }
   }
-  if (pointsDB.length == 0)
-    return;
+  // if (pointsDB.length == 0)
+  //   return;
   for (var i in points) {
     if (points[i].distance < minDistance && !bounds.contains(points[i].latlng))
       minDistance = points[i].distance;
@@ -284,13 +286,17 @@ var reDraw = function() {
   if (isCompassChecked) {
     pcompass.drawCompass();
 
-    if (isCentroidChecked) {
-      pcompass.drawFOVCentered(distanceToCenter);
-    } else {
-      if (!panorama.getVisible()) {
-        pcompass.drawFOV(distanceToCompass, innerHeight);
+    if (points.length != 0){
+      if (isCentroidChecked) {
+        pcompass.drawFOVCentered(distanceToCenter);
+      } else {
+        if (!panorama.getVisible()) {
+          pcompass.drawFOV(distanceToCompass, innerHeight);
+        }
       }
-
+    }
+    else{
+      ctxFOV.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
   }
   if (isWedgeChecked) {
@@ -378,16 +384,19 @@ $('#exportButton').click(function() {
 })
 
 $('#clearButton').click(function() {
-  pointsDB = [];
-  reDraw();
-  console.log(markers.length)
-  console.log(markers)
-
+  //pointsDB = [];
+  //reDraw();
   for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
-      markers.splice(i, 1);
-    }
-  console.log(markers)
+      //markers.splice(i, 1);
+  }
+  $("#POItable tbody tr").remove();
+  markers = []
+  pointsDB = []
+  points = []
+  distanceToCenter = 0;
+  distanceToCompass = 0;
+  reDraw()
 })
 
 function readSingleFile(e) {
@@ -459,79 +468,80 @@ function createMarker(place) {
   }, function(place, status) {
     // console.log(status);
 
-    if (status === 'OVER_QUERY_LIMIT') {
-      contentString = '<div>' +
-        '<h4 id="firstHeading" class="firstHeading">' + name + '</h4>' +
-        '</div>';
+    // if (status === 'OVER_QUERY_LIMIT') {
+    //   contentString = '<div>' +
+    //     '<h4 id="firstHeading" class="firstHeading">' + name + '</h4>' +
+    //     '</div>';
 
-      var marker = new google.maps.Marker({
-        position: POI,
-        map: map,
-        title: name,
-        snippet: contentString
+    //   var marker = new google.maps.Marker({
+    //     position: POI,
+    //     map: map,
+    //     title: name,
+    //     snippet: contentString
 
-      });
+    //   });
 
-      var infowindow = new google.maps.InfoWindow({
-        content: name,
-        disableAutoPan: true
-      });
-      infowindow.open(map, marker);
-      infowindowDetail = new google.maps.InfoWindow({
-        content: marker.snippet,
-        maxWidth: 350,
-        disableAutoPan: true,
-      });
-      marker.addListener('click', function() {
-        infowindowDetail.setContent(this.snippet)
-        infowindowDetail.setZIndex(10);
-        infowindowDetail.open(map, this);
-      });
-      var center = map.getCenter();
-      distance = getDistance(center, POI);
-      angle = getAngle(center, POI);
-      var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
-      pointsDB.push({
-        'name': name,
-        'distance': distance,
-        'angle': angle,
-        'latlng': latlng,
-        'show': true,
-        'rating': rating
-      });
+    //   var infowindow = new google.maps.InfoWindow({
+    //     content: name,
+    //     disableAutoPan: true
+    //   });
+    //   infowindow.open(map, marker);
+    //   infowindowDetail = new google.maps.InfoWindow({
+    //     content: marker.snippet,
+    //     maxWidth: 350,
+    //     disableAutoPan: true,
+    //   });
+    //   marker.addListener('click', function() {
+    //     infowindowDetail.setContent(this.snippet)
+    //     infowindowDetail.setZIndex(10);
+    //     infowindowDetail.open(map, this);
+    //   });
+    //   var center = map.getCenter();
+    //   distance = getDistance(center, POI);
+    //   angle = getAngle(center, POI);
+    //   var latlng = new google.maps.LatLng(POI.lat(), POI.lng())
+    //   pointsDB.push({
+    //     'name': name,
+    //     'distance': distance,
+    //     'angle': angle,
+    //     'latlng': latlng,
+    //     'show': true,
+    //     'rating': rating
+    //   });
 
-      // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
-      //   'latlng': latlng, 'show': true, 'rating': rating})
-      var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
-      var row = table.insertRow(table.rows.length);
-      var cell1 = row.insertCell(0);
-      var cell2 = row.insertCell(1);
-      var cell3 = row.insertCell(2);
-      cell1.innerHTML = name;
-      cell2.innerHTML = '<input type="checkbox" id="' + name + '">'
-      cell3.innerHTML = '<button type="button" id ="' + name + 'Btn' + '"   >Delete</button> '
-      check();
-      document.getElementById(name + 'Btn').onclick = function() {
-        deletePOI(this)
-      };
+    //   console.log(name)
+    //   // tablePoints.push({'name': name, 'distance': distance, 'angle': angle,
+    //   //   'latlng': latlng, 'show': true, 'rating': rating})
+    //   var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+    //   var row = table.insertRow(table.rows.length);
+    //   var cell1 = row.insertCell(0);
+    //   var cell2 = row.insertCell(1);
+    //   var cell3 = row.insertCell(2);
+    //   cell1.innerHTML = name;
+    //   cell2.innerHTML = '<input type="checkbox" id="' + name + '">'
+    //   cell3.innerHTML = '<button type="button" id ="' + name + 'Btn' + '"   >Delete</button> '
+    //   check();
+    //   document.getElementById(name + 'Btn').onclick = function() {
+    //     deletePOI(this)
+    //   };
 
-      //Add probability that user knows this location
-      x_coord = parseInt(pcompass.x) + pcompass.r;
-      y_coord = parseInt(pcompass.y) + pcompass.r;
-      compass_center = fromPointToLatLng(x_coord, y_coord, map);
-      var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      if (locked == false){
-        if (isCentroidChecked) {
+    //   //Add probability that user knows this location
+    //   x_coord = parseInt(pcompass.x) + pcompass.r;
+    //   y_coord = parseInt(pcompass.y) + pcompass.r;
+    //   compass_center = fromPointToLatLng(x_coord, y_coord, map);
+    //   var isCentroidChecked = document.getElementById('centroidCheck').checked;
+    //   if (locked == false){
+    //     if (isCentroidChecked) {
 
-          selectPOI(pointsDB, center);
-        } else {
-          // console.log(pointsDB);
-          selectPOI(pointsDB, compass_center);
-        }
-      }
-      markers.push(marker);
-      return marker;
-    }
+    //       selectPOI(pointsDB, center);
+    //     } else {
+    //       // console.log(pointsDB);
+    //       selectPOI(pointsDB, compass_center);
+    //     }
+    //   }
+    //   markers.push(marker);
+    //   return marker;
+    // }
 
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       contentString = '<div>' +
@@ -635,6 +645,7 @@ function populateDB() {
 };
 
 function generatePOI(searchCenter, searchTypes) {
+  markers = [];
   var request = {
     location: searchCenter,
     radius: '5000',
