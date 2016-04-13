@@ -8,6 +8,7 @@ var socket = io.connect();
 // })
 
 var numFields;
+var questionCount = 0;
 $(document).ready(function() {
   var max_fields = 10; //maximum input boxes allowed
   var wrapper = $(".input_fields_wrap"); //Fields wrapper
@@ -19,8 +20,8 @@ $(document).ready(function() {
     if (numFields < max_fields) { //max input box allowed
       numFields++; //text box increment
       var newBox = '<div class = "row"><div class="form-group col-md-5"><input id="distance_' + numFields +
-        '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center"></div><div class="form-group col-md-5"><input id="angle_' + numFields +
-        '" type="text" class="form-control" name="mytext[]" placeholder="Angle from north"></div><a href="#" class="remove_field">Remove</a></div>'
+        '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center (km)"></div><div class="form-group col-md-5"><input id="angle_' + numFields +
+        '" type="text" class="form-control" name="mytext[]" placeholder="Angle from north (0-360)"></div><a href="#" class="remove_field">Remove</a></div>'
       $(wrapper).append(newBox); //add input box
       console.log('numFields' + numFields)
     }
@@ -78,7 +79,8 @@ function submit() {
     question.push(point);
   }
   game.push(question)
-  $("#success").html("Question added!");
+  questionCount = questionCount + 1;
+  $("#success").html("Question number " + questionCount + " added!");
 }
 
 // function exportSuccess() {
