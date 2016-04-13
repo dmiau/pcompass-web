@@ -583,7 +583,7 @@ function createMarker(place) {
         content: place.name,
         disableAutoPan: true
       });
-      infowindow.open(map, marker);
+      // infowindow.open(map, marker);
       infowindowDetail = new google.maps.InfoWindow({
         content: marker.snippet,
         maxWidth: 350,
