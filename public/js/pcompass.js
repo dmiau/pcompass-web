@@ -68,6 +68,8 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
 
   //Draw the labels
   ctxLabels.font = "15px Arial";
+  ctxLabels.fillStyle = '#FFFFFF'
+  ctxLabels.shadowColor = "black"
   if (angle < Math.PI / 2 || angle > 3 * Math.PI / 2) {
 
     var x = this.r + distance * Math.cos(angle) + parseInt(this.x)
@@ -165,7 +167,7 @@ PCompass.prototype.drawFOV = function(dist, innerHeight) {
 
 PCompass.prototype.drawFOVCentered = function(dist) {
   //Compass x and y
-  r = parseInt(this.r)
+  var r = parseInt(this.r)
   var x_pc = r + parseInt(this.x)
   var y_pc = r + parseInt(this.y)
   var w_fov = innerWidth * r / dist;
