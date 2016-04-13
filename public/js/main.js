@@ -102,6 +102,10 @@ $('#maps').css('height', mapHeight);
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
   searchBox.addListener('places_changed', function() {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+
     tablePoints = [];
     pointsDB = [];
     points = [];
@@ -114,9 +118,6 @@ $('#maps').css('height', mapHeight);
     }
     // For each place, get the icon, name and location
     var bounds = new google.maps.LatLngBounds();
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
-    }
     places.forEach(function(place) {
       var icon = {
         url: place.icon,
@@ -128,10 +129,11 @@ $('#maps').css('height', mapHeight);
       name = place.name
       rating = place.rating;
       POI = place.geometry.location;
-
+      map.panTo(POI);
       createMarker(place);
       distance = getDistance(map.getCenter(), POI);
       angle = getAngle(map.getCenter(), POI);
+
     });
     // map.fitBounds(bounds);
   });
@@ -145,6 +147,7 @@ $('#maps').css('height', mapHeight);
       position: event.latLng,
       map: map
     });
+    markers.push(marker);
     infowindow = new google.maps.InfoWindow({
       content: name,
       disableAutoPan: true
@@ -167,6 +170,21 @@ $('#maps').css('height', mapHeight);
       'latlng': latlng,
       'show': true
     });
+
+    var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
+    var row = table.insertRow(table.rows.length);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    cell1.innerHTML = name;
+    cell2.innerHTML = '<input type="checkbox" id="' + name + '">'
+    cell3.innerHTML = '<button type="button" id ="' + name + 'Btn' + '"   >Delete</button> '
+    check();
+
+    document.getElementById(name + 'Btn').onclick = function() {
+      deletePOI(this)
+    };
+
     //Add probability that user knows this location
     x_coord = parseInt(pcompass.x) + pcompass.r;
     y_coord = parseInt(pcompass.y) + pcompass.r;
