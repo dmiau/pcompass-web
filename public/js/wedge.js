@@ -25,8 +25,8 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 
     var newCenter = toCenter(centerX, centerY);
     var newPoint = toCenter(point.x, point.y)
-    console.log(newCenter)
-    console.log(newPoint)
+    //console.log(newCenter)
+    //console.log(newPoint)
 
     var mapSlope = newNePoint.y / newNePoint.x;
 
@@ -71,11 +71,11 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
     // console.log('aperture' + aperture)
     var theta = aperture / 2;
 
-    console.log('point' + point.x + ' ' + point.y)
+    //console.log('point' + point.x + ' ' + point.y)
 
     /* 2 */
     if(point.y < 0 && 0 < point.x && point.x < window.innerWidth) {
-        console.log('2')
+        //console.log('2')
         leftX = point.x - leg * Math.sin(theta);
         leftY = point.y + leg * Math.cos(theta);
         rightX = point.x + leg * Math.sin(theta);
@@ -83,7 +83,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
     }
     /* 4 */
     else if(point.x < 0 && point.y > 0 && point.y < window.innerHeight) {
-        console.log('4')
+        //console.log('4')
         leftX = point.x + leg * Math.cos(theta);
         leftY = point.y - leg * Math.sin(theta);
         rightX = point.x + leg * Math.cos(theta);
@@ -92,7 +92,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
     }
     /* 5 */
     else if(point.x > window.innerWidth && point.y > 0 && point.y < window.innerWidth) {
-        console.log('5')
+        //console.log('5')
         leftX = point.x - leg * Math.cos(theta);
         leftY = point.y - leg * Math.sin(theta);
         rightX = point.x - leg * Math.cos(theta);
@@ -100,7 +100,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
     }
     /* 7 */
     else if(point.y > window.innerHeight && 0 < point.x && point.x < window.innerWidth) {
-        console.log('7')
+        //console.log('7')
         leftX = point.x - leg * Math.sin(theta);
         leftY = point.y - leg * Math.cos(theta);
         rightX = point.x + leg * Math.sin(theta);
@@ -109,7 +109,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
     }
 
     else {
-        console.log('CORNER')
+        //console.log('CORNER')
         phiLeft = angle * Math.PI / 180 - theta;
         phiRight = Math.PI / 2 - angle * Math.PI / 180 - theta;
         newLeftX = newPoint.x - Math.cos(phiLeft) * leg;

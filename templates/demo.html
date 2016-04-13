@@ -167,7 +167,7 @@
 <script>
   
   
-
+    var distanceToCompass;
     var panorama; //Streetview
     var map;
     var pointsDB = new Array(); //Database of all points
@@ -233,7 +233,6 @@
 
       // var katz = new google.maps.LatLng(40.722216, -73.987501);
       panorama = map.getStreetView();
-      console.log(map.getCenter());
       panorama.setPov(/** @type {google.maps.StreetViewPov} */({
         heading: 0,
         pitch: 0
@@ -535,16 +534,17 @@
       // var selectedPoints = new Array();
       //Select the closest POI
 
-      points = [];
+      // points = [];
+      // points.push({'name': 'Columbia', 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng}
 
-      var latlng = new google.maps.LatLng(40.806876, -73.963987);
-      points.push({'name': 'Columbia', 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+      //   );
 
-      var latlng = new google.maps.LatLng(40.745469, -73.947108);
-      points.push({'name': 'MOMA PS1', 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+      // var latlng = new google.maps.LatLng(40.745469, -73.947108);
+      // points.push({'name': 'MOMA PS1', 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
 
-      var latlng = new google.maps.LatLng(40.689450, -74.016792);
-      points.push({'name': "Governer's Island", 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+      // var latlng = new google.maps.LatLng(40.689450, -74.016792);
+      // points.push({'name': "Governer's Island", 'distance': getDistance(center, latlng), 'angle': getAngle(center, latlng), 'latlng': latlng});
+      points = pointsDB;
       return;
 
 
@@ -640,6 +640,19 @@
               tablePoints.push(contents[i]);
               pointsDB.push(contents[i]);
 
+              var marker = new google.maps.Marker({
+                // The below line is equivalent to writing:
+                // position: new google.maps.LatLng(-34.397, 150.644)
+                position: contents[i].latlng,
+                map: map
+              });
+
+              infowindow = new google.maps.InfoWindow({
+                content: contents[i].name,
+                disableAutoPan: true
+              });
+              infowindow.open(map, marker);
+
 
 
            var table = document.getElementById("POItable").getElementsByTagName('tbody')[0];
@@ -683,6 +696,7 @@
     }
 
     var createMarker = function(POI, name) {
+      console.log('hi')
           var marker = new google.maps.Marker({
             // The below line is equivalent to writing:
             // position: new google.maps.LatLng(-34.397, 150.644)
@@ -718,6 +732,7 @@
     };
 
     var populateDB = function() {
+      console.log('populate!')
 
 
     var newYork = new google.maps.LatLng(40.7127, -74.0079);  
