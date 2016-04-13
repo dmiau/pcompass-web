@@ -69,15 +69,29 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   //Draw the labels
   ctxLabels.font = "15px Arial";
   if (angle < Math.PI / 2 || angle > 3 * Math.PI / 2) {
+
+    var x = this.r + distance * Math.cos(angle) + parseInt(this.x)
+    var y = this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)
+    ctxLabels.fillStyle = '#d3d3d3';
+    ctxLabels.fillRect(x, y,ctxLabels.measureText(name).width, -15);
+    ctxLabels.fillStyle = '#000000';    
     ctxLabels.fillText(name,
-        this.r + distance * Math.cos(angle) + parseInt(this.x), //compassX, 
-        this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)) //compassY
+        x, //compassX, 
+        y) //compassY
+
+        
+
   } else {
-    ctxLabels.fillText(name,
-      this.r + distance * Math.cos(angle) - name.length * 6.75 + parseInt(this.x),
-      this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y))
+    var x = this.r + distance * Math.cos(angle) - name.length * 6.75 + parseInt(this.x)
+    var y = this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)
+    ctxLabels.fillStyle = '#d3d3d3';
+    ctxLabels.fillRect(x, y,ctxLabels.measureText(name).width, -15);
+    ctxLabels.fillStyle = '#000000'; 
+
+    ctxLabels.fillText(name, x, y)
 
   }
+  
   ctxCompass.lineWidth = 3;
   ctxCompass.strokeStyle = color;
   ctxCompass.stroke();

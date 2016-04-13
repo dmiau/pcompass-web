@@ -790,6 +790,6 @@ function toggleStreetView() {
   } else {
     panorama.setVisible(false);
     ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
-reDraw();
+  reDraw();
   }
 }
