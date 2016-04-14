@@ -15,7 +15,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
         6   |   7   |   8  
             |       | 
 
-*/   var point = fromLatLngToPoint(POILat, POILng, map);
+*/  var point = fromLatLngToPoint(POILat, POILng, map);
     var ne = map.getBounds().getNorthEast();
     var sw = map.getBounds().getSouthWest();
     var nePoint = fromLatLngToPoint(ne.lat(), ne.lng(), map);
@@ -125,19 +125,22 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 
     }
 
-    ctxWedge.beginPath();
-    ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
-    ctxWedge.lineTo(point.x, point.y);
-    ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
-    ctxWedge.lineTo(point.x, point.y);
-    ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
-    ctxWedge.lineTo(leftX, leftY);
-    ctxWedge.lineWidth = 3;
-    ctxWedge.strokeStyle = color;
-    ctxWedge.stroke();
-    ctxWedge.font = "15px Arial";
-    ctxWedge.fillText(name, (leftX + rightX) / 2, (leftY + rightY) / 2);
-
+    console.log(point.x)
+    if(point.x < 0 || point.x > window.innerWidth 
+        || point.y < 0 || point.y > window.innerWidth) {
+        ctxWedge.beginPath();
+        ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
+        ctxWedge.lineTo(point.x, point.y);
+        ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
+        ctxWedge.lineTo(point.x, point.y);
+        ctxWedge.moveTo(rightX, rightY); //Move cursor to center of screen
+        ctxWedge.lineTo(leftX, leftY);
+        ctxWedge.lineWidth = 3;
+        ctxWedge.strokeStyle = color;
+        ctxWedge.stroke();
+        ctxWedge.font = "15px Arial";
+        ctxWedge.fillText(name, (leftX + rightX) / 2, (leftY + rightY) / 2);
+    }
 };
 
 Wedge.prototype.drawWedges = function() {

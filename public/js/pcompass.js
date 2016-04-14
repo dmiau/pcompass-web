@@ -75,7 +75,7 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
     var x = this.r + distance * Math.cos(angle) + parseInt(this.x)
     var y = this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)
     ctxLabels.fillStyle = '#d3d3d3';
-    ctxLabels.fillRect(x, y,ctxLabels.measureText(name).width, -15);
+    ctxLabels.fillRect(x - 5, y,ctxLabels.measureText(name).width, -15);
     ctxLabels.fillStyle = '#000000';    
     ctxLabels.fillText(name,
         x, //compassX, 
