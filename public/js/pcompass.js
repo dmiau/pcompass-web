@@ -58,6 +58,7 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   if (distance > this.r) {
     distance = this.r;
   }
+
   angle = angle * Math.PI / 180;
   ctxCompass.beginPath();
   ctxCompass.moveTo(this.r, this.r + Y_OFFSET);
@@ -67,6 +68,7 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   ctxCompass.font = color; //"15px Arial";
 
   //Draw the labels
+  //color = '#000000'
   ctxLabels.font = "15px Arial";
   ctxLabels.fillStyle = '#FFFFFF'
   ctxLabels.shadowColor = "black"
@@ -117,7 +119,8 @@ PCompass.prototype.drawNeedles = function() {
     if (points[i].rating < 3.0) {
       rating_color = 'rgb(200, 200, 0)';
     }
-    pcompass.drawNeedle(points[i].name, points[i].distance/maxDistance, points[i].angle, rating_color);
+    pcompass.drawNeedle(points[i].name, points[i].distance/maxDistance, points[i].angle, '#FF0000'
+);
   }
   /* Draw center dot */
   var x = parseInt(this.x);

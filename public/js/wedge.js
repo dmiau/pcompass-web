@@ -127,7 +127,7 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 
     console.log(point.x)
     if(point.x < 0 || point.x > window.innerWidth 
-        || point.y < 0 || point.y > window.innerWidth) {
+        || point.y < 0 || point.y > window.innerHeight) {
         ctxWedge.beginPath();
         ctxWedge.moveTo(leftX, leftY); //Move cursor to center of screen
         ctxWedge.lineTo(point.x, point.y);
@@ -139,6 +139,11 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
         ctxWedge.strokeStyle = color;
         ctxWedge.stroke();
         ctxWedge.font = "15px Arial";
+        var textX = (leftX + rightX) / 2;
+        var textY = (leftX + rightX) / 2;
+        ctxWedge.fillStyle = '#d3d3d3';
+        ctxWedge.fillRect(textX, textY,ctxLabels.measureText(name).width, -15);
+        ctxWedge.fillStyle = '#000000';
         ctxWedge.fillText(name, (leftX + rightX) / 2, (leftY + rightY) / 2);
     }
 };
@@ -154,7 +159,8 @@ Wedge.prototype.drawWedges = function() {
             rating_color = 'rgb(200, 200, 0)';
         }
         wedge.drawWedge(points[i].name, points[i].distance, points[i].angle,
-            points[i].latlng.lat(), points[i].latlng.lng(), rating_color);
+            points[i].latlng.lat(), points[i].latlng.lng(), '#FF0000'
+);
     }
 };
 

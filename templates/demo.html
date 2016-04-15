@@ -36,7 +36,7 @@
 
       <li class="nav-item">
       <div class="checkbox">
-        <label><input type="checkbox" name="wedge" id="wedgeCheck" value="ON" checked>Wedge
+        <label><input type="checkbox" name="wedge" id="wedgeCheck" value="ON">Wedge
         </label>
       </div>
       </li>
@@ -215,11 +215,6 @@
   //   socket.emit('my other event', { my: 'data' });
   // });
   
-
-
-
-
-
 
       var newYork = new google.maps.LatLng(40.7127, -74.0079);  
       map = new google.maps.Map(document.getElementById('map'), {
@@ -498,8 +493,7 @@
               {
                  pcompass.drawNeedle("", Infinity, 90, '#A8A8A8');
               }
-          
-
+        
 
     };
 
@@ -623,7 +617,10 @@
         socket.emit('POIs', points);
       })
 
+
+
       function readSingleFile(e) {
+        console.log('hi')
         var file = e.target.files[0];
         if (!file) {
           return;
@@ -676,7 +673,7 @@
           reDraw();
         };
         reader.readAsText(file);
-      }
+      };
 
       document.getElementById('file-input')
         .addEventListener('change', readSingleFile, false);
