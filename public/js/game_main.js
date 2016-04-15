@@ -362,14 +362,6 @@ function nextQuestion() {
   previousDist = totalDist;
 }
 
-// function toRad(deg) {
-//   return deg * Math.PI / 180;
-// }
-
-// function toDeg(rad) {
-//   return rad * 180 / Math.PI;
-// }
-
 function getDestination(center, brng, dist) {
   dist = dist / 6371;
   brng = rad(brng);
