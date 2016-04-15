@@ -25,13 +25,10 @@
 <div class="col-md-4 center">
 <label for="POIs">Points of Interest</label>
 <button type='button' class="add_field_button btn btn-info">Add More Fields</button>
-<div class="input_fields_wrap">
+<div id="pois" class="input_fields_wrap">
   
   <div class = "row">
-  <div class="form-group col-md-5">
-  <input id="distance_0" type="text" class="form-control" name="mytext[]" placeholder="Distance from center (km)"></div>
-  <div class="form-group col-md-5">
-  <input id="angle_0" type="text" class="form-control" name="mytext[]" placeholder="Angle from north (0-360)"></div>
+  <input class="form-control" id="place_0" placeholder="Ex: New York, Columbia University">
   </div>
 
 </div>
@@ -40,9 +37,9 @@
 <div class="col-md-4 center">
   <label for="export">Export to Game</label>
   <div>
-<button type='button'  id="exportGame" class="btn btn-default">Export</button>
-<button type="submit" onclick="submit()" class="btn btn-success" value="Submit Button">Add Question</button>
 <button onclick="preview()" class="btn btn-info" value="Submit Button">Preview POI</button>
+<button type="submit" onclick="submit()" class="btn btn-success" value="Submit Button">Add Question</button>
+<button type='button'  id="exportGame" class="btn btn-default">Export</button>
 <div id = "success"></div>
 
 </div>

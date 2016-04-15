@@ -56,14 +56,14 @@ background-color: #ffffff;
 
 #questionMap {
   position: relative;
-  height:50%;
+  height:70%;
   pointer-events: none;
 /*  width: 50%;
 */}
 
 #answerMap {
   position: relative;
-  height:50%;
+  height:30%;
   /*cursor: url(http://rogcommunity.com/forums/images/awards/waldo.png) 25 15, auto;*/
 /*  width: 50%;*/
 }

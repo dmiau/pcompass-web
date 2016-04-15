@@ -7,6 +7,9 @@ var socket = io.connect();
 //   socket.emit('authorGame', game);
 // })
 
+var placeNames = [];
+var placeLatLngs = [];
+
 var numFields;
 var questionCount = 0;
 $(document).ready(function() {
@@ -19,12 +22,43 @@ $(document).ready(function() {
     e.preventDefault();
     if (numFields < max_fields) { //max input box allowed
       numFields++; //text box increment
-      var newBox = '<div class = "row"><div class="form-group col-md-5"><input id="distance_' + numFields +
-        '" type="text" class="form-control" name="mytext[]" placeholder="Distance from center (km)"></div><div class="form-group col-md-5"><input id="angle_' + numFields +
-        '" type="text" class="form-control" name="mytext[]" placeholder="Angle from north (0-360)"></div><a href="#" class="remove_field">Remove</a></div>'
+      var inputWrapper= document.createElement('div');
+      inputWrapper.innerHTML= '<div class = "row"><input class="form-control" id="place_' + numFields + 
+      '" placeholder="Ex: New York, Columbia University"><a href="#" class="remove_field">Remove</a></div>';
+      var newBox= inputWrapper.firstChild;
+      console.log(newBox);
       $(wrapper).append(newBox); //add input box
+
       console.log('numFields' + numFields)
-    }
+
+      var searchBox_new = new google.maps.places.SearchBox(newBox.firstChild);
+
+      map.addListener('bounds_changed', function() {
+        searchBox_new.setBounds(map.getBounds());
+      });
+
+      searchBox_new.addListener('places_changed', function() {
+        var places = searchBox_new.getPlaces();
+        if (places.length == 0) {
+          return;
+        }
+        // For each place, get the icon, name and location
+        var bounds = new google.maps.LatLngBounds();
+        places.forEach(function(place) {
+          console.log(place);
+          placeNames.push(place.name);
+          placeLatLngs.push(place.geometry.location);
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        // map.fitBounds(bounds);
+      });
+}
+    
   });
   $(wrapper).on("click", ".remove_field", function(e) { //user click on remove text
     e.preventDefault();
@@ -57,7 +91,6 @@ function getDestination(center, brng, dist) {
 }
 
 
-
 function submit() {
   var modes = ['PCompass','Wedge'];
   var mode = modes[Math.floor(Math.random() * 2)]
@@ -68,14 +101,14 @@ function submit() {
   question = []
   var elem = document.getElementById('center');
   question.push([map.getCenter(), map.getZoom(), mode])
-  for (var i = 0; i <= numFields; i++) {
+  for (var i = 0; i < placeNames.length; i++) {
     var point = []
-    var id = "distance_" + i;
-    var elem = document.getElementById(id);
-    point.push(elem.value)
-    var id = "angle_" + i;
-    elem = document.getElementById(id);
-    point.push(elem.value)
+    //var id = "place_" + i;
+    // var elem = document.getElementById(id);
+    point.push(placeNames[i])
+    // var id = "angle_" + i;
+    // elem = document.getElementById(id);
+    point.push(placeLatLngs[i])
     question.push(point);
   }
   game.push(question)
@@ -91,22 +124,18 @@ function submit() {
 
 function preview() {
   points = [];
-  for (var i = 0; i <= numFields; i++) {
-    var id = "distance_" + i;
-    var elem = document.getElementById(id);
-    distance = elem.value;
-    var id = "angle_" + i;
-    elem = document.getElementById(id);
-    angle = elem.value;
+  console.log(placeLatLngs)
+  for (var i = 0; i < placeNames.length; i++) {
+
     var center = map.getCenter();
-    var markerLocation = getDestination(center, angle, distance);
-    distance = getDistance(center, markerLocation);
-    angle = getAngle(center, markerLocation);
+    console.log(placeLatLngs[i])
+    distance = getDistance(center, placeLatLngs[i]);
+    angle = getAngle(center, placeLatLngs[i]);
     points.push({
       'name': '',
       'distance': distance,
       'angle': angle,
-      'latlng': markerLocation,
+      'latlng': placeLatLngs[i],
       'rating': 5.0
     });
   }
@@ -173,6 +202,42 @@ function initMap() {
     searchBox.setBounds(map.getBounds());
   });
 
+
+  var input_0 = document.getElementById('place_0');
+  var searchBox_0 = new google.maps.places.SearchBox(input_0);
+  // console.log(input_0)
+  // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  // Bias the SearchBox results towards current map's viewport.
+  map.addListener('bounds_changed', function() {
+    searchBox_0.setBounds(map.getBounds());
+  });
+
+  searchBox_0.addListener('places_changed', function() {
+    var places = searchBox_0.getPlaces();
+    if (places.length == 0) {
+      return;
+    }
+    // For each place, get the icon, name and location
+    var bounds = new google.maps.LatLngBounds();
+    places.forEach(function(place) {
+      console.log(place);
+      placeNames.push(place.name);
+      placeLatLngs.push(place.geometry.location);
+      if (place.geometry.viewport) {
+        // Only geocodes have viewport.
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    // map.fitBounds(bounds);
+  });
+
+
+
+
+
   // check();
 
   google.maps.event.addListener(panorama, "position_changed", function() {
@@ -208,6 +273,8 @@ function initMap() {
   });
 
   searchBox.addListener('places_changed', function() {
+    placeNames = []
+    placeLatLngs = []
     var places = searchBox.getPlaces();
     if (places.length == 0) {
       return;
