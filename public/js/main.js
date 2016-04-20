@@ -801,14 +801,34 @@ document.getElementById('compass').addEventListener('touchmove', function(event)
 
 
 function toggleStreetView() {
+  console.log(panorama.getVisible())
   panorama.setPosition(map.getCenter());
   var toggle = panorama.getVisible();
-  if (toggle == false) {
-    panorama.setVisible(true);
-   ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
-  } else {
-    panorama.setVisible(false);
-    ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
-  reDraw();
-  }
+  console.log(map.getCenter())
+
+  var streetViewService = new google.maps.StreetViewService();
+
+  var STREETVIEW_MAX_DISTANCE = 100;
+  streetViewService.getPanoramaByLocation(map.getCenter(), 
+    STREETVIEW_MAX_DISTANCE, function (streetViewPanoramaData, status) {
+    if (status === google.maps.StreetViewStatus.OK) {
+        console.log('ok')
+              if (toggle == false) {
+          panorama.setVisible(true);
+         ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
+         //ctxLabels.transform(1, 0, 0, 0.65, 0, 0);
+        } else {
+          panorama.setVisible(false);
+          ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
+          //ctxLabels.transform(1, 0, 0, (1/0.65), 0, 0);
+        reDraw();
+        }
+    } else {
+         console.log('no streetview avail')
+        return;
+    }
+    });
+
+
+  
 }
