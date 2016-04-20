@@ -41,12 +41,12 @@
       </div>
       </li>
 
-      <li class="nav-item">  
+      <!--<li class="nav-item">  
       <div class="checkbox">
         <label><input type="checkbox" name="centroid" id="centroidCheck" value="ON">Centered Centroid
         </label>
       </div>
-      </li>      
+      </li>    -->
 
 
       <li class = "nav-item">
@@ -347,7 +347,8 @@
       x_coord = parseInt(pcompass.x) + pcompass.r;
       y_coord = parseInt(pcompass.y) + pcompass.r;
       compass_center = fromPointToLatLng(x_coord, y_coord, map);
-      var isCentroidChecked = document.getElementById('centroidCheck').checked;
+     // var isCentroidChecked = document.getElementById('centroidCheck').checked;
+      var isCentroidChecked = true;
       for (var i in points) {
         if (isCentroidChecked) {
           points[i].distance = getDistance(center, points[i].latlng);
