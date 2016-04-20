@@ -39,6 +39,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 var result;
 io.on('connection', function(socket) {
 
+  var demoFilePath = path.join(__dirname, 'pois_short.json');
+  fs.readFile(demoFilePath, {
+    encoding: 'utf-8'
+  }, function(err, data) {
+    if (!err) {
+      socket.emit('getPOIs', JSON.parse(data))
+    } else {
+      console.log(err);
+    }
+  });
+
+
   var filePath = path.join(__dirname, 'game.json');
   fs.readFile(filePath, {
     encoding: 'utf-8'
@@ -49,6 +61,9 @@ io.on('connection', function(socket) {
       console.log(err);
     }
   });
+
+  
+
 
   socket.on('POIs', function(data) {
     console.log(data.points);
