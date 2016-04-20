@@ -192,13 +192,12 @@
       })
 
       function createPOIs() {
-        markers = []
+        
         points = []
         for (var i = 0; i < markers.length; i++) {
           markers[i].setMap(null);
-          console.log(markers[i])
         }
-      
+        markers = []
         for (var i = 1; i < contents[numSlide].length; i++) {
           var name = contents[numSlide][i][0];
           var markerLocation = new google.maps.LatLng(contents[numSlide][i][1].lat, 
