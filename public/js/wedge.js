@@ -25,8 +25,6 @@ Wedge.prototype.drawWedge = function(name, distance, angle, POILat, POILng, colo
 
     var newCenter = toCenter(centerX, centerY);
     var newPoint = toCenter(point.x, point.y)
-    //console.log(newCenter)
-    //console.log(newPoint)
 
     var mapSlope = newNePoint.y / newNePoint.x;
 
@@ -159,8 +157,7 @@ Wedge.prototype.drawWedges = function() {
             rating_color = 'rgb(200, 200, 0)';
         }
         wedge.drawWedge(points[i].name, points[i].distance, points[i].angle,
-            points[i].latlng.lat(), points[i].latlng.lng(), '#FF0000'
-);
+            points[i].latlng.lat(), points[i].latlng.lng(), '#FF0000');
     }
 };
 

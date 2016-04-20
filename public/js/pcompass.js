@@ -28,7 +28,7 @@ PCompass.prototype.drawCompass = function() {
   ctxCompass.beginPath();
   ctxCompass.arc(this.r, this.r + Y_OFFSET, this.r, 0, 2 * Math.PI);
   //color in circle
-  ctxCompass.globalAlpha = 0.65;
+  ctxCompass.globalAlpha = 0.6;
   ctxCompass.fillStyle = 'silver';
   ctxCompass.fill();
   ctxCompass.stroke();
