@@ -104,6 +104,9 @@
         <button type='button' id="nextButton" class="btn btn-default">Next</button>
       </li>
 
+      <li class = "nav-item">
+        <div id = "counter"></div>
+      </li>
 
       <li class = "nav-item">
         <input type="file" id="file-input" />
@@ -236,6 +239,8 @@
           if(numSlide != contents.length -1) {
             numSlide++;
           }
+          scenarioNum = numSlide + 1
+          $("#counter").html("Scenario " + scenarioNum + " of " + contents.length);
           points = []
           newLocation = new google.maps.LatLng(contents[numSlide][0][0].lat,
           contents[numSlide][0][0].lng);
