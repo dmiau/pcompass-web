@@ -28,7 +28,7 @@ PCompass.prototype.drawCompass = function() {
   ctxCompass.beginPath();
   ctxCompass.arc(this.r, this.r + Y_OFFSET, this.r, 0, 2 * Math.PI);
   //color in circle
-  ctxCompass.globalAlpha = 0.2;
+  ctxCompass.globalAlpha = 0.6;
   ctxCompass.fillStyle = 'silver';
   ctxCompass.fill();
   ctxCompass.stroke();
@@ -68,22 +68,16 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   ctxCompass.font = color; //"15px Arial";
 
   //Draw the labels
-  //color = '#000000'
   ctxLabels.font = "15px Arial";
   ctxLabels.fillStyle = '#FFFFFF'
   ctxLabels.shadowColor = "black"
   if (angle < Math.PI / 2 || angle > 3 * Math.PI / 2) {
-
     var x = this.r + distance * Math.cos(angle) + parseInt(this.x)
     var y = this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)
     ctxLabels.fillStyle = '#d3d3d3';
     ctxLabels.fillRect(x - 5, y,ctxLabels.measureText(name).width, -15);
     ctxLabels.fillStyle = '#000000';    
-    ctxLabels.fillText(name,
-        x, //compassX, 
-        y) //compassY
-
-        
+    ctxLabels.fillText(name, x, y);
 
   } else {
     var x = this.r + distance * Math.cos(angle) - name.length * 6.75 + parseInt(this.x)

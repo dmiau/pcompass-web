@@ -248,15 +248,6 @@ var check = function() {
           locked = false
         }
       }
-      
-
-      // else {
-      //   for (var k in pointsDB) {
-      //     if (secondColumn.textContent == pointsDB[k].name) {
-      //       tablePoints.push(pointsDB[k]);
-      //     }
-      //   }
-      // }
       reDraw();
     };
   }
@@ -287,8 +278,7 @@ var reDraw = function() {
       selectPOI(pointsDB, compass_center);
     }
   }
-  // if (pointsDB.length == 0)
-  //   return;
+
   for (var i in points) {
     if (points[i].distance < minDistance && !bounds.contains(points[i].latlng))
       minDistance = points[i].distance;
@@ -351,7 +341,7 @@ var selectPOI = function(allPoints, center) {
   points.push(allPoints[minIndex]);
   var angleInterval = 360 / k;
   var margin = 15;
-  var spacing = 30
+  var spacing = 30;
   var currentAngle = angleInterval;
   var pointsAdded = 1;
   var pointInInterval;
