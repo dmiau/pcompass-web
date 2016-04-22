@@ -173,6 +173,7 @@
         contents = data;
         console.log('getting the POIs')
         console.log(contents)
+        nextScenario();
       });
 
 
@@ -187,23 +188,10 @@
       });
       // selectPOI(pointsDB);       
       
+      
+
       $('#nextButton').click(function() {
-          for (var i = 0; i < markers.length; i++) {
-              markers[i].setMap(null);
-          }
-          if(numSlide != contents.length -1) {
-            numSlide++;
-          }
-          scenarioNum = numSlide + 1
-          $("#counter").html("Scenario " + parseInt(numSlide + 1)+ " of " + contents.length);
-          points = []
-          newLocation = new google.maps.LatLng(contents[numSlide][0][0].lat,
-          contents[numSlide][0][0].lng);
-          map.setZoom(contents[numSlide][0][1])
-          map.panTo(newLocation);
-          createPOIs();
-          reDraw(contents[numSlide][0][2]);
-          //toggleStreetView();
+          nextScenario();
   
       })
 
@@ -220,6 +208,26 @@
           reDraw(contents[numSlide][0][2]);
           $("#counter").html("Scenario " + parseInt(numSlide + 1) + " of " + contents.length);
       })
+
+      function nextScenario(){
+        for (var i = 0; i < markers.length; i++) {
+              markers[i].setMap(null);
+          }
+          if(numSlide != contents.length -1) {
+            numSlide++;
+          }
+          scenarioNum = numSlide + 1
+          $("#counter").html("Scenario " + parseInt(numSlide + 1)+ " of " + contents.length);
+          points = []
+          newLocation = new google.maps.LatLng(contents[numSlide][0][0].lat,
+          contents[numSlide][0][0].lng);
+          map.setZoom(contents[numSlide][0][1])
+          map.panTo(newLocation);
+          createPOIs();
+          reDraw(contents[numSlide][0][2]);
+          //toggleStreetView();
+
+      }
 
       function createPOIs() {
         
