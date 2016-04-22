@@ -163,7 +163,7 @@
     canvasLabels.setAttribute('height', window.innerHeight);
     var ctxLabels = canvasLabels.getContext("2d")
 
-    var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
+    var pcompass= new PCompass(0, 0, 100, 100, innerWidth/16);
     var wedge = new Wedge();
     var canvasCompass = document.getElementById('canvasCompass');
     canvasCompass.width = 2 * pcompass.r;
@@ -174,7 +174,8 @@
 
     function initMap() {
 
-
+      document.getElementById('compass').style.left = pcompass.x + "px";
+      document.getElementById('compass').style.top = pcompass.y + "px";
       var socket = io.connect();
       socket.on('getPOIs', function(data) {
         contents = data;
@@ -294,6 +295,7 @@
             'rating': 5.0
           });
         }
+
 }
 
 
