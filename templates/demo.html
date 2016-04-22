@@ -164,7 +164,7 @@
     canvasLabels.setAttribute('height', window.innerHeight);
     var ctxLabels = canvasLabels.getContext("2d")
 
-    var pcompass= new PCompass(0, 0, 0, 0, innerWidth/16);
+    var pcompass= new PCompass(0, 0, 100, 100, innerWidth/16);
     var wedge = new Wedge();
     var canvasCompass = document.getElementById('canvasCompass');
     canvasCompass.width = 2 * pcompass.r;
@@ -176,7 +176,8 @@
 
     function initMap() {
 
-
+      document.getElementById('compass').style.left = pcompass.x + "px";
+      document.getElementById('compass').style.top = pcompass.y + "px";
       var socket = io.connect();
       socket.on('getPOIs', function(data) {
         contents = data;
@@ -256,12 +257,7 @@
 
               if (toggle == false){
                ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
-<<<<<<< HEAD
-               // ctxFOV.transform(1, 0, 0, 0.65, 0, 0);
-=======
-               // sheared = true
->>>>>>> ce3f68faa41dd3111817194fb1c5f388b854a6df
-               //ctxLabels.transform(1, 0, 0, 0.65, 0, 0);
+
              }
           } else {
                console.log('no streetview avail')
@@ -645,14 +641,9 @@ document.addEventListener('touchend',_destroy);
               points[i].angle = points[i].angle - panorama.getPov().heading;
             }
 
-<<<<<<< HEAD
         // pcompass.drawNeedle("", Infinity, 90 + panorama.getPov().heading, '#A8A8A8');
         pcompass.drawStreetViewNorthNeedle(0.65, 90 + panorama.getPov().heading);
-=======
-        pcompass.drawNeedle("", Infinity, 90 + panorama.getPov().heading, '#A8A8A8');
 
-
->>>>>>> ce3f68faa41dd3111817194fb1c5f388b854a6df
     }
     </script>
 
