@@ -52,6 +52,22 @@ PCompass.prototype.drawNorthNeedle = function() {
   ctxFOV.stroke();
 };
 
+PCompass.prototype.drawStreetViewNorthNeedle = function(angle) {
+  var r = parseInt(this.r)
+  var x_pc = r + parseInt(this.x)
+  var y_pc = r + parseInt(this.y)
+  console.log(x_pc, y_pc)
+
+  var angle = angle * Math.PI / 180;
+  ctxFOV.beginPath();
+  ctxFOV.moveTo(x_pc, y_pc + Y_OFFSET);
+  ctxFOV.lineTo(x_pc + 90 * Math.cos(angle), y_pc - 110 * Math.sin(angle) + Y_OFFSET);
+  ctxFOV.strokeStyle = '#A8A8A8'; //'#000000';
+  ctxFOV.fillStyle = '#A8A8A8'; //'#000000';
+  ctxFOV.lineWidth = 3;
+  ctxFOV.stroke();
+};
+
 PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   //draw lines
   distance = this.r * distance;
@@ -62,6 +78,8 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   angle = angle * Math.PI / 180;
   ctxCompass.beginPath();
   ctxCompass.moveTo(this.r, this.r + Y_OFFSET);
+  console.log(angle)
+  console.log(this.r)
   ctxCompass.lineTo(this.r + distance * Math.cos(angle), this.r - distance * Math.sin(angle) + Y_OFFSET);
   ctxCompass.strokeStyle = color; //'#000000';
   ctxCompass.fillStyle = color; //'#000000';
