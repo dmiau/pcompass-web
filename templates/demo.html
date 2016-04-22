@@ -182,7 +182,7 @@
         contents = data;
         console.log('getting the POIs')
         console.log(contents)
-        nextScenario();
+        setTimeout(function(){ nextScenario(); }, 100);
       });
 
 
@@ -324,20 +324,7 @@
       
     });
 
-    var streetViewReDraw = function () {
-      clearAllCtx();
-      for (var i in points){
-              points[i].angle = points[i].angle + panorama.getPov().heading;
-            }
-        pcompass.drawCompass();
-        pcompass.drawNeedles()
-        for (var i in points){
-              points[i].angle = points[i].angle - panorama.getPov().heading;
-            }
-
-        pcompass.drawNeedle("", Infinity, 90 + panorama.getPov().heading, '#A8A8A8');
-
-    }
+    
 
 
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -603,6 +590,9 @@ document.getElementById('compass').onmousedown = function () {
 };
 document.getElementById('compass').onmouseup = function () {
     reDraw();
+    if(panorama.getVisible() == true) {
+      streetViewReDraw();
+    }
     return false;
 };
 document.onmousemove = _move_elem;
@@ -634,6 +624,21 @@ document.addEventListener('touchend',_destroy);
     ctxLabels.clearRect(0,0, window.innerWidth, window.innerHeight);
 
   }
+
+  var streetViewReDraw = function () {
+      clearAllCtx();
+      for (var i in points){
+              points[i].angle = points[i].angle + panorama.getPov().heading;
+            }
+        pcompass.drawCompass();
+        pcompass.drawNeedles()
+        for (var i in points){
+              points[i].angle = points[i].angle - panorama.getPov().heading;
+            }
+
+        pcompass.drawNeedle("", Infinity, 90 + panorama.getPov().heading, '#A8A8A8');
+
+    }
     </script>
 
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry&key=AIzaSyAbebnQH25_Kuyk2dihcatibtfsSS7IVDI&callback=initMap"
