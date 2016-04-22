@@ -52,10 +52,10 @@ PCompass.prototype.drawNorthNeedle = function() {
   ctxFOV.stroke();
 };
 
-PCompass.prototype.drawStreetViewNorthNeedle = function(angle) {
+PCompass.prototype.drawStreetViewNorthNeedle = function(shearVal, angle) {
   var r = parseInt(this.r)
   var x_pc = r + parseInt(this.x)
-  var y_pc = r + parseInt(this.y)
+  var y_pc = r * shearVal + parseInt(this.y)
   console.log(x_pc, y_pc)
 
   var angle = angle * Math.PI / 180;
