@@ -40,6 +40,9 @@
         </label>
       </div>
       </li>
+      <li class="nav-item">
+            <button type="button" class="btn btn-default" value="Toggle Street View" onclick="toggleStreetView();">Street View</button>
+          </li>
 
       <!--<li class="nav-item">  
       <div class="checkbox">
@@ -97,14 +100,32 @@
 
     <script>
     function toggleStreetView() {
+      console.log(panorama.getVisible())
       panorama.setPosition(map.getCenter());
       var toggle = panorama.getVisible();
-      if (toggle == false) {
-        panorama.setVisible(true);
-      } else {
-        panorama.setVisible(false);
-      }
-    }
+      console.log(map.getCenter())
+      var streetViewService = new google.maps.StreetViewService();
+      var STREETVIEW_MAX_DISTANCE = 100;
+      streetViewService.getPanoramaByLocation(map.getCenter(), 
+        STREETVIEW_MAX_DISTANCE, function (streetViewPanoramaData, status) {
+        if (status === google.maps.StreetViewStatus.OK) {
+            console.log('ok')
+                  if (toggle == false) {
+              panorama.setVisible(true);
+             ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
+             //ctxLabels.transform(1, 0, 0, 0.65, 0, 0);
+            } else {
+              panorama.setVisible(false);
+              ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
+              //ctxLabels.transform(1, 0, 0, (1/0.65), 0, 0);
+            reDraw();
+            }
+        } else {
+             console.log('no streetview avail')
+            return;
+        }
+        });
+}
     </script>
       <!--<script src="/socket.io/socket.io.js"></script>-->
 
@@ -146,6 +167,7 @@
 
     function initMap() {
 
+
       var socket = io.connect();
       socket.on('getPOIs', function(data) {
         contents = data;
@@ -153,7 +175,12 @@
         console.log(contents)
       });
 
-      var newYork = new google.maps.LatLng(40.7127, -74.0079);  
+
+      var newYork = new google.maps.LatLng(40.7127, -74.0079);
+
+      // var newLocation = new google.maps.LatLng(contents[0][0][0].lat,
+      //     contents[0][0][0].lng);
+
       map = new google.maps.Map(document.getElementById('map'), {
         center: newYork, // New York
         zoom: 15
@@ -168,7 +195,7 @@
             numSlide++;
           }
           scenarioNum = numSlide + 1
-          $("#counter").html("Scenario " + scenarioNum + " of " + contents.length);
+          $("#counter").html("Scenario " + parseInt(numSlide + 1)+ " of " + contents.length);
           points = []
           newLocation = new google.maps.LatLng(contents[numSlide][0][0].lat,
           contents[numSlide][0][0].lng);
@@ -176,6 +203,8 @@
           map.panTo(newLocation);
           createPOIs();
           reDraw(contents[numSlide][0][2]);
+          //toggleStreetView();
+  
       })
 
       $('#previousButton').click(function() {
@@ -189,6 +218,7 @@
           map.panTo(newLocation);
           createPOIs();
           reDraw(contents[numSlide][0][2]);
+          $("#counter").html("Scenario " + parseInt(numSlide + 1) + " of " + contents.length);
       })
 
       function createPOIs() {
@@ -348,7 +378,7 @@
       y_coord = parseInt(pcompass.y) + pcompass.r;
       compass_center = fromPointToLatLng(x_coord, y_coord, map);
      // var isCentroidChecked = document.getElementById('centroidCheck').checked;
-      var isCentroidChecked = true;
+      var isCentroidChecked = false;
       for (var i in points) {
         if (isCentroidChecked) {
           points[i].distance = getDistance(center, points[i].latlng);

@@ -86,6 +86,8 @@ $('#maps').css('height', mapHeight);
     streetViewReDraw()
   });
 
+
+
   var streetViewReDraw = function() {
       clearAllCtx();
       for (var i in points) {
@@ -828,7 +830,4 @@ function toggleStreetView() {
         return;
     }
     });
-
-
-  
 }
