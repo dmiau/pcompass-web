@@ -11,7 +11,7 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default" id="nav">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -72,7 +72,7 @@
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
-
+ <div id="maps">
     <div id= "wrapper">
       <div id="map"></div>
       <div id="overlay">
@@ -97,6 +97,7 @@
        
       <input id="pac-input" class="controls" type="text" placeholder="Search Box">
     </div>
+  </div>
 
     <script>
     function toggleStreetView() {
@@ -136,6 +137,11 @@
     var distanceToCompass;
     var panorama; //Streetview
     var map;
+
+    var navHeight = $('.navbar').height(); 
+    var mapHeight = window.innerHeight - navHeight;
+    $('#maps').css('height', mapHeight);
+
     //var pointsDB = new Array(); //Database of all points
     var points = new Array(); //Points that are shown
     var canvasCompass = document.getElementById("canvasCompass");
