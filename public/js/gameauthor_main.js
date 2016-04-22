@@ -121,6 +121,33 @@ function submit() {
 
 // }
 
+function toggleStreetView() {
+  panorama.setPosition(map.getCenter());
+  var toggle = panorama.getVisible();
+
+  var streetViewService = new google.maps.StreetViewService();
+
+  var STREETVIEW_MAX_DISTANCE = 100;
+  streetViewService.getPanoramaByLocation(map.getCenter(), 
+    STREETVIEW_MAX_DISTANCE, function (streetViewPanoramaData, status) {
+    if (status === google.maps.StreetViewStatus.OK) {
+        console.log('ok')
+              if (toggle == false) {
+          panorama.setVisible(true);
+         ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
+         //ctxLabels.transform(1, 0, 0, 0.65, 0, 0);
+        } else {
+          panorama.setVisible(false);
+          ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
+          //ctxLabels.transform(1, 0, 0, (1/0.65), 0, 0);
+        reDraw();
+        }
+    } else {
+         console.log('no streetview avail')
+        return;
+    }
+    });
+}
 
 function preview() {
   points = [];
@@ -241,6 +268,7 @@ function initMap() {
   // check();
 
   google.maps.event.addListener(panorama, "position_changed", function() {
+    console.log(panorama.getPosition().lat())
     map.setCenter(panorama.getPosition());
     streetViewReDraw();
   });
@@ -731,14 +759,4 @@ function clearAllCtx() {
   ctxWedge.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxFOV.clearRect(0, 0, window.innerWidth, window.innerHeight);
   ctxLabels.clearRect(0, 0, window.innerWidth, window.innerHeight);
-}
-
-function toggleStreetView() {
-  panorama.setPosition(map.getCenter());
-  var toggle = panorama.getVisible();
-  if (toggle == false) {
-    panorama.setVisible(true);
-  } else {
-    panorama.setVisible(false);
-  }
 }
