@@ -101,33 +101,34 @@
 
     <script>
     function toggleStreetView() {
-      console.log(panorama.getVisible())
-      panorama.setPosition(map.getCenter());
-      var toggle = panorama.getVisible();
-      console.log(map.getCenter())
-      var streetViewService = new google.maps.StreetViewService();
-      var STREETVIEW_MAX_DISTANCE = 100;
-      streetViewService.getPanoramaByLocation(map.getCenter(), 
-        STREETVIEW_MAX_DISTANCE, function (streetViewPanoramaData, status) {
-        if (status === google.maps.StreetViewStatus.OK) {
-          console.log(sheared)
-            console.log('ok')
-                  if (toggle == false) {
-              panorama.setVisible(true);
-             ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
-             reDraw();
-             //ctxLabels.transform(1, 0, 0, 0.65, 0, 0);
-            } else {
-              panorama.setVisible(false);
-              ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
-              //ctxLabels.transform(1, 0, 0, (1/0.65), 0, 0);
-            reDraw();
+      /* If the panorama is not visible, switch panorama on */
+      if(!panorama.getVisible()) {
+
+          panorama.setPosition(map.getCenter());
+          var streetViewService = new google.maps.StreetViewService();
+          var STREETVIEW_MAX_DISTANCE = 100;
+          
+          streetViewService.getPanoramaByLocation(map.getCenter(), STREETVIEW_MAX_DISTANCE, function (streetViewPanoramaData, status) {
+            if (status === google.maps.StreetViewStatus.OK) {
+                panorama.setVisible(true);
+                ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
+                sheared = true;
+                streetViewReDraw();
+                 //ctxLabels.transform(1, 0, 0, 0.65, 0, 0)
+            } else { /* Panorama not on but no streetview available */
+                 console.log('no streetview avail')
+                 reDraw();
             }
-        } else {
-             console.log('no streetview avail')
-            return;
-        }
-        });
+            });
+      } else { /* Switch back to the map */
+        if(sheared) {
+            panorama.setVisible(false);
+            ctxCompass.transform(1, 0, 0, (1/0.65), 0, 0);
+            sheared = false;
+            reDraw();
+          }
+      }
+      
 }
     </script>
       <!--<script src="/socket.io/socket.io.js"></script>-->
@@ -243,22 +244,20 @@
       }
 
       function setStreetView(){
-        console.log(panorama.getVisible())
+        
         panorama.setPosition(map.getCenter());
-        var toggle = panorama.getVisible();
         console.log(map.getCenter())
         var streetViewService = new google.maps.StreetViewService();
         var STREETVIEW_MAX_DISTANCE = 100;
         streetViewService.getPanoramaByLocation(map.getCenter(), 
           STREETVIEW_MAX_DISTANCE, function (streetViewPanoramaData, status) {
             if (status === google.maps.StreetViewStatus.OK) {
-              console.log('ok')
                 panorama.setVisible(true);
-
-              if (toggle == false){
+              if (sheared == false) {
                ctxCompass.transform(1, 0, 0, 0.65, 0, 0);
-
+               sheared = true;
              }
+             streetViewReDraw();
           } else {
                console.log('no streetview avail')
               return;
@@ -594,9 +593,11 @@ document.getElementById('compass').onmousedown = function () {
     return false;
 };
 document.getElementById('compass').onmouseup = function () {
-    reDraw();
+    
     if(panorama.getVisible() == true) {
       streetViewReDraw();
+    } else {
+      reDraw();
     }
     return false;
 };

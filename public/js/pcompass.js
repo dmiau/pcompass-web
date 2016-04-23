@@ -1,5 +1,6 @@
 'use strict';
 var Y_OFFSET = 0;
+var LABEL_MARGIN = 5;
 var PCompass = function(lat, lng, x, y, r) {
   this.lat = lat;
   this.lng = lng;
@@ -92,21 +93,18 @@ PCompass.prototype.drawNeedle = function(name, distance, angle, color) {
   if (angle < Math.PI / 2 || angle > 3 * Math.PI / 2) {
     var x = this.r + distance * Math.cos(angle) + parseInt(this.x)
     var y = this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)
-    ctxLabels.fillStyle = '#d3d3d3';
-    ctxLabels.fillRect(x - 5, y,ctxLabels.measureText(name).width, -15);
-    ctxLabels.fillStyle = '#000000';    
-    ctxLabels.fillText(name, x, y);
 
   } else {
     var x = this.r + distance * Math.cos(angle) - name.length * 6.75 + parseInt(this.x)
     var y = this.r - distance * Math.sin(angle) + Y_OFFSET + parseInt(this.y)
-    ctxLabels.fillStyle = '#d3d3d3';
-    ctxLabels.fillRect(x, y,ctxLabels.measureText(name).width, -15);
-    ctxLabels.fillStyle = '#000000'; 
-
-    ctxLabels.fillText(name, x, y)
+    
 
   }
+
+  ctxLabels.fillStyle = '#d3d3d3';
+    ctxLabels.fillRect(x - LABEL_MARGIN, y + LABEL_MARGIN,ctxLabels.measureText(name).width + 2 * LABEL_MARGIN, -4 *  LABEL_MARGIN);
+    ctxLabels.fillStyle = '#000000'; 
+    ctxLabels.fillText(name, x, y)
   
   ctxCompass.lineWidth = 3;
   ctxCompass.strokeStyle = color;
